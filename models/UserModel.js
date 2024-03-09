@@ -107,4 +107,4 @@ UserSchema.methods.deleteUser = async function () {
 };
 
 const User = models.UserSchema || model("User", UserSchema);
-export default User;
+export default Use;
