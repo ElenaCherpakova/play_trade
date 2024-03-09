@@ -96,7 +96,7 @@ UserSchema.methods.editUser = async function (updatedUserInfo) {
 };
 
 //delete user
-UsersSchema.methods.deleteUser = async function () {
+UserSchema.methods.deleteUser = async function () {
   try {
     await this.remove();
     console.log("User was successfully deleted");
