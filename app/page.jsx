@@ -6,7 +6,10 @@ export default async function Home() {
   return (
     <Box p={5}>
       <Typography color="primary" variant="h2">
-        Hello Next with MongoDB
+        Hello Next with{" "}
+        <Typography color="accent.main" variant="h1">
+          MongoDB
+        </Typography>
       </Typography>
     </Box>
   );
