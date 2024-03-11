@@ -25,13 +25,14 @@ export const POST = async (req, res) => {
     });
     await newUser.save();
     // const { login } = useAuthUser.getState();
-    // const token = newUser.createJWT();
+    const token = newUser.createJWT();
     // login({ name, email }, token);
 
     return NextResponse.json(
       {
         message: "User saved successfully",
-        newUser
+        newUser,
+        token
       },
       { status: 200 }
     );
