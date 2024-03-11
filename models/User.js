@@ -5,7 +5,7 @@ import Seller from "./Seller";
 import Buyer from "./Buyer";
 
 const UserSchema = new Schema({
-  username: {
+  name: { // changed from username to name for google oauth
     type: String,
     required: [true, "Please enter your name"]
   },
@@ -42,10 +42,10 @@ const UserSchema = new Schema({
 });
 
 // Encrypt password before saving
-UserSchema.pre("save", async function () {
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
-});
+// UserSchema.pre("save", async function () {
+//   const salt = await bcrypt.genSalt(10);
+//   this.password = await bcrypt.hash(this.password, salt);
+// });
 
 UserSchema.methods.createJWT = function () {
   return jwt.sign({ userId: this._id, email: this.email }, process.env.JWT_SECRET, {
