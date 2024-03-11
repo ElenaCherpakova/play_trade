@@ -75,8 +75,8 @@ UserSchema.methods.comparePassword = async function (userPassword) {
 UserSchema.post("save", async function (doc) {
   try {
     if (doc.role === "user") {
-      await Seller.create({ user: doc._id });
-      await Buyer.create({ user: doc._id });
+      await Seller.create({ userId: doc._id });
+      await Buyer.create({ userId: doc._id });
     }
   } catch (error) {
     console.log(error);
