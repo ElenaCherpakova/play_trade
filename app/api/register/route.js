@@ -1,9 +1,10 @@
-import dbConnect  from '@lib/mongo/dbConnect'
+import dbConnect from "@lib/mongo/dbConnect";
 import User from "@/models/User";
-import bcrypt from "bcryptjs";
+// import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
+// import useAuthUser from '@/store/useAuthUser';
 
-export const POST = async req => {
+export const POST = async (req, res) => {
   await dbConnect();
   try {
     const { name, email, password } = await req.json();
@@ -16,16 +17,17 @@ export const POST = async req => {
       return NextResponse.json({ error: "User already exists" }, { status: 400 });
     }
 
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
     const newUser = await new User({
       name,
       email,
-      password: hashedPassword,
+      password, // <-password is hashed  in the User model
       role: "user"
     });
     await newUser.save();
+    // const { login } = useAuthUser.getState();
+    // const token = newUser.createJWT();
+    // login({ name, email }, token);
+
     return NextResponse.json(
       {
         message: "User saved successfully",
