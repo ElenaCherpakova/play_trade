@@ -10,7 +10,7 @@ export default async function Home() {
         Hello Next with
       </Typography>
       <Typography color="accent.main" variant="h2">
-        MongoDB
+        MongoDB 
       </Typography>
     </Box>
   );
