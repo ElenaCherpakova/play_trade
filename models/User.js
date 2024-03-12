@@ -1,11 +1,10 @@
 import { Schema, model, models } from "mongoose";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import Seller from "./Seller";
-import Buyer from "./Buyer";
 
 const UserSchema = new Schema({
-  name: { // changed from username to name for google oauth
+  name: {
+    // changed from username to name for google oauth
     type: String,
     required: [true, "Please enter your name"]
   },
@@ -71,18 +70,6 @@ UserSchema.methods.comparePassword = async function (userPassword) {
   return isMatch;
 };
 
-// Once user is created we setup him as a buyer and seller
-UserSchema.post("save", async function (doc) {
-  try {
-    if (doc.role === "user") {
-      await Seller.create({ userId: doc._id });
-      await Buyer.create({ userId: doc._id });
-    }
-  } catch (error) {
-    console.log(error);
-  }
-});
-
 // edit user
 UserSchema.methods.editUser = async function (updatedUserInfo) {
   try {
@@ -106,5 +93,5 @@ UserSchema.methods.deleteUser = async function () {
   }
 };
 
-const User = models.UserSchema || model("User", UserSchema);
+const User = models.User || model("User", UserSchema);
 export default User;

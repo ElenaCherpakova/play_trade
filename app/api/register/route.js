@@ -1,10 +1,12 @@
+import { model, models } from "mongoose";
 import dbConnect from "@lib/mongo/dbConnect";
 import User from "@/models/User";
-// import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
+import SellerSchema from "@/models/Seller";
+import BuyerSchema from "@/models/Buyer";
 // import useAuthUser from '@/store/useAuthUser';
 
-export const POST = async (req, res) => {
+export const POST = async (req) => {
   await dbConnect();
   try {
     const { name, email, password } = await req.json();
@@ -24,16 +26,21 @@ export const POST = async (req, res) => {
       role: "user"
     });
     await newUser.save();
-    // const { login } = useAuthUser.getState();
     const token = newUser.createJWT();
-    // login({ name, email }, token);
 
+    if (newUser.role === "user") {
+      const SellerModel = models.Seller || model("Seller", SellerSchema);
+      await SellerModel.create({ userId: newUser._id });
+      const BuyerModel = models.Buyer || model("Buyer", BuyerSchema);
+      await BuyerModel.create({ userId: newUser._id });
+    }
     return NextResponse.json(
       {
         message: "User saved successfully",
-        newUser,
+        user: newUser,
         token
       },
+
       { status: 200 }
     );
   } catch (error) {
