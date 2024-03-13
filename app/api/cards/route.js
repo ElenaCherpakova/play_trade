@@ -16,7 +16,8 @@ export async function GET(req, res) {
 }
 
 // Export a named function for handling POST requests
-export async function POST(req = NextRequest) {
+export async function POST(req) {
+  console.log(req);
   // Establish database connection
   await dbConnect();
 
