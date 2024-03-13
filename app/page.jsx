@@ -1,5 +1,6 @@
 import dbConnect from "@/lib/mongo/dbConnect";
 import { Typography, Button, TextField, Box } from "@mui/material";
+import Footer from "@/components/Footer";
 
 export default async function Home() {
   await dbConnect();
@@ -11,6 +12,7 @@ export default async function Home() {
       <Typography color="accent.main" variant="h2">
         MongoDB
       </Typography>
+      <Footer />
     </Box>
   );
 }
