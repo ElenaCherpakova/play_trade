@@ -6,7 +6,7 @@ import SellerSchema from "@/models/Seller";
 import BuyerSchema from "@/models/Buyer";
 // import useAuthUser from '@/store/useAuthUser';
 
-export const POST = async (req) => {
+export const POST = async req => {
   await dbConnect();
   try {
     const { name, email, password } = await req.json();
@@ -14,9 +14,10 @@ export const POST = async (req) => {
     if (!name || !email || !password) {
       return NextResponse.json({ error: "name, email and password are required" }, { status: 400 });
     }
-    const userExist = await User.findOne({ email });
-    if (userExist) {
-      return NextResponse.json({ error: "User already exists" }, { status: 400 });
+    const emailExist = await User.findOne({ email });
+    const nameExist = await User.findOne({ name });
+    if (emailExist || nameExist) {
+      return NextResponse.json({ error: "Email or name already exists" }, { status: 400 });
     }
 
     const newUser = await new User({
