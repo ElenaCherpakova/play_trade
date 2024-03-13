@@ -42,25 +42,26 @@ export const authOptions = {
       if (account.provider === "google") {
         try {
           const { name, email } = user;
-
           await dbConnect();
           const userExist = await User.findOne({ email });
-          const hashPassword = await bcrypt.hashSync(sub, 10);
-          if (userExist) {
-            return user;
-          }
-          const newUser = new User({
-            name: name,
-            email: email,
-            password: hashPassword,
-            authProvider: true // Setting authProvider to true specifically for Google registration
-          });
-          const res = await newUser.save();
-          if (res.status === 200 || res.status === 201) {
-            return user;
+          if (!userExist) {
+            const hashPassword = await bcrypt.hash(sub, 10);
+            const newUser = new User({
+              name: name,
+              email: email,
+              password: hashPassword,
+              authProvider: true
+            });
+            const savedUser = await newUser.save();
+            if (savedUser) {
+              return { status: 201, body: { user: savedUser } }; // Indicate successful creation with status 201
+            } else {
+              throw new Error("Failed to save user");
+            }
           }
         } catch (error) {
-          console.log(error);
+          console.error("Error occurred during Google sign-in:", error);
+          throw new Error("Failed to sign in with Google");
         }
       }
       return user;
