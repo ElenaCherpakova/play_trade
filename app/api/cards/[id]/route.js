@@ -1,11 +1,11 @@
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/mongo/dbConnect";
 import Card from "@/models/Card";
 
 /**
  *
- * @param {NextApiRequest} req
- * @param {NextApiResponse} res
+ * @param {NextRequest} req
+ * @param {NextResponse} res
  */
 export default async function handler(req, res) {
   const { id, method } = req;
