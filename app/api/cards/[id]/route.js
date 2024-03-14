@@ -9,37 +9,28 @@ import Card from "@/models/Card";
  */
 
 export async function GET(req, res) {
-  // Establish database connection
   await dbConnect();
-  console.log(req.url.split("cards/")[1]);
+  //receive id from url
   const id = req.url.split("cards/")[1];
-  // const {
-  //   // user: { userId },
-  //   params: { id: dataId }
-  // } = req.query;
-  try {
-    // Find card in the database
-    const card = await Card.findOne({
-      _id: id
-      // createdBy: userId
-    });
-    console.log(card);
-    if (!card) {
-      return NextResponse.json({ success: false, message: `No card with id: ${id}` }, { status: 400 });
-    }
-    return NextResponse.json({ success: true, data: card }, { status: 200 });
-  } catch (error) {
-    return NextResponse.json({ success: false, message: "Something wrong" }, { status: 400 });
+
+  // Find card in the database
+  const card = await Card.findOne({
+    _id: id
+    // createdBy: userId
+  });
+  console.log(card);
+  if (!card) {
+    return NextResponse.json({ success: false, message: `No card with id: ${id}` }, { status: 400 });
   }
+  return NextResponse.json({ success: true, data: card }, { status: 200 });
 }
 
 export async function PATCH(req, res) {
   await dbConnect();
-  // console.log(req);
+  // receive parameters from req
   const id = req.url.split("cards/")[1];
   const {
     body: { name, price, currency, shippingCost, quantity }
-    // user: { userId },
   } = req;
   const body = await req.json();
   if (name === "" || price === "" || currency === "" || shippingCost === "" || quantity === "") {
@@ -62,18 +53,14 @@ export async function PATCH(req, res) {
 //delete data
 export async function DELETE(req, res) {
   await dbConnect();
-  // console.log(req);
+  //receive id from url
   const id = req.url.split("cards/")[1];
-  // const {
-  //   user: { userId },
-  //   params: { id: dataId }
-  // } = req;
   const card = await Card.findOneAndDelete({
     _id: id
     // createdBy: userId
   });
   if (!card) {
-    return NextResponse.json({ success: false, message: `No card with id ${id}` }, { status: 404 });
+    return NextResponse.json({ success: false, message: `No card with id ${id}` }, { status: 400 });
   }
   return NextResponse.json({ success: true, data: {} }, { status: 200 });
 }
