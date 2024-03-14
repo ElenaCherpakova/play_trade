@@ -19,12 +19,17 @@ const Footer = () => {
       <Grid container justifyContent="space-between">
         <Grid item xs={12} sm={6}>
           {/* Copyright text */}
-          <Typography variant="body2" color="#FFFFFF">{` COPYRIGHT ${getCurrentYear()} © PLAYTRADE`}</Typography>
+          <Typography variant="body2" color="#FFFFFF">{` © ${getCurrentYear()}  PLAYTRADE`}</Typography>
         </Grid>
         <Grid item xs={12} sm={6}>
           {/* List of links */}
           <Typography variant="body2" color="#FFFFFF" textAlign="right">
-            <Link href="/about">About</Link> | <Link href="/team">Our Team</Link> |{" "}
+            <Link href="/about" style={{ marginRight: "1rem" }}>
+              About
+            </Link>
+            <Link href="/team" style={{ marginRight: "1rem" }}>
+              Our Team
+            </Link>
             <Link href="/messages">Contact Us</Link>
           </Typography>
         </Grid>
