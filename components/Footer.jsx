@@ -17,11 +17,11 @@ const Footer = () => {
         padding: "1rem"
       }}>
       <Grid container justifyContent="space-between">
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12}>
           {/* Copyright text */}
           <Typography variant="body2" color="#FFFFFF">{` © ${getCurrentYear()}  PLAYTRADE`}</Typography>
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12}>
           {/* List of links */}
           <Typography variant="body2" color="#FFFFFF" textAlign="right">
             <Link href="/about" style={{ marginRight: "1rem" }}>
