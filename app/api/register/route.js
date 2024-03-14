@@ -4,6 +4,7 @@ import User from "@/models/User";
 import { NextResponse } from "next/server";
 import SellerSchema from "@/models/Seller";
 import BuyerSchema from "@/models/Buyer";
+import createAssociatedModels from "@/utils/createAssociatedModels";
 // import useAuthUser from '@/store/useAuthUser';
 
 export const POST = async req => {
@@ -28,13 +29,8 @@ export const POST = async req => {
     });
     await newUser.save();
     const token = newUser.createJWT();
+    await createAssociatedModels(newUser)
 
-    if (newUser.role === "user") {
-      const SellerModel = models.Seller || model("Seller", SellerSchema);
-      await SellerModel.create({ userId: newUser._id });
-      const BuyerModel = models.Buyer || model("Buyer", BuyerSchema);
-      await BuyerModel.create({ userId: newUser._id });
-    }
     return NextResponse.json(
       {
         message: "User saved successfully",

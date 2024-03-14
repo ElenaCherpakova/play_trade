@@ -4,30 +4,36 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import User from "@/models/User";
 import bcrypt from "bcryptjs";
 import dbConnect from "@/lib/mongo/dbConnect";
+import createAssociatedModels from "@/utils/createAssociatedModels";
 
 export const authOptions = {
   providers: [
     CredentialsProvider({
-      credentials: {},
+      id: "credentials",
+      credentials: {
+        email: { label: "Email", type: "text" },
+        password: { label: "Password", type: "password" }
+      },
       async authorize(credentials) {
         const { email, password } = credentials;
+        await dbConnect();
         try {
-          await dbConnect();
-
           // Check if the user already exists in the database
-          let user = await User.findOne({ email });
-          if (!user) {
-            throw new Error("User with this email doesn't exist");
+          const user = await User.findOne({ email });
+          console.log(user)
+          if (user) {
+            const isPasswordCorrect = await user.comparePassword(password);
+            if (isPasswordCorrect) {
+              return user;
+            } else {
+              return null; // Incorrect password
+            }
+          } else {
+            return null; // User not found
           }
-          // If the user exists, validate the password
-          const isPasswordCorrect = await user.comparePassword(password);
-          if (!isPasswordCorrect) {
-            throw new Error("Invalid email or password");
-          }
-
-          return user;
         } catch (error) {
-          throw new Error("Authentication failed");
+          console.error("Error occurred during authorization:", error);
+          return null; // Return null for unsuccessful authentication
         }
       }
     }),
@@ -52,7 +58,10 @@ export const authOptions = {
               password: hashPassword,
               authProvider: true
             });
+
             const savedUser = await newUser.save();
+            await createAssociatedModels(savedUser);
+
             if (savedUser) {
               return { status: 201, body: { user: savedUser } }; // Indicate successful creation with status 201
             } else {
@@ -83,10 +92,10 @@ export const authOptions = {
       return session;
     }
   },
-  secret: process.env.NEXTAUTH_SECRET,
-  pages: {
-    signin: "/"
-  }
+  secret: process.env.NEXTAUTH_SECRET
+  // pages: {
+  //   signIn: "/"
+  // }
 };
 const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };
