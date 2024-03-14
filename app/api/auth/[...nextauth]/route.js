@@ -1,10 +1,17 @@
 import NextAuth from "next-auth";
+import { Account, User as AuthUser } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import User from "@/models/User";
 import bcrypt from "bcryptjs";
 import dbConnect from "@/lib/mongo/dbConnect";
 import createAssociatedModels from "@/utils/createAssociatedModels";
+
+/**
+ *
+ * @param {Account} account
+ * @param {AuthUser} user
+ */
 
 export const authOptions = {
   providers: [
@@ -20,7 +27,7 @@ export const authOptions = {
         try {
           // Check if the user already exists in the database
           const user = await User.findOne({ email });
-          console.log(user)
+          console.log(user);
           if (user) {
             const isPasswordCorrect = await user.comparePassword(password);
             if (isPasswordCorrect) {
@@ -38,16 +45,23 @@ export const authOptions = {
       }
     }),
     GoogleProvider({
+      profile(profile){
+        return {
+          ...profile,
+          id: profile.sub
+        }
+      },
       clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      
     })
   ],
 
   callbacks: {
-    async signIn({ profile: { sub }, user, account }) {
+    async signIn({ user, account }) {
       if (account.provider === "google") {
         try {
-          const { name, email } = user;
+          const { name, email, sub } = user;
           await dbConnect();
           const userExist = await User.findOne({ email });
           if (!userExist) {
@@ -94,7 +108,7 @@ export const authOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
-    signIn: "/"
+    signin: "/"
   }
 };
 const handler = NextAuth(authOptions);

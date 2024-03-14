@@ -1,8 +1,14 @@
 import dbConnect from "@lib/mongo/dbConnect";
 import User from "@/models/User";
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import createAssociatedModels from "@/utils/createAssociatedModels";
 // import useAuthUser from '@/store/useAuthUser';
+
+/**
+ *
+ * @param {NextResponse} res
+ * @param {NextRequest} req
+ */
 
 export const POST = async req => {
   await dbConnect();
@@ -26,7 +32,7 @@ export const POST = async req => {
     });
     await newUser.save();
     const token = newUser.createJWT();
-    await createAssociatedModels(newUser)
+    await createAssociatedModels(newUser);
 
     return NextResponse.json(
       {
