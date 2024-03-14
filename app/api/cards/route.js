@@ -15,9 +15,9 @@ export async function GET(req, res) {
   try {
     // Fetch all cards from the database
     const cards = await Card.find({});
-    res.status(200).json({ success: true, data: cards });
+    return NextResponse.json({ success: true, data: cards }, { status: 200 });
   } catch (error) {
-    res.status(400).json({ success: false });
+    return NextResponse.json({ success: false, message: "Something wrong" }, { status: 400 });
   }
 }
 
@@ -34,14 +34,11 @@ export async function POST(req) {
     const card = await Card.create(body);
 
     // res.status(201).json({ success: true, data: card });
-    return new NextResponse(JSON.stringify(card), { status: 200 });
+    return NextResponse.json({ success: true, data: card }, { status: 201 });
   } catch (error) {
     console.log(error);
     // res.status(400).json({ success: false });
-    return new NextResponse(JSON.stringify({ success: false, message: "something wrong" }), {
-      status: 401,
-      headers: { "content-type": "application/json" }
-    });
+    return NextResponse.json({ success: false, message: "Something wrong" }, { status: 400 });
   }
 }
 
