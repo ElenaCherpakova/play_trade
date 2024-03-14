@@ -92,10 +92,10 @@ export const authOptions = {
       return session;
     }
   },
-  secret: process.env.NEXTAUTH_SECRET
-  // pages: {
-  //   signIn: "/"
-  // }
+  secret: process.env.NEXTAUTH_SECRET,
+  pages: {
+    signIn: "/"
+  }
 };
 const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };
