@@ -1,9 +1,6 @@
-import { model, models } from "mongoose";
 import dbConnect from "@lib/mongo/dbConnect";
 import User from "@/models/User";
 import { NextResponse } from "next/server";
-import SellerSchema from "@/models/Seller";
-import BuyerSchema from "@/models/Buyer";
 import createAssociatedModels from "@/utils/createAssociatedModels";
 // import useAuthUser from '@/store/useAuthUser';
 
