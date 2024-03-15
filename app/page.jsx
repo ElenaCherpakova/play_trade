@@ -2,6 +2,7 @@ import dbConnect from "@/lib/mongo/dbConnect";
 import { Typography, Button, TextField, Box } from "@mui/material";
 import Footer from "@/components/Footer";
 
+
 export default async function Home() {
   await dbConnect();
   return (

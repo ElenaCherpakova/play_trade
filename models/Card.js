@@ -75,5 +75,5 @@ const CardSchema = new Schema({
   }
 });
 
-const Card = models.CardSchema || model("Card", CardSchema);
+const Card = models.Card || model("Card", CardSchema);
 export default Card;
