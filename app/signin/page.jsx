@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useState, useEffect } from 'react';
 import useAuthUser from '../../store/useAuthUser';
+import { useTheme } from '@mui/material/styles';
 import { Container, Box, TextField, Button, Typography, CircularProgress, InputAdornment, IconButton, Divider, Link } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
@@ -16,8 +17,9 @@ const SignInPage = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
 
-  const { login, googleLogin, isLoading, error } = useAuthUser();
+  const theme = useTheme();
   const router = useRouter();
+  const { login, googleLogin, isLoading, error } = useAuthUser();
   const { data: session, status: sessionStatus } = useSession();
 
   useEffect(() => {
@@ -37,7 +39,6 @@ const SignInPage = () => {
       [name]: value,
     }));
   };
-
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -68,7 +69,16 @@ const SignInPage = () => {
           alignItems: 'center',
         }}
       >
-        <Typography component="h1" variant="h5">
+        <Typography  
+          component="h1" 
+          variant="h5"
+          sx={{
+            mt: 2,
+            mb: 2,
+            color: theme.palette.primary.main, 
+            fontFamily: theme.typography.fontFamily,
+          }}
+          >
           Login Page
         </Typography>
         {error && <Typography color="error">Error: {error}</Typography>}
@@ -114,8 +124,18 @@ const SignInPage = () => {
             type="submit"
             fullWidth
             variant="contained"
-            sx={{ mt: 3, mb: 2 }}
             disabled={isLoading}
+            sx={{
+              mt: 2,
+              mb: 2,
+              color: theme.palette.background.paper, 
+              backgroundColor: theme.palette.primary.main, 
+              '&:hover': {
+                backgroundColor: theme.palette.accent.main, 
+              },
+              borderRadius: theme.shape.borderRadius, 
+              fontFamily: theme.typography.fontFamily,
+            }}
           >
             {isLoading ? <CircularProgress size={24} /> : 'Log In'}
           </Button>
@@ -134,8 +154,18 @@ const SignInPage = () => {
             onClick={handleGoogleSignIn}
             fullWidth
             variant="contained"
-            sx={{ mt: 2, mb: 2 }}
             startIcon={<GoogleIcon />}
+            sx={{
+              mt: 2,
+              mb: 2,
+              color: theme.palette.background.paper, 
+              backgroundColor: theme.palette.primary.main, 
+              '&:hover': {
+                backgroundColor: theme.palette.accent.main, 
+              },
+              borderRadius: theme.shape.borderRadius, 
+              fontFamily: theme.typography.fontFamily,
+            }}
           >
             Sign in with Google
           </Button>

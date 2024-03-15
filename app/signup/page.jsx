@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from 'react';
 import useAuthUser from '../../store/useAuthUser';
+import { useTheme } from '@mui/material/styles';
 import { Container, Box, TextField, Button, Typography, CircularProgress, Link, InputAdornment, IconButton, Divider } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
@@ -15,8 +16,9 @@ const SignUpPage = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
 
-  const { register, isLoading, error } = useAuthUser();
+  const theme = useTheme();
   const router = useRouter();
+  const { register, isLoading, error } = useAuthUser();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -53,7 +55,16 @@ const SignUpPage = () => {
           alignItems: 'center',
         }}
       >
-        <Typography component="h1" variant="h5">
+        <Typography 
+          component="h1" 
+          variant="h5"
+          sx={{
+            mt: 2,
+            mb: 2,
+            color: theme.palette.primary.main, 
+            fontFamily: theme.typography.fontFamily,
+          }}
+          >
           Sign up to PlayTrade
         </Typography>
         {error && <Typography color="error">Error: {error}</Typography>}
@@ -116,8 +127,18 @@ const SignUpPage = () => {
             type="submit"
             fullWidth
             variant="contained"
-            sx={{ mt: 3, mb: 2 }}
             disabled={isLoading}
+            sx={{
+              mt: 2,
+              mb: 2,
+              color: theme.palette.background.paper, 
+              backgroundColor: theme.palette.primary.main, 
+              '&:hover': {
+                backgroundColor: theme.palette.accent.main, 
+              },
+              borderRadius: theme.shape.borderRadius, 
+              fontFamily: theme.typography.fontFamily,
+            }}
           >
             {isLoading ? <CircularProgress size={24} /> : 'Sign Up'}
           </Button>
@@ -130,7 +151,17 @@ const SignUpPage = () => {
             onClick={handleLoginRedirect}
             fullWidth
             variant="contained"
-            sx={{ mt: 2, mb: 2 }}
+            sx={{
+              mt: 2,
+              mb: 2,
+              color: theme.palette.background.paper, 
+              backgroundColor: theme.palette.primary.main, 
+              '&:hover': {
+                backgroundColor: theme.palette.accent.main, 
+              },
+              borderRadius: theme.shape.borderRadius, 
+              fontFamily: theme.typography.fontFamily,
+            }}
           >
             Login with an existing aacount
           </Button> 
