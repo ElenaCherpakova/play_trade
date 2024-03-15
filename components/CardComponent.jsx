@@ -7,27 +7,27 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
+import AddToCartButton from "./AddToCartButton";
 
 export default function CardComponent({ card }) {
-  const addToCart = () => {
-    console.log("add to cart");
-  };
+  const router = useRouter();
+  // const addToCart = () => {
+  //   console.log("add to cart");
+  // };
   const buyNow = () => {
     console.log("buy now");
   };
   return (
     <Card variant="outlined" style={{ border: "none", maxWidth: 220 }}>
-      <CardActionArea>
-        <Link href={`/market/item/${card._id}`}>
-          <CardMedia
-            // style={{ objectFit: "contain" }}
-            style={{ objectFit: "cover", padding: 8 }}
-            component="img"
-            image={card.imageURL}
-            alt={card.name}
-          />
-        </Link>
+      <CardActionArea type="button" onClick={() => router.push(`/market/item/${card.id}`)}>
+        <CardMedia
+          // style={{ objectFit: "contain" }}
+          style={{ objectFit: "cover", padding: 8 }}
+          component="img"
+          image={card.imageURL}
+          alt={card.name}
+        />
         <CardContent sx={{ p: 0.5 }}>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <Typography gutterBottom variant="caption" component="div">
@@ -41,12 +41,10 @@ export default function CardComponent({ card }) {
       </CardActionArea>
 
       <CardActions sx={{ p: 0.5 }}>
-        <Button onClick={buyNow} size="small" variant="contained" color="secondary">
+        <Button onClick={buyNow} variant="contained" color="secondary">
           Buy Now
         </Button>
-        <Button onClick={addToCart} size="small" variant="contained" color="secondary">
-          Add to Cart
-        </Button>
+        <AddToCartButton card={card} />
       </CardActions>
     </Card>
   );
