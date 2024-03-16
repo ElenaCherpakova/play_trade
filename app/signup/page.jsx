@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from 'react';
 import useAuthUser from '../../store/useAuthUser';
 import { useTheme } from '@mui/material/styles';
-import { Container, Box, TextField, Button, Typography, CircularProgress, Link, InputAdornment, IconButton, Divider } from '@mui/material';
+import { Container, Box, TextField, Button, Typography, CircularProgress, Link, InputAdornment, IconButton, Divider, Paper } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
@@ -47,12 +47,14 @@ const SignUpPage = () => {
 
   return (
     <Container component="main" maxWidth="xs">
-      <Box
+      <Paper
         sx={{
           marginTop: 8,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
+          padding: theme.spacing(6),
+          borderRadius: theme.shape.borderRadius, 
         }}
       >
         <Typography 
@@ -166,7 +168,7 @@ const SignUpPage = () => {
             Login with an existing aacount
           </Button> 
         </Box>
-      </Box>
+      </Paper>
     </Container>
   );
 };
