@@ -56,7 +56,7 @@ const Team = () => {
 
         {
             name: 'Victoria Taiwo',
-            description: 'UI/UX Designer',
+            description: 'Frontend Developer',
             githubUsername: 'Victoria240',
             image: '/images/victoria-taiwo.jpg',
             width: 200,
@@ -131,7 +131,7 @@ const Team = () => {
                 <Typography variant="h3" gutterBottom style={{ color: theme.palette.accent.main }}>Meet the team</Typography>
                 <Grid container spacing={4}>
                     <Grid item xs={12}>
-                        <Typography variant="h5" gutterBottom style={{marginBottom: theme.spacing(4)}}>TEAM MEMBERS</Typography>
+                        <Typography variant="h5" gutterBottom style={{ marginBottom: theme.spacing(4) }}>TEAM MEMBERS</Typography>
                         <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
                             {teamMembers.map((member, index) => (
                                 <Card key={index} style={{ ...cardStyle, marginRight: theme.spacing(2), marginBottom: theme.spacing(2) }}>
