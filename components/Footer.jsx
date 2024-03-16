@@ -17,28 +17,31 @@ const Footer = () => {
       sx={{
         width: "100%",
         height: "auto",
-        backgroundColor: "#14213D",
-        padding: "1rem"
+        padding: "1rem",
+        bgcolor: "primary.main"
       }}>
       <Grid item xs={12} sm={6} container justifyContent="flex-start" alignItems="center">
         {/* Copyright text */}
-        <Typography variant="body2" color="#FFFFFF">{` © ${getCurrentYear()}  PLAYTRADE`}</Typography>
+        <Typography
+          variant="body2"
+          color="background.paper"
+          marginLeft="1rem">{` © ${getCurrentYear()}  PLAYTRADE`}</Typography>
       </Grid>
       <Grid item xs={12} sm={6} container justifyContent="flex-end" alignItems="center">
         {/* List of links */}
         <ul style={{ listStyle: "none", margin: 0, display: "flex" }}>
           <li style={{ marginRight: "1rem" }}>
-            <Link href="/about" style={{ color: "#FFFFFF" }}>
+            <Link href="/about" style={{ color: "background.paper" }}>
               About
             </Link>
           </li>
           <li style={{ marginRight: "1rem" }}>
-            <Link href="/team" style={{ color: "#FFFFFF" }}>
+            <Link href="/team" style={{ color: "background.paper" }}>
               Our Team
             </Link>
           </li>
           <li style={{ marginRight: "1rem" }}>
-            <Link href="/messages" style={{ color: "#FFFFFF" }}>
+            <Link href="/messages" style={{ color: "background.paper" }}>
               Contact Us
             </Link>
           </li>
