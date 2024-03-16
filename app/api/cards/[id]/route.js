@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/mongo/dbConnect";
+import { getSession } from "next-auth/react";
 import Card from "@/models/Card";
 
 /**
@@ -27,19 +28,24 @@ export async function GET(req, res) {
 
 export async function PATCH(req, res) {
   await dbConnect();
+  const session = await getSession({ req });
+  if (!session) {
+    return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+  }
+  const userId = session.user.id;
   // receive parameters from req
   const id = req.url.split("cards/")[1];
   const {
     body: { name, price, currency, shippingCost, quantity }
   } = req;
-  const body = await req.json();
-  if (name === "" || price === "" || currency === "" || shippingCost === "" || quantity === "") {
+
+  if (!name || !price || !currency || !shippingCost || !quantity) {
     return NextResponse.json(
       { success: false, message: "Name, price, currency, shipping cost and quantity fields cannot be empty" },
       { status: 400 }
     );
   }
-  const card = await Card.findByIdAndUpdate(id, body, {
+  const card = await Card.findByIdAndUpdate({ createdBy: userId }, id, body, {
     new: true,
     runValidators: true
   });
@@ -53,11 +59,16 @@ export async function PATCH(req, res) {
 //delete data
 export async function DELETE(req, res) {
   await dbConnect();
+  const session = await getSession({ req });
+  if (!session) {
+    return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+  }
+  const userId = session.user.id;
   //receive id from url
   const id = req.url.split("cards/")[1];
   const card = await Card.findOneAndDelete({
-    _id: id
-    // createdBy: userId
+    _id: id,
+    createdBy: userId
   });
   if (!card) {
     return NextResponse.json({ success: false, message: `No card with id ${id}` }, { status: 400 });
