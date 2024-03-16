@@ -17,5 +17,5 @@ const MarketSchema = new Schema({
   items: [MarketItemSchema]
 });
 
-const Market = models.MarketItemSchema || model("Market", MarketSchema);
+const Market = models.Market || model("Market", MarketSchema);
 export default Market;

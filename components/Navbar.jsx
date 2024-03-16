@@ -1,3 +1,5 @@
+import AuthControl from "./AuthControl";
+
 // components/Navbar.js
 
 'use client';
@@ -34,6 +36,8 @@ const Navbar = ({ isLoggedIn }) => {
       </div>
 
       <nav className="nav">
+        <AuthControl />
+        
         <ul style={{ display: 'flex', listStyleType: 'none', gap: '16px' }}>
           <li onMouseEnter={toggleCardDropdown} onMouseLeave={toggleCardDropdown}>
             <span style={{ cursor: 'pointer' }}>Cards</span>
