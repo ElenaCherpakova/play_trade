@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography, Grid } from "@mui/material";
+import { Typography, Grid } from "@mui/material";
 import Link from "next/link";
 
 const getCurrentYear = () => {
@@ -9,32 +9,42 @@ const getCurrentYear = () => {
 
 const Footer = () => {
   return (
-    <Box
+    <Grid
+      container
+      direction="row"
+      justifyContent="space-between"
+      alignItems="center"
       sx={{
         width: "100%",
         height: "auto",
         backgroundColor: "#14213D",
         padding: "1rem"
       }}>
-      <Grid container justifyContent="space-between">
-        <Grid item xs={12}>
-          {/* Copyright text */}
-          <Typography variant="body2" color="#FFFFFF">{` © ${getCurrentYear()}  PLAYTRADE`}</Typography>
-        </Grid>
-        <Grid item xs={12}>
-          {/* List of links */}
-          <Typography variant="body2" color="#FFFFFF" textAlign="right">
-            <Link href="/about" style={{ marginRight: "1rem" }}>
+      <Grid item xs={12} sm={6} container justifyContent="flex-start" alignItems="center">
+        {/* Copyright text */}
+        <Typography variant="body2" color="#FFFFFF">{` © ${getCurrentYear()}  PLAYTRADE`}</Typography>
+      </Grid>
+      <Grid item xs={12} sm={6} container justifyContent="flex-end" alignItems="center">
+        {/* List of links */}
+        <ul style={{ listStyle: "none", margin: 0, display: "flex" }}>
+          <li style={{ marginRight: "1rem" }}>
+            <Link href="/about" style={{ color: "#FFFFFF" }}>
               About
             </Link>
-            <Link href="/team" style={{ marginRight: "1rem" }}>
+          </li>
+          <li style={{ marginRight: "1rem" }}>
+            <Link href="/team" style={{ color: "#FFFFFF" }}>
               Our Team
             </Link>
-            <Link href="/messages">Contact Us</Link>
-          </Typography>
-        </Grid>
+          </li>
+          <li style={{ marginRight: "1rem" }}>
+            <Link href="/messages" style={{ color: "#FFFFFF" }}>
+              Contact Us
+            </Link>
+          </li>
+        </ul>
       </Grid>
-    </Box>
+    </Grid>
   );
 };
 
