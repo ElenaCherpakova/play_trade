@@ -22,5 +22,5 @@ const OrderHistorySchema = new Schema({
   }
 });
 
-const OrderHistory = models.OrderHistorySchema || model("OrderHistory", OrderHistorySchema);
+const OrderHistory = models.OrderHistory || model("OrderHistory", OrderHistorySchema);
 export default OrderHistory;

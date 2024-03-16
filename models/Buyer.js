@@ -14,5 +14,5 @@ const BuyerSchema = new Schema({
   ]
 });
 
-const Buyer = models.BuyerSchema || model("Buyer", BuyerSchema);
+const Buyer = models.Buyer || model("Buyer", BuyerSchema);
 export default Buyer;
