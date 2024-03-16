@@ -121,7 +121,7 @@ const Team = () => {
             <div style={sectionStyle}>
                 <Typography variant="h3" gutterBottom style={{ color: theme.palette.accent.main, backgroundColor: theme.palette.primary.main, padding: '80px' }}>About Playtrade</Typography>
                 <Typography variant="body1" gutterBottom style={{ width: '80%', margin: '0 auto', textAlign: 'center', marginTop: theme.spacing(4) }}>
-                    Playtrade is a premier online card trading platform, offering users a seamless and secure marketplace to buy, sell, and trade a diverse range of collectible cards. Our platform is designed to cater to the needs of both casual collectors and serious enthusiasts, providing a user-friendly interface, robust security features, and a vibrant community atmosphere. Whether you're searching for rare gems to add to your collection or looking to connect with fellow enthusiasts, Playtrade is your ultimate destination for all things card trading.
+                    Playtrade is a premier online card trading platform, offering users a seamless and secure marketplace to buy, sell, and trade a diverse range of collectible cards. Our platform is designed to cater to the needs of both casual collectors and serious enthusiasts, providing a user-friendly interface, robust security features, and a vibrant community atmosphere. Whether you are searching for rare gems to add to your collection or looking to connect with fellow enthusiasts, Playtrade is your ultimate destination for all things card trading.
                 </Typography>
             </div>
             <div style={sectionStyle}>
