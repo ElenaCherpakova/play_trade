@@ -5,16 +5,13 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 
-const Navbar = () => {
+const Navbar = ({ isLoggedIn }) => {
+  const [showCardDropdown, setShowCardDropdown] = useState(false);
+
   const handleSearch = (event) => {
-    // Implement search functionality here later
     console.log('Searching for:', event.target.value);
   };
 
-  //state to manage the visibility of the card categories dropdown
-  const [showCardDropdown, setShowCardDropdown] = useState(false);
-
-  // Function to toggle the visibility of the card categories dropdown
   const toggleCardDropdown = () => {
     setShowCardDropdown(!showCardDropdown);
   };
@@ -38,59 +35,46 @@ const Navbar = () => {
 
       <nav className="nav">
         <ul style={{ display: 'flex', listStyleType: 'none', gap: '16px' }}>
-          {/* Cards menu item with dropdown */}
           <li onMouseEnter={toggleCardDropdown} onMouseLeave={toggleCardDropdown}>
             <span style={{ cursor: 'pointer' }}>Cards</span>
             {showCardDropdown && (
               <ul className="dropdown-content" style={{ position: 'absolute', backgroundColor: '#FFFFFF', color: '#000000', padding: '16px', listStyleType: 'none' }}>
-                <h4 style={{ marginBottom: '8px' }}> Card categories </h4>
+                <h4 style={{ marginBottom: '8px' }}>Card categories</h4>
                 <li style={{ marginBottom: '8px' }}>
-                  <Link href="/cards/category1">
-                    Star Wars
-                  </Link>
+                  <Link href="/cards/category1">Star Wars</Link>
                 </li>
                 <li style={{ marginBottom: '8px' }}>
-                  <Link href="/cards/category2">
-                    Hockey
-                  </Link>
+                  <Link href="/cards/category2">Hockey</Link>
                 </li>
                 <li style={{ marginBottom: '8px' }}>
-                  <Link href="/cards/category2">
-                    Soccer
-                  </Link>
+                  <Link href="/cards/category3">Soccer</Link>
                 </li>
-
-                <li style={{ marginBottom: '8px' }}>
-                  <Link href="/cards/category2">
-                    Baseball
-                  </Link>
-                </li>
-
-                <li style={{ marginBottom: '8px' }}>
-                  <Link href="/cards/category2">
-                    Basketball
-                  </Link>
-                </li>
-
+                {/* Add more categories as needed */}
               </ul>
             )}
           </li>
-
           <li>
-            <Link href="/about">
-              About
-            </Link>
+            <Link href="/about">About</Link>
           </li>
-          <li>
-            <Link href="/signup">
-              Signup
-            </Link>
-          </li>
-          <li>
-            <Link href="/login">
-              Login
-            </Link>
-          </li>
+          {isLoggedIn ? (
+            <>
+              <li>
+                <Link href="/profile">Profile</Link>
+              </li>
+              <li>
+                <Link href="/logout">Logout</Link>
+              </li>
+            </>
+          ) : (
+            <>
+              <li>
+                <Link href="/signup">Signup</Link>
+              </li>
+              <li>
+                <Link href="/login">Login</Link>
+              </li>
+            </>
+          )}
         </ul>
       </nav>
     </header>
