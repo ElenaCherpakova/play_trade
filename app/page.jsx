@@ -2,6 +2,7 @@ import dbConnect from "@/lib/mongo/dbConnect";
 import { Typography, Button, TextField, Box } from "@mui/material";
 import CardComponent from "../components/CardComponent";
 
+
 const card = {
   name: "Pikachu V - SWSH061",
   price: "$ 0.42",
@@ -11,8 +12,8 @@ export default async function Home() {
   await dbConnect();
   return (
     <>
-      <Box p={5}>
-        <Navbar />
+      <Box p={5}>i
+        
       <Typography color="primary" variant="h1">
           Hello Next with
         </Typography>
