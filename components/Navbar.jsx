@@ -1,36 +1,81 @@
 // components/Navbar.js
 
 'use client';
+import Image from 'next/image';
 import Link from 'next/link';
+import { useState } from 'react';
 
 const Navbar = () => {
   const handleSearch = (event) => {
-    // Implement search functionality here
+    // Implement search functionality here later
     console.log('Searching for:', event.target.value);
   };
+
+  //state to manage the visibility of the card categories dropdown
+  const [showCardDropdown, setShowCardDropdown] = useState(false);
+
+  // Function to toggle the visibility of the card categories dropdown
+  const toggleCardDropdown = () => {
+    setShowCardDropdown(!showCardDropdown);
+  };
+
   return (
-    <header className="header">
+    <header className="header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#14213D', padding: '8px 16px' }}>
       <div className="logo">
         <Link href="/">
-          Play Trade
+          <Image src="/logo.png" alt="Play Trade" width={50} height={50} />
         </Link>
       </div>
 
-      <div className="search">
+      <div className="search" style={{ maxWidth: '480px', width: '100%' }}>
         <input
           type="text"
           placeholder="Search cards..."
           onChange={handleSearch}
+          style={{ width: '100%', padding: '8px', borderRadius: '4px', backgroundColor: '#FFFFFF', boxSizing: 'border-box' }}
         />
       </div>
 
       <nav className="nav">
-        <ul>
-          <li>
-            <Link href="/cards">
-              Cards
-            </Link>
+        <ul style={{ display: 'flex', listStyleType: 'none', gap: '16px' }}>
+          {/* Cards menu item with dropdown */}
+          <li onMouseEnter={toggleCardDropdown} onMouseLeave={toggleCardDropdown}>
+            <span style={{ cursor: 'pointer' }}>Cards</span>
+            {showCardDropdown && (
+              <ul className="dropdown-content" style={{ position: 'absolute', backgroundColor: '#FFFFFF', color: '#000000', padding: '16px', listStyleType: 'none' }}>
+                <h4 style={{ marginBottom: '8px' }}> Card categories </h4>
+                <li style={{ marginBottom: '8px' }}>
+                  <Link href="/cards/category1">
+                    Star Wars
+                  </Link>
+                </li>
+                <li style={{ marginBottom: '8px' }}>
+                  <Link href="/cards/category2">
+                    Hockey
+                  </Link>
+                </li>
+                <li style={{ marginBottom: '8px' }}>
+                  <Link href="/cards/category2">
+                    Soccer
+                  </Link>
+                </li>
+
+                <li style={{ marginBottom: '8px' }}>
+                  <Link href="/cards/category2">
+                    Baseball
+                  </Link>
+                </li>
+
+                <li style={{ marginBottom: '8px' }}>
+                  <Link href="/cards/category2">
+                    Basketball
+                  </Link>
+                </li>
+
+              </ul>
+            )}
           </li>
+
           <li>
             <Link href="/about">
               About
@@ -46,10 +91,8 @@ const Navbar = () => {
               Login
             </Link>
           </li>
-          {/* Add more navigation links as needed */}
         </ul>
       </nav>
-
     </header>
   );
 };
