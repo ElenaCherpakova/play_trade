@@ -18,13 +18,10 @@ const Team = () => {
 
     const mediaStyle = {
         height: 200,
-        objectFit: 'cover', // Ensure images fill the container
+        objectFit: 'cover', 
     };
 
-    // Your team members and mentors data
 
-
-    // Your team members and mentors data
     const teamMembers = [
         {
             name: 'Cesar Lopez',
