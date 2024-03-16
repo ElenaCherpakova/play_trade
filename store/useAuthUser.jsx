@@ -2,7 +2,6 @@ import  { create } from 'zustand';
 import { signOut, signIn } from "next-auth/react"
 
 const useAuthUser = create((set) => ({
-  user: null,
   isLoading: false,
   error: null,
 
@@ -35,21 +34,19 @@ const useAuthUser = create((set) => ({
     set({ isLoading: true, error: null });
     try {
       const response = await fetch('/api/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(newUserData),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        set({ user: data.user, token: data.token, isLoading: false });
-        window.location.href = '/signin';
-      } else {
-        throw new Error(data.error || 'Registration failed');
-      }
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newUserData),
+        });
+        const data = await response.json();
+        if (response.ok) {
+            set({ sLoading: false, error: null });
+            window.location.href = '/signin';
+        } else {
+            throw new Error(data.error || 'Registration failed');
+        }
     } catch (error) {
       set({ error: error.message, isLoading: false });
     }
