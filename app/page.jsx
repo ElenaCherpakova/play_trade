@@ -1,6 +1,7 @@
 import dbConnect from "@/lib/mongo/dbConnect";
 import { Typography, Button, TextField, Box } from "@mui/material";
 import CardComponent from "../components/CardComponent";
+import { CardsWithFilters } from "@/components/CardsWithFilters";
 
 const card = {
   name: "Pikachu V - SWSH061",
@@ -19,8 +20,8 @@ export default async function Home() {
           MongoDB
         </Typography>
       </Box>
-
       <CardComponent card={card} />
+      <CardsWithFilters card={card} />
     </>
   );
 }

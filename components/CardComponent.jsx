@@ -23,25 +23,29 @@ export default function CardComponent({ card }) {
       <CardActionArea type="button" onClick={() => router.push(`/market/item/${card.id}`)}>
         <CardMedia
           // style={{ objectFit: "contain" }}
-          style={{ objectFit: "cover", padding: 8 }}
+          // style={{ objectFit: "contain", padding: 8 }}
           component="img"
           image={card.imageURL}
           alt={card.name}
         />
         <CardContent sx={{ p: 0.5 }}>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <Typography gutterBottom variant="caption" component="div">
+            <Typography gutterBottom variant="body1" component="div">
               {card.name}
             </Typography>
-            <Typography gutterBottom variant="caption" component="div">
+            <Typography gutterBottom variant="body1" component="div">
               {card.price}
             </Typography>
           </div>
         </CardContent>
       </CardActionArea>
 
-      <CardActions sx={{ p: 0.5 }}>
-        <Button onClick={buyNow} variant="contained" color="secondary">
+      <CardActions sx={{ p: 0.5, justifyContent: "space-around" }}>
+        <Button
+          MuiButton
+          onClick={buyNow}
+          // variant="contained" color="secondary"
+        >
           Buy Now
         </Button>
         <AddToCartButton card={card} />
