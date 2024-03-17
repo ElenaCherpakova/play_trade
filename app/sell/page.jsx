@@ -1,12 +1,16 @@
 "use client";
-import { Button } from "@mui/material";
+import { useState } from "react";
+import { Box, Button } from "@mui/material";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
+import CardComponent from "@/components/CardComponent";
 
 export default function Sell() {
-  const { data: session } = useSession();
+  const session = useSession();
   console.log("session", session);
+  //create card for testing routes
 
-  let card = {
+  const cardToSave = {
     name: "name",
     set: "",
     price: 1.99,
@@ -15,14 +19,15 @@ export default function Sell() {
     description: "good condition",
     conditions: "near mint",
     category: "Sport Card",
-    imageURL: "",
+    imageURL: "https://m.media-amazon.com/images/I/51skd-tjunL._AC_.jpg",
     quantity: 1,
     available: "sold"
   };
+  const [id, setId] = useState("");
+  const [card, setCard] = useState();
   const addCard = async card => {
-    console.log("card", card);
     const body = JSON.stringify(card);
-    console.log("body", body);
+
     try {
       const response = await fetch("/api/cards", {
         method: "POST",
@@ -33,23 +38,26 @@ export default function Sell() {
       });
 
       if (!response.ok) {
-        throw new Error(data.error || "Somethind went wrong!");
+        throw new Error(data.error || "Something went wrong!");
       } else {
         const data = await response.json();
         console.log(data);
-        return data;
+        setId(data.data._id);
+        setCard(data.data);
       }
     } catch (error) {
       console.log(error.message);
       return null;
     }
   };
+  console.log("id", id);
   return (
-    <div>
-      <Button variant="contained" color="primary" onClick={() => addCard(card)}>
+    <Box>
+      <Button variant="contained" color="primary" onClick={() => addCard(cardToSave)}>
         Add card
       </Button>
-      <h2>Sell</h2>
-    </div>
+      {card && <CardComponent card={card} />}
+      <Link href={`/sell/edit/${id}`}>edit card</Link>
+    </Box>
   );
 }
