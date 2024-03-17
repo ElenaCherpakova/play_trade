@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { Button } from "@mui/material";
 
 import CardComponent from "@/components/CardComponent";
-import { set } from "mongoose";
 
 export default function Page({ params }) {
   const [data, setData] = useState(null);
@@ -42,7 +41,6 @@ export default function Page({ params }) {
       if (!response.ok) {
         throw new Error(data.error || "Something went wrong!");
       } else {
-        set;
         const data = await response.json();
         console.log(data);
         setData(data.data);
