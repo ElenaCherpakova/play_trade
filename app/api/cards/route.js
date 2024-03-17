@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/mongo/dbConnect";
 import { getSession } from "next-auth/react";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { getToken } from "next-auth/jwt";
 import Card from "@/models/Card";
 
 /**
@@ -10,7 +13,12 @@ import Card from "@/models/Card";
  */
 
 export async function GET(req, res) {
+  const session1 = await getSession({ req });
+  const session = await getServerSession({ req });
+  console.log("session get", JSON.stringify(session, null, 2));
+  console.log("session1", JSON.stringify(session1, null, 2));
   await dbConnect();
+  // console.log(req);
   // Fetch all cards from the database
   const cards = await Card.find({});
   if (!cards) {
@@ -21,14 +29,18 @@ export async function GET(req, res) {
 
 export async function POST(req) {
   await dbConnect();
-  const session = await getSession({ req });
-  if (!session) {
+
+  const token = await getToken({ req });
+  console.log("token", token);
+  const session = await getServerSession({ req });
+  console.log("session post", JSON.stringify(session, null, 2));
+  if (!token) {
     return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
   }
-  const userId = session.user.id;
-  console.log(req);
+  const userId = token.sub;
+  console.log("userId", userId);
   const body = await req.json();
-  console.log(body);
+  // console.log(body);
   body.createdBy = userId;
   console.log(body);
   // Create a new card based on the request body
