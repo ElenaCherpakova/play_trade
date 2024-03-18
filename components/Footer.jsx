@@ -29,22 +29,21 @@ const Footer = () => {
       </Grid>
       <Grid item xs={12} sm={6} container justifyContent="flex-end" alignItems="center">
         {/* List of links */}
-
         <ul style={{ listStyle: "none", margin: 0, display: "flex" }}>
           <li style={{ marginRight: "1rem" }}>
-            <Link href="/about">
-              {/* <Typography component="span" variant="body1" color="primary" underline="none" cursor="pointer"> */}
-              {/* <Box component="span" cursor="pointer" color="#FFFFFF" sx={{ textDecoration: "none" }}> */}
+            <Link href="/about" style={{ textDecoration: "none", color: "#FFFFFF" }}>
               About
-              {/* </Box> */}
-              {/* </Typography> */}
             </Link>
           </li>
           <li style={{ marginRight: "1rem" }}>
-            <Link href="/team">Our Team</Link>
+            <Link href="/team" style={{ textDecoration: "none", color: "#FFFFFF" }}>
+              Our Team
+            </Link>
           </li>
           <li style={{ marginRight: "1rem" }}>
-            <Link href="/messages">Contact Us</Link>
+            <Link href="/messages" style={{ textDecoration: "none", color: "#FFFFFF" }}>
+              Contact Us
+            </Link>
           </li>
         </ul>
       </Grid>

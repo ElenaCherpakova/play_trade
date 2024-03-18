@@ -1,16 +1,17 @@
-'use client'
+"use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from 'react';
+import { useSession } from "next-auth/react";
+import { useState, useEffect } from 'react';
 import useAuthUser from '../../store/useAuthUser';
 import { useTheme } from '@mui/material/styles';
-import { Container, Box, TextField, Button, Typography, CircularProgress, Link, InputAdornment, IconButton, Divider, Paper } from '@mui/material';
+import { Container, Box, TextField, Button, Typography, CircularProgress, InputAdornment, IconButton, Divider, Link, Paper } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import GoogleIcon from '@mui/icons-material/Google'; 
 
-const SignUpPage = () => {
+const SignInPage = () => {
   const [formData, setFormData] = useState({
-    name: '',
     email: '',
     password: '',
   });
@@ -18,7 +19,18 @@ const SignUpPage = () => {
 
   const theme = useTheme();
   const router = useRouter();
-  const { register, isLoading, error } = useAuthUser();
+  const { login, googleLogin, isLoading, error } = useAuthUser();
+  const { data: session, status: sessionStatus } = useSession();
+
+  useEffect(() => {
+    if (!session) return; 
+    
+    if (sessionStatus === 'authenticated') {
+      router.replace('/market'); 
+    } else if (sessionStatus === 'unauthenticated') {
+      router.replace('/signin'); 
+    }
+  }, [sessionStatus, router]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -28,22 +40,24 @@ const SignUpPage = () => {
     }));
   };
 
-  const handleClickShowPassword = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    login(formData);
+  };
+
+  const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
+  const handleRegisterRedirect = () => {
+    router.push('/signup'); 
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    register(formData);
+
+  const handleGoogleSignIn = async () => {
+    googleLogin();
   };
 
-  const handleLoginRedirect = () => {
-    router.push('/signin'); 
-  };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -57,7 +71,7 @@ const SignUpPage = () => {
           borderRadius: theme.shape.borderRadius, 
         }}
       >
-        <Typography 
+        <Typography  
           component="h1" 
           variant="h5"
           sx={{
@@ -67,32 +81,21 @@ const SignUpPage = () => {
             fontFamily: theme.typography.fontFamily,
           }}
           >
-          Sign up to PlayTrade
+          Login Page
         </Typography>
         {error && <Typography color="error">Error: {error}</Typography>}
-        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="name"
-            label="Username"
-            name="name"
-            autoComplete="name"
-            autoFocus
-            value={formData.name}
-            onChange={handleChange}
-          />
+        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
           <TextField
             margin="normal"
             required
             fullWidth
             id="email"
-            label="Email Address"
+            label="Email"
             name="email"
             autoComplete="email"
             value={formData.email}
             onChange={handleChange}
+            autoFocus
           />
           <TextField
             margin="normal"
@@ -110,8 +113,7 @@ const SignUpPage = () => {
                 <InputAdornment position="end">
                   <IconButton
                     aria-label="toggle password visibility"
-                    onClick={handleClickShowPassword}
-                    onMouseDown={handleMouseDownPassword}
+                    onClick={toggleShowPassword}
                     edge="end"
                   >
                     {showPassword ? <VisibilityOff /> : <Visibility />}
@@ -120,11 +122,6 @@ const SignUpPage = () => {
               ),
             }}
           />
-          <Typography variant="caption" display="block" gutterBottom>
-            <Link href="#" disabled variant="caption" sx={{ float: 'right' }} underline="none">
-              Forgot password?
-            </Link>
-          </Typography>
           <Button
             type="submit"
             fullWidth
@@ -142,17 +139,24 @@ const SignUpPage = () => {
               fontFamily: theme.typography.fontFamily,
             }}
           >
-            {isLoading ? <CircularProgress size={24} /> : 'Sign Up'}
+            {isLoading ? <CircularProgress size={24} /> : 'Log In'}
           </Button>
+          <Typography variant="body2" sx={{ mt: 0, mb: 2, textAlign: 'center', fontSize: '0.875rem' }}>
+            Don't have an account?{' '}
+            <Link href="#" onClick={handleRegisterRedirect} sx={{ cursor: 'pointer', fontWeight: 'bold' }}>
+              Register
+            </Link>
+          </Typography>
           <Box sx={{ display: 'flex', alignItems: 'center', my: 2 }}>
             <Divider sx={{ flexGrow: 1 }} />
             <Typography sx={{ mx: 2, color: 'text.secondary' }}>or</Typography>
             <Divider sx={{ flexGrow: 1 }} />
-          </Box> 
+          </Box>
           <Button
-            onClick={handleLoginRedirect}
+            onClick={handleGoogleSignIn}
             fullWidth
             variant="contained"
+            startIcon={<GoogleIcon />}
             sx={{
               mt: 2,
               mb: 2,
@@ -165,12 +169,12 @@ const SignUpPage = () => {
               fontFamily: theme.typography.fontFamily,
             }}
           >
-            Login with an existing aacount
-          </Button> 
+            Sign in with Google
+          </Button>
         </Box>
       </Paper>
     </Container>
   );
 };
 
-export default SignUpPage;
+export default SignInPage;
