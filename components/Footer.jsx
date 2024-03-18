@@ -1,5 +1,5 @@
 import React from "react";
-import { Typography, Grid } from "@mui/material";
+import { Typography, Grid, Box } from "@mui/material";
 import Link from "next/link";
 
 const getCurrentYear = () => {
@@ -29,21 +29,22 @@ const Footer = () => {
       </Grid>
       <Grid item xs={12} sm={6} container justifyContent="flex-end" alignItems="center">
         {/* List of links */}
+
         <ul style={{ listStyle: "none", margin: 0, display: "flex" }}>
           <li style={{ marginRight: "1rem" }}>
-            <Link href="/about" style={{ color: "background.paper" }}>
+            <Link href="/about">
+              {/* <Typography component="span" variant="body1" color="primary" underline="none" cursor="pointer"> */}
+              {/* <Box component="span" cursor="pointer" color="#FFFFFF" sx={{ textDecoration: "none" }}> */}
               About
+              {/* </Box> */}
+              {/* </Typography> */}
             </Link>
           </li>
           <li style={{ marginRight: "1rem" }}>
-            <Link href="/team" style={{ color: "background.paper" }}>
-              Our Team
-            </Link>
+            <Link href="/team">Our Team</Link>
           </li>
           <li style={{ marginRight: "1rem" }}>
-            <Link href="/messages" style={{ color: "background.paper" }}>
-              Contact Us
-            </Link>
+            <Link href="/messages">Contact Us</Link>
           </li>
         </ul>
       </Grid>
