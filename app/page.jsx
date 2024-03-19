@@ -2,6 +2,7 @@ import dbConnect from "@/lib/mongo/dbConnect";
 import { Typography, Button, TextField, Box } from "@mui/material";
 import CardComponent from "../components/CardComponent";
 
+
 const card = {
   name: "Pikachu V - SWSH061",
   price: "$ 0.42",
@@ -21,6 +22,7 @@ export default async function Home() {
       </Box>
 
       <CardComponent card={card} />
+    
     </>
   );
 }
