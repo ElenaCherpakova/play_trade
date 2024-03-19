@@ -1,11 +1,16 @@
 import { Typography, Button, TextField, Box } from "@mui/material";
 import CardComponent from "../components/CardComponent";
+import Home from "../components/Home"; // import Home component
 import UserProfileEditPage from "@/components/UserProfileEditPage";
 
-export default async function Home() {
+
+export default function Page() {
+
   return (
     <>
-      <UserProfileEditPage />
+      
+      <Home/>
+      <CardComponent card={card} />
     </>
   );
 }
