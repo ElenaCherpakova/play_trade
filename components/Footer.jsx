@@ -31,13 +31,13 @@ const Footer = () => {
         {/* List of links */}
         <ul style={{ listStyle: "none", margin: 0, display: "flex" }}>
           <li style={{ marginRight: "1rem" }}>
-            <Link href="/about" style={{ textDecoration: "none", color: "#FFFFFF" }}>
-              About
+            <Link href="/team" style={{ textDecoration: "none", color: "#FFFFFF" }}>
+              Our Team
             </Link>
           </li>
           <li style={{ marginRight: "1rem" }}>
-            <Link href="/team" style={{ textDecoration: "none", color: "#FFFFFF" }}>
-              Our Team
+            <Link href="/policies" style={{ textDecoration: "none", color: "#FFFFFF" }}>
+              Policies
             </Link>
           </li>
           <li style={{ marginRight: "1rem" }}>
