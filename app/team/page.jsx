@@ -1,5 +1,6 @@
 'use client'
-import { Typography, Grid, Card, CardContent, CardMedia, Link } from '@mui/material';
+import React from 'react';
+import { Typography, Grid, Card, CardContent, CardMedia, Link, Box } from '@mui/material';
 import { useTheme } from '@mui/system';
 
 const Team = () => {
@@ -18,7 +19,7 @@ const Team = () => {
 
     const mediaStyle = {
         height: 200,
-        objectFit: 'cover', 
+        objectFit: 'cover',
     };
 
 
@@ -117,23 +118,23 @@ const Team = () => {
 
 
     return (
-        <div >
-            <div style={sectionStyle}>
+        <Box>
+            <Box sx={sectionStyle}>
                 <Typography variant="h3" gutterBottom style={{ color: theme.palette.accent.main, backgroundColor: theme.palette.primary.main, padding: '80px' }}>About Playtrade</Typography>
                 <Typography variant="body1" gutterBottom style={{ width: '80%', margin: '0 auto', textAlign: 'center', marginTop: theme.spacing(4) }}>
                     Playtrade is a premier online card trading platform, offering users a seamless and secure marketplace to buy, sell, and trade a diverse range of collectible cards. Our platform is designed to cater to the needs of both casual collectors and serious enthusiasts, providing a user-friendly interface, robust security features, and a vibrant community atmosphere. Whether you are searching for rare gems to add to your collection or looking to connect with fellow enthusiasts, Playtrade is your ultimate destination for all things card trading.
                 </Typography>
-            </div>
-            <div style={sectionStyle}>
+            </Box>
+            <Box sx={sectionStyle}>
                 <Typography variant="h3" gutterBottom style={{ color: theme.palette.accent.main }}>Meet the team</Typography>
                 <Grid container spacing={4}>
                     <Grid item xs={12}>
                         <Typography variant="h5" gutterBottom style={{ marginBottom: theme.spacing(4) }}>TEAM MEMBERS</Typography>
-                        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
+                        <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
                             {teamMembers.map((member, index) => (
-                                <Card key={index} style={{ ...cardStyle, marginRight: theme.spacing(2), marginBottom: theme.spacing(2) }}>
+                                <Card key={index} sx={{ ...cardStyle, marginRight: theme.spacing(2), marginBottom: theme.spacing(2) }}>
                                     <CardMedia
-                                        style={mediaStyle}
+                                        sx={mediaStyle}
                                         image={member.image}
                                         title={member.name}
                                     />
@@ -146,15 +147,15 @@ const Team = () => {
                                     </CardContent>
                                 </Card>
                             ))}
-                        </div>
+                        </Box>
                     </Grid>
                     <Grid item xs={12}>
                         <Typography variant="h5" gutterBottom >TEAM MENTORS</Typography>
-                        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
+                        <Box sx={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
                             {teamMentors.map((member, index) => (
-                                <Card key={index} style={{ ...cardStyle, marginRight: theme.spacing(2), marginBottom: theme.spacing(2) }}>
+                                <Card key={index} sx={{ ...cardStyle, marginRight: theme.spacing(2), marginBottom: theme.spacing(2) }}>
                                     <CardMedia
-                                        style={mediaStyle}
+                                        sx={mediaStyle}
                                         image={member.image}
                                         title={member.name}
                                     />
@@ -167,11 +168,11 @@ const Team = () => {
                                     </CardContent>
                                 </Card>
                             ))}
-                        </div>
+                        </Box>
                     </Grid>
                 </Grid>
-            </div>
-        </div>
+            </Box>
+        </Box>
     );
 };
 
