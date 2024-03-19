@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Grid, Paper, Typography, FormControl, InputLabel, Select, MenuItem, Box } from "@mui/material";
 // import { SelectChangeEvent } from "@mui/material";
 import CardComponent from "./CardComponent";
+import { create } from "zustand";
 
 // const currentCards = cards.slice(indexOfFirstItem, indexOfLastItem);
 const card = {
@@ -18,39 +19,50 @@ const card = {
 const CardsWithFilters = ({ cards }) => {
   const [errorMessage, setErrorMessage] = useState("");
 
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedConditions, setSelectedConditions] = useState("");
+  //   const [selectedCategory, setSelectedCategory] = useState("");
+  //   const [selectedConditions, setSelectedConditions] = useState("");
 
-  const handleSelectCategoryChange = event => {
-    const selectedCardCategory = event.target.value;
-    setSelectedCategory(selectedCardCategory);
-  };
-  const handleSelectConditionsChange = event => {
-    const selectedCardConditions = event.target.value;
-    setSelectedConditions(selectedCardConditions);
-  };
+  //   const handleSelectCategoryChange = event => {
+  //     const selectedCardCategory = event.target.value;
+  //     setSelectedCategory(selectedCardCategory);
+  //   };
+  //   const handleSelectConditionsChange = event => {
+  //     const selectedCardConditions = event.target.value;
+  //     setSelectedConditions(selectedCardConditions);
+  //   };
+  //Use the Store
+  const useSelectStore = create(set => ({
+    selectStates: {},
+    setSelectState: (selectId, state) =>
+      set(prevState => ({
+        selectStates: {
+          ...prevState.selectStates,
+          [selectId]: state
+        }
+      }))
+  }));
   // useEffect for Conditions
 
-  useEffect(() => {
-    const fetchConditions = async () => {
-      if (selectedCategory === "Sport Card") {
-        try {
-          await getSportCardConditions(dispatchSportCardConditions);
-        } catch (error) {
-          setErrorMessage("");
-          setErrorMessage("Error loading sport card conditions");
-        }
-      } else {
-        try {
-          await getGameCardConditions(dispatchGameCardConditions);
-        } catch (error) {
-          setErrorMessage("");
-          setErrorMessage("Error loading game card conditions");
-        }
-      }
-    };
-    fetchConditions();
-  }, [selectedCategory]);
+  //   useEffect(() => {
+  //     const fetchConditions = async () => {
+  //       if (selectedCategory === "Sport Card") {
+  //         try {
+  //           await getSportCardConditions(dispatchSportCardConditions);
+  //         } catch (error) {
+  //           setErrorMessage("");
+  //           setErrorMessage("Error loading sport card conditions");
+  //         }
+  //       } else {
+  //         try {
+  //           await getGameCardConditions(dispatchGameCardConditions);
+  //         } catch (error) {
+  //           setErrorMessage("");
+  //           setErrorMessage("Error loading game card conditions");
+  //         }
+  //       }
+  //     };
+  //     fetchConditions();
+  //   }, [selectedCategory]);
 
   return (
     <>
