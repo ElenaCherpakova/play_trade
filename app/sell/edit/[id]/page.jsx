@@ -1,9 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@mui/material";
-
 import CardComponent from "@/components/CardComponent";
-import { set } from "mongoose";
+import CardForm from "@/components/CardForm";
 
 export default function Page({ params }) {
   const [data, setData] = useState(null);
@@ -15,7 +15,7 @@ export default function Page({ params }) {
     };
     fetchCard();
   }, []);
-
+  const router = useRouter();
   const id = params.id;
   const editProperty = {
     name: "edited card's name",
@@ -35,17 +35,17 @@ export default function Page({ params }) {
       const response = await fetch(`/api/cards/${id}`, {
         method: "PATCH",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "multipart/form-data"
         },
         body
       });
       if (!response.ok) {
         throw new Error(data.error || "Something went wrong!");
       } else {
-        set;
         const data = await response.json();
         console.log(data);
         setData(data.data);
+        router.push(`/market/item/${id}`);
       }
     } catch (error) {
       console.log(error.message);
@@ -57,7 +57,8 @@ export default function Page({ params }) {
       <Button variant="contained" color="primary" onClick={() => editCard(editProperty)}>
         Edit card
       </Button>
-      {data && <CardComponent card={data} />}
+      <CardForm value={data} onSubmitForm={editCard} />
+      {/* {data && <CardComponent card={data} />} */}
     </div>
   );
 }
