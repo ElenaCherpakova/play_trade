@@ -17,10 +17,7 @@ export const authOptions = {
   providers: [
     CredentialsProvider({
       id: "credentials",
-      credentials: {
-        email: { label: "Email", type: "text" },
-        password: { label: "Password", type: "password" }
-      },
+      credentials: {},
       async authorize(credentials) {
         const { email, password } = credentials;
         await dbConnect();
@@ -108,7 +105,7 @@ export const authOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
-    signIn: "/signin"
+    signIn: "/signin",
   }
 };
 const handler = NextAuth(authOptions);
