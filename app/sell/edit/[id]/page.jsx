@@ -7,6 +7,8 @@ import CardForm from "@/components/CardForm";
 
 export default function Page({ params }) {
   const [data, setData] = useState(null);
+  const router = useRouter();
+  const id = params.id;
   useEffect(() => {
     const fetchCard = async () => {
       const response = await fetch(`/api/cards/${params.id}`);
@@ -15,8 +17,6 @@ export default function Page({ params }) {
     };
     fetchCard();
   }, []);
-  const router = useRouter();
-  const id = params.id;
   const editProperty = {
     name: "edited card's name",
     imageURL: "https://m.media-amazon.com/images/I/615ij7aqRJL._AC_SL1000_.jpg"
@@ -35,7 +35,8 @@ export default function Page({ params }) {
       const response = await fetch(`/api/cards/${id}`, {
         method: "PATCH",
         headers: {
-          "Content-Type": "multipart/form-data"
+          // "Content-Type": "multipart/form-data"
+          "Content-Type": "application/json"
         },
         body
       });
@@ -57,7 +58,7 @@ export default function Page({ params }) {
       <Button variant="contained" color="primary" onClick={() => editCard(editProperty)}>
         Edit card
       </Button>
-      <CardForm value={data} onSubmitForm={editCard} />
+      <CardForm cardValue={data} onSubmitForm={editCard} />
       {/* {data && <CardComponent card={data} />} */}
     </div>
   );

@@ -3,12 +3,14 @@ import { useState } from "react";
 import { Box, Button } from "@mui/material";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import CardComponent from "@/components/CardComponent";
 import CardForm from "@/components/CardForm";
 
 export default function Sell() {
   const session = useSession();
   console.log("session", session);
+
   //create card for testing routes
 
   // const cardToSave = {
@@ -26,6 +28,7 @@ export default function Sell() {
   // };
   const [id, setId] = useState("");
   const [card, setCard] = useState();
+  const router = useRouter();
   const addCard = async card => {
     const body = JSON.stringify(card);
 
@@ -33,7 +36,8 @@ export default function Sell() {
       const response = await fetch("/api/cards", {
         method: "POST",
         headers: {
-          "Content-Type": "multipart/form-data"
+          // "Content-Type": "multipart/form-data"
+          "Content-Type": "application/json"
         },
         body
       });
@@ -45,6 +49,7 @@ export default function Sell() {
         console.log(data);
         setId(data.data._id);
         setCard(data.data);
+        router.push(`/market/item/${id}`);
       }
     } catch (error) {
       console.log(error.message);
@@ -54,11 +59,12 @@ export default function Sell() {
   console.log("id", id);
   return (
     <Box>
+      {/* <CardForm /> */}
       {/* <Button variant="contained" color="primary" onClick={() => addCard(cardToSave)}>
         Add card
       </Button> */}
-      {card && <CardComponent card={card} />}
-      <CardForm />
+      {/* {card && <CardComponent card={card} />} */}
+      <CardForm cardValue={card} onSubmitForm={addCard} />
       <Link href={`/sell/edit/${id}`}>edit card</Link>
     </Box>
   );
