@@ -5,10 +5,14 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Avatar from "@mui/material/Avatar";
 import TextField from "@mui/material/TextField";
-import { create } from 'zustand'
+//import { create } from "zustand";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 export default function UserProfileEditPage({ user = {} }) {
   const { nickname = "", password = "", email = "", location = "", photo = "" } = user;
+  const { data: session } = useSession();
+  const router = useRouter();
 
   return (
     //entire screen
@@ -31,7 +35,7 @@ export default function UserProfileEditPage({ user = {} }) {
         }
       }}>
       <Typography variant="h4" align="center" sx={{ flexGrow: 0, p: 0, mt: 0 }}>
-        Hello
+        Welcome {session?.user?.name}!        
       </Typography>
       {/* left and right side of screen */}
       <Box
@@ -56,7 +60,8 @@ export default function UserProfileEditPage({ user = {} }) {
           <Avatar src="/broken-image.jpg" sx={{ width: "80%", height: "auto" }} />
           <Button
             variant="contained"
-            color="primary"
+            color="secondary"
+            onClick={() => router.push("/addphoto")}
             sx={{
               "mt": 2,
               "width": "50%",
@@ -66,7 +71,7 @@ export default function UserProfileEditPage({ user = {} }) {
                 backgroundColor: "accent.main"
               }
             }}>
-            Edit Profile
+            Edit Photo
           </Button>
           <Button
             variant="contained"
@@ -143,21 +148,6 @@ export default function UserProfileEditPage({ user = {} }) {
           <TextField
             label="Location"
             defaultValue={location}
-            InputProps={{
-              sx: {
-                "background": "linear-gradient(45deg, #D9D9D9 30%, #FFFFFF 90%)",
-                "borderRadius": "10px",
-                "letterSpacing": "0.2em",
-                "& .MuiOutlinedInput-notchedOutline": {
-                  border: "none"
-                }
-              }
-            }}
-            sx={{ mb: 2 }}
-          />
-          <TextField
-            label="Edit Photo"
-            defaultValue={photo}
             InputProps={{
               sx: {
                 "background": "linear-gradient(45deg, #D9D9D9 30%, #FFFFFF 90%)",
