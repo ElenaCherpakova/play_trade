@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useState, useEffect } from 'react';
 import useAuthUser from '../../store/useAuthUser';
-import { useTheme } from '@mui/material/styles';
 import { Container, Box, TextField, Button, Typography, CircularProgress, InputAdornment, IconButton, Divider, Link, Paper } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
@@ -17,20 +16,16 @@ const SignInPage = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
 
-  const theme = useTheme();
   const router = useRouter();
   const { login, googleLogin, isLoading, error } = useAuthUser();
   const { data: session, status: sessionStatus } = useSession();
 
   useEffect(() => {
     if (!session) return; 
-    
     if (sessionStatus === 'authenticated') {
       router.replace('/market'); 
-    } else if (sessionStatus === 'unauthenticated') {
-      router.replace('/signin'); 
-    }
-  }, [sessionStatus, router]);
+    } 
+  }, [sessionStatus, router, session]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -62,28 +57,26 @@ const SignInPage = () => {
   return (
     <Container component="main" maxWidth="xs">
       <Paper
-        sx={{
+        sx={(theme)=>({
           marginTop: 8,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           padding: theme.spacing(6),
-          borderRadius: theme.shape.borderRadius, 
-        }}
+        })}
       >
         <Typography  
           component="h1" 
           variant="h5"
+          color="primary"
           sx={{
             mt: 2,
             mb: 2,
-            color: theme.palette.primary.main, 
-            fontFamily: theme.typography.fontFamily,
           }}
           >
           Login Page
         </Typography>
-        {error && <Typography color="error">Error: {error}</Typography>}
+        {error && <Typography variant="caption" color="error">Error: {error}</Typography>}
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
           <TextField
             margin="normal"
@@ -122,51 +115,45 @@ const SignInPage = () => {
               ),
             }}
           />
+          <Typography variant="body2" textAlign="center" gutterBottom>
+            Forgot password? {" "}
+            <Link href="/forget-password" disabled variant="body2">
+              Reset here
+            </Link>
+          </Typography>
           <Button
             type="submit"
             fullWidth
             variant="contained"
             disabled={isLoading}
+            color="primary"
             sx={{
               mt: 2,
-              mb: 2,
-              color: theme.palette.background.paper, 
-              backgroundColor: theme.palette.primary.main, 
-              '&:hover': {
-                backgroundColor: theme.palette.accent.main, 
-              },
-              borderRadius: theme.shape.borderRadius, 
-              fontFamily: theme.typography.fontFamily,
+              mb: 1,
             }}
           >
             {isLoading ? <CircularProgress size={24} /> : 'Log In'}
           </Button>
-          <Typography variant="body2" sx={{ mt: 0, mb: 2, textAlign: 'center', fontSize: '0.875rem' }}>
+          <Typography variant="body2" textAlign="center">
             Don't have an account?{' '}
-            <Link href="#" onClick={handleRegisterRedirect} sx={{ cursor: 'pointer', fontWeight: 'bold' }}>
+            <Link href="#" onClick={handleRegisterRedirect} variant="body2">
               Register
             </Link>
           </Typography>
           <Box sx={{ display: 'flex', alignItems: 'center', my: 2 }}>
             <Divider sx={{ flexGrow: 1 }} />
-            <Typography sx={{ mx: 2, color: 'text.secondary' }}>or</Typography>
+            <Typography sx={{ mx: 2, color: 'text.secondary' }}>OR</Typography>
             <Divider sx={{ flexGrow: 1 }} />
           </Box>
           <Button
             onClick={handleGoogleSignIn}
             fullWidth
             variant="contained"
+            color="primary"
             startIcon={<GoogleIcon />}
             sx={{
               mt: 2,
               mb: 2,
-              color: theme.palette.background.paper, 
-              backgroundColor: theme.palette.primary.main, 
-              '&:hover': {
-                backgroundColor: theme.palette.accent.main, 
-              },
-              borderRadius: theme.shape.borderRadius, 
-              fontFamily: theme.typography.fontFamily,
             }}
           >
             Sign in with Google
