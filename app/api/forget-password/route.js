@@ -4,6 +4,7 @@ import User from "@/models/User";
 import { NextResponse, NextRequest } from "next/server";
 import createTransporter from "../../../utils/mailerConfig";
 import { passwordResetEmail } from "../../../utils/emailTemplates/passwordResetEmail";
+
 /**
  * @param {NextResponse} res
  * @param {NextRequest} req
