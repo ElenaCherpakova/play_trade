@@ -1,11 +1,11 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Avatar from "@mui/material/Avatar";
 import TextField from "@mui/material/TextField";
-import create from 'zustand';
+//import create from 'zustand';
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 
@@ -15,6 +15,17 @@ export default function UserProfileEditPage({ user = {} }) {
   const { nickname = "", password = "", email = "", location = "", photo = "" } = user;
   const { data: session } = useSession();
   const router = useRouter();
+  // for edit mode
+  const [isEditing, setIsEditing] = useState(false);
+  
+  const handleButtonClick = () => {
+    if (isEditing) {
+      // Save changes here
+    }
+
+    // Toggle edit mode
+    setIsEditing(!isEditing);
+  };
 
   return (
     //entire screen
@@ -166,6 +177,7 @@ export default function UserProfileEditPage({ user = {} }) {
             <Button
               variant="contained"
               color="secondary"
+              onClick={handleButtonClick}
               sx={{
                 "mt": 2,
                 "width": "40%",
@@ -175,7 +187,7 @@ export default function UserProfileEditPage({ user = {} }) {
                   backgroundColor: "accent.main"
                 }
               }}>
-              Edit
+               {isEditing ? 'Save' : 'Edit'}
             </Button>
             <Button
               variant="contained"
