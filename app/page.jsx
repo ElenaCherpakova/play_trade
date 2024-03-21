@@ -1,13 +1,6 @@
 import dbConnect from "@/lib/mongo/dbConnect";
-import { Typography, Button, TextField, Box } from "@mui/material";
-import CardComponent from "../components/CardComponent";
-import { CardsWithFilters } from "@/components/CardsWithFilters";
+import { Typography, Box } from "@mui/material";
 
-const card = {
-  name: "Pikachu V - SWSH061",
-  price: "$ 0.42",
-  imageURL: "https://m.media-amazon.com/images/I/51skd-tjunL._AC_.jpg"
-};
 export default async function Home() {
   await dbConnect();
   return (
@@ -20,8 +13,6 @@ export default async function Home() {
           MongoDB
         </Typography>
       </Box>
-      <CardComponent card={card} />
-      <CardsWithFilters card={card} />
     </>
   );
 }

@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Grid, Paper, Typography, FormControl, InputLabel, Select, MenuItem, Box } from "@mui/material";
 // import { SelectChangeEvent } from "@mui/material";
 import CardComponent from "./CardComponent";
-import { create } from "zustand";
+import SelectComponent from "./SelectComponent";
 
 // const currentCards = cards.slice(indexOfFirstItem, indexOfLastItem);
 const card = {
@@ -16,8 +16,20 @@ const card = {
 //   const newValue = event.target.value; // Assuming value is a string
 //   setCategory(newValue);
 // };
-const CardsWithFilters = ({ cards }) => {
+const CardsWithFilters = () => {
   const [errorMessage, setErrorMessage] = useState("");
+
+  //   const value = [10, 20, 30, 40, 50, 60];
+  const category = [" ", "Magic", "Pokemon", "Digimon", "Yu-Gi-Oh!", "Sport Card"];
+  //   if (this.category === "Sport Card") {
+  //     return ["near mint", "excellent", "very good", "poor"].includes(value.toLowerCase());
+  //   } else {
+  //     return ["near mint", "lightly played", "moderately played", "heavily played", "damaged"].includes(
+  //       value.toLowerCase()
+  //     );
+  //   }
+  const conditions = [" ", "near mint", "excellent", "very good", "poor"]; //Sport Card
+  const conditions1 = ["near mint", "lightly played", "moderately played", "heavily played", "damaged"];
 
   //   const [selectedCategory, setSelectedCategory] = useState("");
   //   const [selectedConditions, setSelectedConditions] = useState("");
@@ -30,17 +42,7 @@ const CardsWithFilters = ({ cards }) => {
   //     const selectedCardConditions = event.target.value;
   //     setSelectedConditions(selectedCardConditions);
   //   };
-  //Use the Store
-  const useSelectStore = create(set => ({
-    selectStates: {},
-    setSelectState: (selectId, state) =>
-      set(prevState => ({
-        selectStates: {
-          ...prevState.selectStates,
-          [selectId]: state
-        }
-      }))
-  }));
+
   // useEffect for Conditions
 
   //   useEffect(() => {
@@ -75,7 +77,10 @@ const CardsWithFilters = ({ cards }) => {
               Filters
             </Typography>
             <Box display="flex" flexDirection="column" padding="1rem">
-              <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+              <SelectComponent selectId="category" label="category" options={category} />
+              <SelectComponent selectId="conditions" label="conditions" options={conditions} />
+
+              {/* <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
                 <InputLabel id="label">Category</InputLabel>
                 <Select
                   labelId="label"
@@ -109,7 +114,7 @@ const CardsWithFilters = ({ cards }) => {
                   <MenuItem value={30}>very good</MenuItem>
                   <MenuItem value={30}>poor</MenuItem>
                 </Select>
-              </FormControl>
+              </FormControl> */}
             </Box>
           </Paper>
         </Grid>
