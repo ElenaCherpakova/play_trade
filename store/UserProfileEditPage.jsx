@@ -5,9 +5,11 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Avatar from "@mui/material/Avatar";
 import TextField from "@mui/material/TextField";
-//import { create } from "zustand";
+import create from 'zustand';
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+
+
 
 export default function UserProfileEditPage({ user = {} }) {
   const { nickname = "", password = "", email = "", location = "", photo = "" } = user;
@@ -65,7 +67,7 @@ export default function UserProfileEditPage({ user = {} }) {
             sx={{
               "mt": 2,
               "width": "50%",
-              "borderRadius": "10px",
+              "borderRadius": `${10 / 16}rem`,
               "letterSpacing": "0.1em",
               ":hover": {
                 backgroundColor: "accent.main"
@@ -79,7 +81,7 @@ export default function UserProfileEditPage({ user = {} }) {
             sx={{
               "mt": 2,
               "width": "50%",
-              "borderRadius": "10px",
+              "borderRadius": `${10 / 16}rem`,
               "letterSpacing": "0.1em",
               ":hover": {
                 backgroundColor: "accent.main"
@@ -104,7 +106,7 @@ export default function UserProfileEditPage({ user = {} }) {
             InputProps={{
               sx: {
                 "background": "linear-gradient(25deg, #D9D9D9 10%, #FFFFFF 100%)",
-                "borderRadius": "10px",
+                "borderRadius": `${10 / 16}rem`,
                 "letterSpacing": "0.2em",
                 "& .MuiOutlinedInput-notchedOutline": {
                   //remove border
@@ -121,7 +123,7 @@ export default function UserProfileEditPage({ user = {} }) {
             InputProps={{
               sx: {
                 "background": "linear-gradient(45deg, #D9D9D9 30%, #FFFFFF 90%)",
-                "borderRadius": "10px",
+                "borderRadius": `${10 / 16}rem`,
                 "letterSpacing": "0.2em",
                 "& .MuiOutlinedInput-notchedOutline": {
                   border: "none"
@@ -136,7 +138,7 @@ export default function UserProfileEditPage({ user = {} }) {
             InputProps={{
               sx: {
                 "background": "linear-gradient(45deg, #D9D9D9 30%, #FFFFFF 90%)",
-                "borderRadius": "10px",
+                "borderRadius": `${10 / 16}rem`,
                 "letterSpacing": "0.2em",
                 "& .MuiOutlinedInput-notchedOutline": {
                   border: "none"
@@ -151,7 +153,7 @@ export default function UserProfileEditPage({ user = {} }) {
             InputProps={{
               sx: {
                 "background": "linear-gradient(45deg, #D9D9D9 30%, #FFFFFF 90%)",
-                "borderRadius": "10px",
+                "borderRadius": `${10 / 16}rem`,
                 "letterSpacing": "0.2em",
                 "& .MuiOutlinedInput-notchedOutline": {
                   border: "none"
@@ -167,7 +169,7 @@ export default function UserProfileEditPage({ user = {} }) {
               sx={{
                 "mt": 2,
                 "width": "40%",
-                "borderRadius": "10px",
+                "borderRadius": `${10 / 16}rem`,
                 "letterSpacing": "0.1em",
                 ":hover": {
                   backgroundColor: "accent.main"
@@ -181,7 +183,7 @@ export default function UserProfileEditPage({ user = {} }) {
               sx={{
                 "mt": 2, // Add a top margin
                 "width": "40%", // Make the button full width
-                "borderRadius": "10px",
+                "borderRadius": `${10 / 16}rem`,
                 "letterSpacing": "0.1em",
                 ":hover": {
                   backgroundColor: "accent.main"
