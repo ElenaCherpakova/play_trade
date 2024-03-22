@@ -8,7 +8,7 @@ main {
   flex-direction: column;
   flex-grow: 1;
   overflow: auto;
-  height: calc(100vh - 139px);
+  min-height: calc(100vh - 105px);
 }
 
 /* :root {

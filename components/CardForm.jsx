@@ -127,43 +127,46 @@ export default function CardForm({ cardValue, onSubmitForm }) {
               </FormControl>
               <TextField required fullWidth name="cardName" label="name" defaultValue={cardValue?.name} />
               <TextField fullWidth name="set" label="set" defaultValue={cardValue?.set} />
-              <TextField
-                required
-                fullWidth
-                name="price"
-                type="number"
-                inputProps={{
-                  step: 0.01,
-                  min: "0"
-                }}
-                label="price"
-                defaultValue={cardValue?.price}
-              />
-              <FormControl required fullWidth size="small">
-                <InputLabel id="cardCurrency">currency</InputLabel>
-                <Select
+              <Box display="flex" gap={2} sx={{ flexDirection: { xs: "column", md: "row" } }}>
+                <TextField
+                  required
                   fullWidth
-                  name="currency"
-                  labelId="cardCurrency"
-                  id="currency"
-                  label="currency"
-                  defaultValue={cardValue?.currency}>
-                  <MenuItem value="USD">USD</MenuItem>
-                  <MenuItem value="CAD">CAD</MenuItem>
-                </Select>
-              </FormControl>
-              <TextField
-                required
-                fullWidth
-                name="shippingCost"
-                type="number"
-                inputProps={{
-                  step: 0.01,
-                  min: "0"
-                }}
-                label="shipping cost"
-                defaultValue={cardValue?.shippingCost}
-              />
+                  name="price"
+                  type="number"
+                  inputProps={{
+                    step: 0.01,
+                    min: "0"
+                  }}
+                  label="price"
+                  defaultValue={cardValue?.price}
+                />
+                <FormControl required fullWidth size="small">
+                  <InputLabel id="cardCurrency">currency</InputLabel>
+                  <Select
+                    fullWidth
+                    name="currency"
+                    labelId="cardCurrency"
+                    id="currency"
+                    label="currency"
+                    defaultValue={cardValue?.currency}>
+                    <MenuItem value="USD">USD</MenuItem>
+                    <MenuItem value="CAD">CAD</MenuItem>
+                  </Select>
+                </FormControl>
+                <TextField
+                  required
+                  fullWidth
+                  name="shippingCost"
+                  type="number"
+                  inputProps={{
+                    step: 0.01,
+                    min: "0"
+                  }}
+                  label="shipping cost"
+                  defaultValue={cardValue?.shippingCost}
+                />
+              </Box>
+
               <TextField
                 fullWidth
                 name="description"
@@ -188,27 +191,29 @@ export default function CardForm({ cardValue, onSubmitForm }) {
                   ))}
                 </Select>
               </FormControl>
-              <TextField
-                required
-                fullWidth
-                name="quantity"
-                type="number"
-                label="quantity"
-                defaultValue={cardValue?.quantity}
-              />
-              <FormControl required fullWidth size="small">
-                <InputLabel id="availableCard">available</InputLabel>
-                <Select
+              <Box display="flex" gap={2} sx={{ flexDirection: { xs: "column", md: "row" } }}>
+                <TextField
+                  required
                   fullWidth
-                  name="available"
-                  labelId="availableCard"
-                  id="available"
-                  label="available"
-                  defaultValue={cardValue?.available}>
-                  <MenuItem value="available">available</MenuItem>
-                  <MenuItem value="sold">sold</MenuItem>
-                </Select>
-              </FormControl>
+                  name="quantity"
+                  type="number"
+                  label="quantity"
+                  defaultValue={cardValue?.quantity}
+                />
+                <FormControl required fullWidth size="small">
+                  <InputLabel id="availableCard">available</InputLabel>
+                  <Select
+                    fullWidth
+                    name="available"
+                    labelId="availableCard"
+                    id="available"
+                    label="available"
+                    defaultValue={cardValue?.available}>
+                    <MenuItem value="available">available</MenuItem>
+                    <MenuItem value="sold">sold</MenuItem>
+                  </Select>
+                </FormControl>
+              </Box>
               <Button variant="contained" color="secondary" type="submit">
                 {editCard ? "Edit" : "Add"} card
               </Button>
