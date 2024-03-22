@@ -9,7 +9,7 @@ export default function Market() {
     <Box>
       <h2>Market</h2>
       <Button variant="contained" color="primary" onClick={() => router.push("/sell")}>
-        Sell item
+        Sell card
       </Button>
     </Box>
   );
