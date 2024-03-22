@@ -55,9 +55,14 @@ export default function Sell() {
       setErrorMessage(error.message || "unknown error");
     }
   };
-
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenError(false);
+  };
   return (
-    <>
+    <Box>
       <Box>
         <Button variant="contained" color="primary" onClick={() => setAdd(true)}>
           Add card
@@ -73,6 +78,6 @@ export default function Sell() {
           {errorMessage}
         </Alert>
       </Snackbar>
-    </>
+    </Box>
   );
 }

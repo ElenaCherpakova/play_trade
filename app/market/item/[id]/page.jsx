@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import CardComponent from "@/components/CardComponent";
 
 /**
@@ -24,11 +24,11 @@ export default function Page({ params }) {
   }, [id]);
 
   return (
-    <>
+    <Box>
       {data && <CardComponent card={data} />}
       <Button variant="contained" color="primary" onClick={() => router.push(`/sell/edit/${id}`)}>
         Edit card
       </Button>
-    </>
+    </Box>
   );
 }

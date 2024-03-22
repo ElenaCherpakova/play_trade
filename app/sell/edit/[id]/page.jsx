@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Alert, Snackbar } from "@mui/material";
+import { Alert, Box, Snackbar } from "@mui/material";
 import CardForm from "@/components/CardForm";
 
 export default function Page({ params }) {
@@ -51,9 +51,14 @@ export default function Page({ params }) {
       setErrorMessage(error.message || "unknown error");
     }
   };
-
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenError(false);
+  };
   return (
-    <>
+    <Box>
       {data && <CardForm cardValue={data} onSubmitForm={editCard} />}
       <Snackbar
         open={openError}
@@ -64,6 +69,6 @@ export default function Page({ params }) {
           {errorMessage}
         </Alert>
       </Snackbar>
-    </>
+    </Box>
   );
 }
