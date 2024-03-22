@@ -3,29 +3,40 @@
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useState, useEffect } from 'react';
-import useAuthUser from '../../store/useAuthUser';
-import { Container, Box, TextField, Button, Typography, CircularProgress, InputAdornment, IconButton, Divider, Link, Paper } from '@mui/material';
+import useAuthUser from '../../../store/useAuthUser';
+import { Container, Box, TextField, Button, Typography, CircularProgress, Paper, InputAdornment, IconButton, Link } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import GoogleIcon from '@mui/icons-material/Google'; 
 
-const SignInPage = () => {
+const ResetPasswordPage = ({ params }) => {
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
+    password: ''
   });
+
   const [showPassword, setShowPassword] = useState(false);
+  const { verifyToken, resetPassword, email, verifyError, passwordResetSuccess } = useAuthUser();
 
   const router = useRouter();
-  const { login, googleLogin, isLoading, error } = useAuthUser();
-  const { data: session, status: sessionStatus } = useSession();
+
+  const { status: sessionStatus } = useSession();
 
   useEffect(() => {
-    if (!session) return; 
+    if (params.token) {
+      verifyToken(params.token);
+    }
+  }, [params.token, verifyToken]);
+
+  useEffect(() => {
     if (sessionStatus === 'authenticated') {
       router.replace('/market'); 
     } 
-  }, [sessionStatus, router, session]);
+  }, [sessionStatus, router]);
+
+  useEffect(() => {
+    if (passwordResetSuccess) {
+      router.push('/signin');
+    }
+  }, [passwordResetSuccess, router]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -35,26 +46,16 @@ const SignInPage = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    login(formData);
-  };
-
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleRegisterRedirect = () => {
-    router.push('/signup'); 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    resetPassword(formData.password, email); 
   };
-
-
-  const handleGoogleSignIn = async () => {
-    googleLogin();
-  };
-
-
   return (
+    sessionStatus !== 'authenticated' && (
     <Container component="main" maxWidth="xs">
       <Paper
         sx={(theme)=>({
@@ -66,7 +67,6 @@ const SignInPage = () => {
         })}
       >
         <Typography  
-          component="h1" 
           variant="h5"
           color="primary"
           sx={{
@@ -74,22 +74,9 @@ const SignInPage = () => {
             mb: 2,
           }}
           >
-          Login Page
+          Reset Password
         </Typography>
-        {error && <Typography variant="caption" color="error">Error: {error}</Typography>}
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email"
-            name="email"
-            autoComplete="email"
-            value={formData.email}
-            onChange={handleChange}
-            autoFocus
-          />
           <TextField
             margin="normal"
             required
@@ -115,53 +102,35 @@ const SignInPage = () => {
               ),
             }}
           />
-          <Typography variant="body2" textAlign="center" gutterBottom>
-            Forgot password? {" "}
-            <Link href="/forget-password" disabled variant="body2">
-              Reset here
-            </Link>
-          </Typography>
           <Button
             type="submit"
             fullWidth
             variant="contained"
-            disabled={isLoading}
             color="primary"
-            sx={{
-              mt: 2,
-              mb: 1,
-            }}
-          >
-            {isLoading ? <CircularProgress size={24} /> : 'Log In'}
-          </Button>
-          <Typography variant="body2" textAlign="center">
-            Don't have an account?{' '}
-            <Link href="#" onClick={handleRegisterRedirect} variant="body2">
-              Register
-            </Link>
-          </Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center', my: 2 }}>
-            <Divider sx={{ flexGrow: 1 }} />
-            <Typography sx={{ mx: 2, color: 'text.secondary' }}>OR</Typography>
-            <Divider sx={{ flexGrow: 1 }} />
-          </Box>
-          <Button
-            onClick={handleGoogleSignIn}
-            fullWidth
-            variant="contained"
-            color="primary"
-            startIcon={<GoogleIcon />}
+            disabled={verifyError?.length > 0} 
             sx={{
               mt: 2,
               mb: 2,
             }}
           >
-            Sign in with Google
+            Reset Password
           </Button>
+          {verifyError && (
+              <>
+                <Typography variant="caption"  color="error">
+                  {verifyError}
+                </Typography>
+                <Typography textAlign="center" variant="body2" sx={{ mt: 2 }}>
+                  <Link href="/forget-password">
+                      Generate a reset password link
+                  </Link>
+                </Typography>
+              </>
+            )}
         </Box>
       </Paper>
     </Container>
-  );
+  ));
 };
 
-export default SignInPage;
+export default ResetPasswordPage;
