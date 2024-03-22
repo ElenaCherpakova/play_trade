@@ -28,59 +28,6 @@ const login = async credentials => {
   }
 };
 export const authOptions = {
-  pages: {
-    signIn: "/signin"
-  },
-  callbacks: {
-    async jwt({ token, user }) {
-      if (user?._id) token._id = user._id;
-      return token;
-    },
-    async session({ session, token }) {
-      if (token?._id) session.user._id = token._id;
-      if (token?.name) session.user.name = token.name;
-      if (token?.email) session.user.email = token.email;
-      if (token?.sub) session.user.sub = token.sub;
-
-      return session;
-    },
-    async signIn({ user, account, profile }) {
-      await dbConnect();
-      const { email, sub } = profile;
-      if (account.provider === "google") {
-        console.log("user", user);
-        console.log("account", account);
-        console.log("profile", profile.sub);
-
-        try {
-          const userExist = await User.findOne({ email });
-          console.log("userExist", userExist);
-          if (!userExist) {
-            const hashPassword = await bcrypt.hash(sub, 10);
-            const newUser = new User({
-              name: profile.name,
-              email: profile.email,
-              password: hashPassword,
-              authProvider: true
-            });
-
-            const savedUser = await newUser.save();
-            await createAssociatedModels(savedUser);
-
-            if (savedUser) {
-              return { status: 201, body: { user: savedUser } };
-            } else {
-              throw new Error("Failed to save user");
-            }
-          }
-        } catch (error) {
-          console.error("Error occurred during Google sign-in:", error);
-          throw new Error("Failed to sign in with Google");
-        }
-      }
-      return true;
-    }
-  },
   providers: [
     GoogleProvider({
       profile(profile) {
@@ -103,10 +50,61 @@ export const authOptions = {
       }
     })
   ],
+
+  callbacks: {
+    async signIn({ user, account, profile }) {
+      if (account.provider === "google") {
+        try {
+          const { name, email, sub } = profile;
+          await dbConnect();
+
+          const user = await User.findOne({ email });
+          console.log("userExist", user);
+          if (!user) {
+            const hashPassword = await bcrypt.hash(sub, 10);
+            const newUser = new User({
+              name: name,
+              email: email,
+              password: hashPassword,
+              authProvider: true
+            });
+
+            const savedUser = await createAssociatedModels(newUser).save();
+
+            if (savedUser) {
+              return { status: 201, body: { user: savedUser } };
+            } else {
+              throw new Error("Failed to save user");
+            }
+          }
+        } catch (error) {
+          console.error("Error occurred during Google sign-in:", error);
+          throw new Error("Failed to sign in with Google");
+        }
+      }
+      return true;
+    },
+    async jwt({ token, user }) {
+      if (user?._id) token._id = user._id;
+      return token;
+    },
+    async session({ session, token }) {
+      if (token?._id) session.user._id = token._id;
+      if (token?.name) session.user.name = token.name;
+      if (token?.email) session.user.email = token.email;
+      if (token?.sub) session.user.sub = token.sub;
+
+      return session;
+    }
+  },
+
   session: {
     strategy: "jwt"
   },
-  secret: process.env.NEXTAUTH_SECRET
+  secret: process.env.NEXTAUTH_SECRET,
+  pages: {
+    signIn: "/signin"
+  }
 };
 
 const handler = NextAuth(authOptions);
