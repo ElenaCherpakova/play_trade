@@ -22,6 +22,7 @@ import { Image } from "@mui/icons-material";
 
 export default function CardForm({ cardValue, onSubmitForm }) {
   const [cardCategory, setCardCategory] = useState(cardValue?.category);
+  const [image, setImage] = useState(value?.imageURL || "");
   const editCard = cardValue.name ? true : false;
   //we do will implement image upload and remove img
   const img = "https://m.media-amazon.com/images/I/51skd-tjunL._AC_.jpg";
@@ -38,7 +39,15 @@ export default function CardForm({ cardValue, onSubmitForm }) {
   const handleSubmit = async e => {
     const { imageURL, cardName, set, price, currency, shippingCost, description, conditions, quantity, available } =
       e.target.elements;
+    const imageFile = imageURL.files[0];
+    if (imageFile) {
+      setImage(imageFile);
+    }
     onSubmitForm({
+      //comment it for form data
+      //fpr form data
+      // imageURL: image,
+      //comment this for form data
       imageURL: imageURL.value,
       //comes from state
       category: cardCategory,
@@ -92,6 +101,7 @@ export default function CardForm({ cardValue, onSubmitForm }) {
                   </>
                 )}
               </Paper>
+              {/* comment it for form data */}
               <TextField
                 fullWidth
                 name="imageURL"
