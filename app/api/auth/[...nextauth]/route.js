@@ -15,7 +15,6 @@ const login = async credentials => {
   const { email, password } = credentials;
   await dbConnect();
   try {
-    // Check if the user already exists in the database
     const user = await User.findOne({ email });
     if (!user) throw new Error("Missing credentials");
 
