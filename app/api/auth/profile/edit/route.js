@@ -10,7 +10,8 @@ import User from "@/models/User";
  *
  */
 
-export const GET = async () => {
+// Update a user profile
+export const GET = async (req, res) => {
   await dbConnect();
   const session = await getServerSession(authOptions);
 
@@ -18,14 +19,11 @@ export const GET = async () => {
   if (!session || !session.user) {
     return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
   }
-  const { email, name, _id, sub } = session.user;
 
   try {
-    const user = await User.findOne({ email });
-    if (!user) {
-      return NextResponse.json({ success: false, message: "No such user found." }, { status: 404 });
-    }
-    return NextResponse.json({ success: true, data: { name, email, _id, sub } }, { status: 200 });
+    const userId = session?.user._id;
+    console.log(userId);
+    const user = await User.findOne({});
   } catch (error) {
     return NextResponse.json({ success: false, message: "Internal Server Error" }, { status: 500 });
   }
