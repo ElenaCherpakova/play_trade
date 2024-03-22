@@ -16,11 +16,8 @@ export default function Page({ params }) {
       setData(data.data);
     };
     fetchCard();
-  }, []);
-  const editProperty = {
-    name: "edited card's name",
-    imageURL: "https://m.media-amazon.com/images/I/615ij7aqRJL._AC_SL1000_.jpg"
-  };
+  }, [params.id]);
+
   // console.log("card", card);
   const editCard = async editProperty => {
     const editCard = {
@@ -55,11 +52,7 @@ export default function Page({ params }) {
   };
   return (
     <div>
-      <Button variant="contained" color="primary" onClick={() => editCard(editProperty)}>
-        Edit card
-      </Button>
       <CardForm cardValue={data} onSubmitForm={editCard} />
-      {/* {data && <CardComponent card={data} />} */}
     </div>
   );
 }

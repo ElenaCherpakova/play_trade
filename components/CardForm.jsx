@@ -16,12 +16,17 @@ import { Image } from "@mui/icons-material";
 
 /**
  *
- * @param {value} Object
+ * @param {cardValue} Object
  * @param {onSubmitForm} Function
  */
 export default function CardForm({ cardValue, onSubmitForm }) {
-  const [cardCategory, setCardCategory] = useState(cardValue?.category || "");
+  // const [cardValue, setCardValue] = useState(card);
+  const [cardCategory, setCardCategory] = useState(cardValue?.category);
+  if (!cardValue) {
+    return null;
+  }
   const img = "https://m.media-amazon.com/images/I/51skd-tjunL._AC_.jpg";
+  console.log("cardValue", cardValue);
   const conditionVariants = cardCategory => {
     if (cardCategory === "Sport Card") {
       return ["near mint", "excellent", "very good", "poor"];
@@ -30,7 +35,7 @@ export default function CardForm({ cardValue, onSubmitForm }) {
     }
   };
   const handleSubmit = async e => {
-    console.log("e", e);
+    console.log("e.target.elements", e.target.elements);
     const {
       imageURL,
       category,
@@ -95,7 +100,7 @@ export default function CardForm({ cardValue, onSubmitForm }) {
                 fullWidth
                 name="imageURL"
                 // label="image URL"
-                defaultValue={cardValue?.imageURL || `${img}`}
+                defaultValue={cardValue?.imageURL}
               />
               {/* <TextField variant="standard" type="file" name="cardName" accept="image/png, image/jpeg, image/jpg" /> */}
             </Box>
@@ -110,7 +115,7 @@ export default function CardForm({ cardValue, onSubmitForm }) {
                   labelId="cardCategory"
                   id="category"
                   label="category"
-                  defaultValue={cardValue?.category || ""}
+                  defaultValue={cardValue?.category}
                   onChange={e => {
                     e.preventDefault();
                     setCardCategory(e.target.value);
@@ -122,8 +127,8 @@ export default function CardForm({ cardValue, onSubmitForm }) {
                   <MenuItem value="Sport Card">Sport Card</MenuItem>
                 </Select>
               </FormControl>
-              <TextField required fullWidth name="cardName" label="name" defaultValue={cardValue?.name || ""} />
-              <TextField fullWidth name="set" label="set" defaultValue={cardValue?.set || ""} />
+              <TextField required fullWidth name="cardName" label="name" defaultValue={cardValue?.name} />
+              <TextField fullWidth name="set" label="set" defaultValue={cardValue?.set} />
               <TextField
                 required
                 fullWidth
@@ -133,7 +138,7 @@ export default function CardForm({ cardValue, onSubmitForm }) {
                   step: 0.01
                 }}
                 label="price"
-                defaultValue={cardValue?.price || ""}
+                defaultValue={cardValue?.price}
               />
               <FormControl required fullWidth size="small">
                 <InputLabel id="cardCurrency">currency</InputLabel>
@@ -143,7 +148,7 @@ export default function CardForm({ cardValue, onSubmitForm }) {
                   labelId="cardCurrency"
                   id="currency"
                   label="currency"
-                  defaultValue={cardValue?.currency || ""}>
+                  defaultValue={cardValue?.currency}>
                   <MenuItem value="USD">USD</MenuItem>
                   <MenuItem value="CAD">CAD</MenuItem>
                 </Select>
@@ -157,25 +162,25 @@ export default function CardForm({ cardValue, onSubmitForm }) {
                   step: 0.01
                 }}
                 label="shipping cost"
-                defaultValue={cardValue?.shippingCost || ""}
+                defaultValue={cardValue?.shippingCost}
               />
               <TextField
                 fullWidth
                 name="description"
                 multiline
                 rows={3}
-                defaultValue={cardValue?.description || ""}
+                defaultValue={cardValue?.description}
                 label="description"
               />
               <FormControl required fullWidth size="small">
-                <InputLabel id="conditions">category</InputLabel>
+                <InputLabel id="conditions">condition</InputLabel>
                 <Select
                   fullWidth
                   name="conditions"
                   labelId="conditions"
                   id="conditions"
                   label="conditions"
-                  defaultValue={cardValue?.conditions || ""}>
+                  defaultValue={cardValue?.conditions}>
                   {conditionVariants(cardCategory).map((condition, index) => (
                     <MenuItem key={index} value={condition}>
                       {condition}
@@ -189,7 +194,7 @@ export default function CardForm({ cardValue, onSubmitForm }) {
                 name="quantity"
                 type="number"
                 label="quantity"
-                defaultValue={cardValue?.quantity || ""}
+                defaultValue={cardValue?.quantity}
               />
               <FormControl required fullWidth size="small">
                 <InputLabel id="availableCard">available</InputLabel>
@@ -199,7 +204,7 @@ export default function CardForm({ cardValue, onSubmitForm }) {
                   labelId="availableCard"
                   id="available"
                   label="available"
-                  defaultValue={cardValue?.available || ""}>
+                  defaultValue={cardValue?.available}>
                   <MenuItem value="available">available</MenuItem>
                   <MenuItem value="sold">sold</MenuItem>
                 </Select>

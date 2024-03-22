@@ -27,7 +27,19 @@ export default function Sell() {
   //   available: "sold"
   // };
   const [id, setId] = useState("");
-  const [card, setCard] = useState();
+  const [card, setCard] = useState({
+    name: "",
+    set: "",
+    price: 0,
+    currency: "",
+    shippingCost: 0,
+    description: "",
+    conditions: "",
+    category: "",
+    imageURL: "",
+    quantity: 0,
+    available: ""
+  });
   const router = useRouter();
   const addCard = async card => {
     const body = JSON.stringify(card);
