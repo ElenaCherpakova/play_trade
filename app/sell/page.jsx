@@ -45,6 +45,9 @@ export default function Sell() {
         },
         body
       });
+      if (!response.ok) {
+        throw new Error(response.statusText);
+      }
       const data = await response.json();
       console.log(data);
       setId(data.data._id);

@@ -15,6 +15,9 @@ export default function Page({ params }) {
       //fetch data need to move to file in utils
       const fetchCard = async () => {
         const response = await fetch(`/api/cards/${id}`);
+        if (!response.ok) {
+          throw new Error(response.statusText);
+        }
         const data = await response.json();
         setData(data.data);
       };
