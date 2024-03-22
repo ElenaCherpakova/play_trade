@@ -1,16 +1,18 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Button } from "@mui/material";
-import CardComponent from "@/components/CardComponent";
+import { Alert, Snackbar } from "@mui/material";
 import CardForm from "@/components/CardForm";
 
 export default function Page({ params }) {
+  const [openError, setOpenError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [data, setData] = useState(null);
   const router = useRouter();
   const id = params.id;
   useEffect(() => {
     if (id) {
+      //fetch data need to move to file in utils
       const fetchCard = async () => {
         const response = await fetch(`/api/cards/${id}`);
         const data = await response.json();
@@ -20,38 +22,48 @@ export default function Page({ params }) {
     }
   }, [id]);
 
-  // console.log("card", card);
+  //fetch data need to move to file in utils
   const editCard = async editProperty => {
     const editCard = {
       ...data,
       ...editProperty
     };
-    console.log("editCard", editCard);
     const body = JSON.stringify({ ...editCard });
-    console.log("body", body);
-    console.log("url", `/api/cards/${id}`);
     try {
       const response = await fetch(`/api/cards/${id}`, {
         method: "PATCH",
         headers: {
+          //need this for image upload when implemented
           // "Content-Type": "multipart/form-data"
           "Content-Type": "application/json"
         },
         body
       });
-      if (!response.ok) {
-        throw new Error(data.error || "Something went wrong!");
-      } else {
-        const data = await response.json();
-        console.log(data);
-        setData(data.data);
-        router.push(`/market/item/${id}`);
-      }
+
+      const data = await response.json();
+      console.log(data);
+      setData(data.data);
+      router.push(`/market/item/${id}`);
     } catch (error) {
       console.log(error.message);
-      return null;
+      console.error(error);
+      setOpenError(true);
+      setErrorMessage(error.message || "unknown error");
     }
   };
 
-  return <div>{data && <CardForm cardValue={data} onSubmitForm={editCard} />}</div>;
+  return (
+    <>
+      {data && <CardForm cardValue={data} onSubmitForm={editCard} />}
+      <Snackbar
+        open={openError}
+        autoHideDuration={5000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}>
+        <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
+          {errorMessage}
+        </Alert>
+      </Snackbar>
+    </>
+  );
 }
