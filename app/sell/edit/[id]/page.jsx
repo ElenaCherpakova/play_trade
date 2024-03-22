@@ -10,13 +10,15 @@ export default function Page({ params }) {
   const router = useRouter();
   const id = params.id;
   useEffect(() => {
-    const fetchCard = async () => {
-      const response = await fetch(`/api/cards/${params.id}`);
-      const data = await response.json();
-      setData(data.data);
-    };
-    fetchCard();
-  }, [params.id]);
+    if (id) {
+      const fetchCard = async () => {
+        const response = await fetch(`/api/cards/${id}`);
+        const data = await response.json();
+        setData(data.data);
+      };
+      fetchCard();
+    }
+  }, [id]);
 
   // console.log("card", card);
   const editCard = async editProperty => {
@@ -50,9 +52,6 @@ export default function Page({ params }) {
       return null;
     }
   };
-  return (
-    <div>
-      <CardForm cardValue={data} onSubmitForm={editCard} />
-    </div>
-  );
+
+  return <div>{data && <CardForm cardValue={data} onSubmitForm={editCard} />}</div>;
 }

@@ -22,9 +22,14 @@ import { Image } from "@mui/icons-material";
 export default function CardForm({ cardValue, onSubmitForm }) {
   // const [cardValue, setCardValue] = useState(card);
   const [cardCategory, setCardCategory] = useState(cardValue?.category);
-  if (!cardValue) {
-    return null;
-  }
+  // const [editCard, setEditCard] = useState(true);
+  // if (!cardValue || !cardValue.name) {
+  //   return null;
+  // }
+  const editCard = cardValue.name ? true : false;
+  // if (cardValue.name === "") {
+  //   setEditCard(false);
+  // }
   const img = "https://m.media-amazon.com/images/I/51skd-tjunL._AC_.jpg";
   console.log("cardValue", cardValue);
   const conditionVariants = cardCategory => {
@@ -51,7 +56,7 @@ export default function CardForm({ cardValue, onSubmitForm }) {
     } = e.target.elements;
     onSubmitForm({
       imageURL: imageURL.value,
-      category: category.value,
+      category: cardCategory,
       name: cardName.value,
       set: set.value,
       price: price.value,
@@ -78,7 +83,7 @@ export default function CardForm({ cardValue, onSubmitForm }) {
           handleSubmit(e);
         }}>
         <Typography textAlign="center" variant="h4">
-          {cardValue ? "Edit" : "Add"} card
+          {editCard ? "Edit" : "Add"} card
         </Typography>
         <Grid container spacing={4}>
           <Grid item xs={6} md={4}>
@@ -115,9 +120,9 @@ export default function CardForm({ cardValue, onSubmitForm }) {
                   labelId="cardCategory"
                   id="category"
                   label="category"
-                  defaultValue={cardValue?.category}
+                  value={cardCategory}
                   onChange={e => {
-                    e.preventDefault();
+                    // e.preventDefault();
                     setCardCategory(e.target.value);
                   }}>
                   <MenuItem value="Magic">Magic</MenuItem>
@@ -135,7 +140,8 @@ export default function CardForm({ cardValue, onSubmitForm }) {
                 name="price"
                 type="number"
                 inputProps={{
-                  step: 0.01
+                  step: 0.01,
+                  min: "0"
                 }}
                 label="price"
                 defaultValue={cardValue?.price}
@@ -159,7 +165,8 @@ export default function CardForm({ cardValue, onSubmitForm }) {
                 name="shippingCost"
                 type="number"
                 inputProps={{
-                  step: 0.01
+                  step: 0.01,
+                  min: "0"
                 }}
                 label="shipping cost"
                 defaultValue={cardValue?.shippingCost}
@@ -210,7 +217,7 @@ export default function CardForm({ cardValue, onSubmitForm }) {
                 </Select>
               </FormControl>
               <Button variant="contained" color="secondary" type="submit">
-                {cardValue ? "Edit" : "Add"} card
+                {editCard ? "Edit" : "Add"} card
               </Button>
             </Box>
           </Grid>
