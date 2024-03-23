@@ -39,6 +39,8 @@ export const authOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET
     }),
     CredentialsProvider({
+      name: "credentials",
+      credentials: {},
       async authorize(credentials) {
         try {
           const user = await login(credentials);
@@ -62,7 +64,7 @@ export const authOptions = {
           if (!user) {
             const hashPassword = await bcrypt.hash(sub, 10);
             const newUser = new User({
-              _id: id,
+              id: sub,
               name: name,
               email: email,
               password: hashPassword,
@@ -70,7 +72,7 @@ export const authOptions = {
             });
 
             const savedUser = await newUser.save();
-            await createAssociatedModels(savedUser)
+            await createAssociatedModels(savedUser);
 
             if (savedUser) {
               return { status: 201, body: { user: savedUser } };
@@ -104,9 +106,9 @@ export const authOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
-    signIn: "/signin",
+    signIn: "/signin"
   }
 };
 
 const handler = NextAuth(authOptions);
-export { handler as GET, handler as POST, handler as PATCH };
+export { handler as GET, handler as POST };
