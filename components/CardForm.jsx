@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import {
   Box,
   Button,
@@ -22,7 +22,10 @@ import { Image } from "@mui/icons-material";
 
 export default function CardForm({ cardValue, onSubmitForm }) {
   const [cardCategory, setCardCategory] = useState(cardValue?.category);
-  const [image, setImage] = useState(cardValue?.imageURL ||'');
+  const [image, setImage] = useState(cardValue?.imageURL || "");
+  const [isHovered, setIsHovered] = useState(false);
+  const fileInputRef = useRef(null);
+
   const editCard = cardValue.name ? true : false;
   const conditionVariants = cardCategory => {
     if (cardCategory === "Sport Card") {
@@ -31,7 +34,19 @@ export default function CardForm({ cardValue, onSubmitForm }) {
       return ["near mint", "lightly played", "moderately played", "heavily played", "damaged"];
     }
   };
-  //submit form function
+
+  const handleFileChange = event => {
+    const file = event.target.files[0];
+    if (file) {
+      setImage(URL.createObjectURL(file));
+      event.target.value = '' 
+    }
+  };
+
+  const handlePaperClick = () => {
+    fileInputRef.current.click();
+  };
+
   const handleSubmit = async e => {
     const { cardName, set, price, currency, shippingCost, description, conditions, quantity, available } =
       e.target.elements;
@@ -73,26 +88,70 @@ export default function CardForm({ cardValue, onSubmitForm }) {
         <Grid container spacing={4}>
           <Grid item xs={6} md={4}>
             <Box display="flex" flexDirection="column" gap={2}>
-              <Paper
+            <Paper
+                onClick={handlePaperClick}
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
                 style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  textAlign: "center"
+                  position: 'relative',
+                  aspectRatio: '3/4',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  textAlign: 'center',
+                  cursor: 'pointer',
                 }}
-                sx={{ overflow: "hidden", aspectRatio: "3/4" }}>
-                {image ? (
-                  <img src={cardValue.imageURL} alt="card" style={{ width: "100%" }} />
-                ) : (
+                sx={{ overflow: 'hidden' }}
+              >
+                {image && (
+                  <img
+                    src={image}
+                    alt="Preview"
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                      position: 'absolute',
+                    }}
+                  />
+                )}
+                {isHovered && image && (
+                  <Box
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      width: '100%',
+                      height: '100%',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                    }}
+                  >
+                    <Typography variant="body1" style={{ color: '#fff', textAlign: 'center' }}>
+                      Click to change image
+                    </Typography>
+                  </Box>
+                )}
+                {!image && (
                   <>
-                    <Image alt="no image" fontSize="large" color="secondary" />
-                    <Typography sx={theme => ({ color: theme.palette.text.secondary })}>Click Choose File </Typography>
-                    <Typography sx={theme => ({ color: theme.palette.text.secondary })}> to upload image</Typography>
+                    <Image fontSize="large" color="secondary" />
+                    <Typography sx={(theme) => ({ color: theme.palette.text.secondary })}>
+                      Click to upload image
+                    </Typography>
                   </>
                 )}
               </Paper>
-              <TextField variant="standard" type="file" name="cardName" accept="image/png, image/jpeg, image/jpg" />
+              <input
+                ref={fileInputRef}
+                type="file"
+                name="image"
+                accept="image/png, image/jpeg, image/jpg"
+                style={{ display: "none" }}
+                onChange={handleFileChange}
+              />
             </Box>
           </Grid>
           <Grid item xs>
@@ -107,7 +166,6 @@ export default function CardForm({ cardValue, onSubmitForm }) {
                   label="category"
                   value={cardCategory}
                   onChange={e => {
-                    // e.preventDefault();
                     setCardCategory(e.target.value);
                   }}>
                   <MenuItem value="Magic">Magic</MenuItem>
