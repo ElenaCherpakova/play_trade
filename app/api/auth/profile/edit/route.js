@@ -16,20 +16,21 @@ export const PATCH = async (req, res) => {
   await dbConnect();
   const session = await getServerSession(req, res, authOptions);
 
-  console.log("PUT IS HERE",session);
+  console.log("PUT IS HERE", session);
   if (!session || !session.user) {
     return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
-  } 
+  }
 
   try {
     const userId = session.user._id;
     const body = await req.json();
-    const { name, email } = body;
-    if (!name || !email) {
+    const { name, email, location } = body;
+    if (!name || !email || !location) {
       return NextResponse.json({ success: false, message: "Name and Email are required" }, { status: 400 });
     }
     console.log("NAME", name);
     console.log("Email", email);
+    console.log("location", location);
     console.log("userId", userId);
     const updateUser = await User.findByIdAndUpdate(userId, body, {
       new: true,

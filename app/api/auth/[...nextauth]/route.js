@@ -87,24 +87,29 @@ export const authOptions = {
       }
       return true;
     },
-    jwt: async ({ token, user, req }) => {
+    jwt: async ({ token, user, session, trigger }) => {
       if (user) {
         token.user = user;
       }
-      if (req?.url === "/api/auth/profile/update") {
-        const updatedUser = await User.findById(token.user._id);
-        token.user = updatedUser;
-        console.log(token.user);
-      }
 
+      if (trigger === "update" && session?.name) {
+        const fieldsToUpdate = ["name", "email", "location"];
+        fieldsToUpdate.forEach(field => {
+          if (session[field]) {
+            token.user[field] = session[field];
+          }
+        });
+      }
       return token;
     },
     session: async ({ session, token }) => {
-      if (token?.user?._id) session.user._id = token.user._id;
-      if (token?.user?.name) session.user.name = token.user.name;
-      if (token?.user?.email) session.user.email = token.user.email;
-      if (token?.user?.sub) session.user._id = token.user.sub;
-      console.log("SEEEEEEE", session);
+      if (token?.user) {
+        const { _id, name, email, sub, location } = token.user;
+        session.user._id = session.user._id || _id || sub;
+        session.user.name = name || session.user.name;
+        session.user.email = email || session.user.email;
+        session.user.location = location || session.user.location;
+      }
       return session;
     }
   },
