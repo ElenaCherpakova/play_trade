@@ -1,7 +1,16 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+import { Button, Box } from "@mui/material";
+
 export default function Market() {
+  const router = useRouter();
   return (
-    <div>
+    <Box>
       <h2>Market</h2>
-    </div>
+      <Button variant="contained" color="primary" onClick={() => router.push("/sell")}>
+        Sell card
+      </Button>
+    </Box>
   );
 }
