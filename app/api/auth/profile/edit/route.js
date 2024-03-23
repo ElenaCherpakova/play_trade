@@ -14,13 +14,12 @@ import User from "@/models/User";
 // Update a user profile
 export const PATCH = async (req, res) => {
   await dbConnect();
-  console.log(token);
-  const session = await getServerSession(authOptions);
+  const session = await getServerSession(req, res, authOptions);
 
-  console.log(session);
+  console.log("PUT IS HERE",session);
   if (!session || !session.user) {
     return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
-  }
+  } 
 
   try {
     const userId = session.user._id;

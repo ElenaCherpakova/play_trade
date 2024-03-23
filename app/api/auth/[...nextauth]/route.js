@@ -60,7 +60,7 @@ export const authOptions = {
           await dbConnect();
 
           const user = await User.findOne({ email });
-          console.log("userExist", user);
+          // console.log("userExist", user);
           if (!user) {
             const hashPassword = await bcrypt.hash(sub, 10);
             const newUser = new User({
@@ -87,16 +87,24 @@ export const authOptions = {
       }
       return true;
     },
-    async jwt({ token, user }) {
-      if (user?._id) token._id = user._id;
+    jwt: async ({ token, user, req }) => {
+      if (user) {
+        token.user = user;
+      }
+      if (req?.url === "/api/auth/profile/update") {
+        const updatedUser = await User.findById(token.user._id);
+        token.user = updatedUser;
+        console.log(token.user);
+      }
+
       return token;
     },
-    async session({ session, token }) {
-      if (token?._id) session.user._id = token._id;
-      if (token?.name) session.user.name = token.name;
-      if (token?.email) session.user.email = token.email;
-      if (token?.sub) session.user._id = token.sub;
-
+    session: async ({ session, token }) => {
+      if (token?.user?._id) session.user._id = token.user._id;
+      if (token?.user?.name) session.user.name = token.user.name;
+      if (token?.user?.email) session.user.email = token.user.email;
+      if (token?.user?.sub) session.user._id = token.user.sub;
+      console.log("SEEEEEEE", session);
       return session;
     }
   },
@@ -111,4 +119,4 @@ export const authOptions = {
 };
 
 const handler = NextAuth(authOptions);
-export { handler as GET, handler as POST };
+export { handler as GET, handler as POST, handler as PATCH };
