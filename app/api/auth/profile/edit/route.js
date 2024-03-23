@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import dbConnect from "@/lib/mongo/dbConnect";
 import User from "@/models/User";
+
 /**
  *
  * @param {NextRequest} req
@@ -11,8 +12,9 @@ import User from "@/models/User";
  */
 
 // Update a user profile
-export const GET = async (req, res) => {
+export const PATCH = async (req, res) => {
   await dbConnect();
+  console.log(token);
   const session = await getServerSession(authOptions);
 
   console.log(session);
@@ -21,9 +23,23 @@ export const GET = async (req, res) => {
   }
 
   try {
-    const userId = session?.user._id;
-    console.log(userId);
-    const user = await User.findOne({});
+    const userId = session.user._id;
+    const body = await req.json();
+    const { name, email } = body;
+    if (!name || !email) {
+      return NextResponse.json({ success: false, message: "Name and Email are required" }, { status: 400 });
+    }
+    console.log("NAME", name);
+    console.log("Email", email);
+    console.log("userId", userId);
+    const updateUser = await User.findByIdAndUpdate(userId, body, {
+      new: true,
+      runValidators: true
+    });
+    if (!updateUser) {
+      return NextResponse.json({ success: false, message: "Profile not found" }, { status: 400 });
+    }
+    return NextResponse.json({ success: true, message: "Your profile is updated", data: updateUser }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ success: false, message: "Internal Server Error" }, { status: 500 });
   }

@@ -62,13 +62,15 @@ export const authOptions = {
           if (!user) {
             const hashPassword = await bcrypt.hash(sub, 10);
             const newUser = new User({
+              _id: id,
               name: name,
               email: email,
               password: hashPassword,
               authProvider: true
             });
 
-            const savedUser = await createAssociatedModels(newUser).save();
+            const savedUser = await newUser.save();
+            await createAssociatedModels(savedUser)
 
             if (savedUser) {
               return { status: 201, body: { user: savedUser } };
@@ -91,7 +93,7 @@ export const authOptions = {
       if (token?._id) session.user._id = token._id;
       if (token?.name) session.user.name = token.name;
       if (token?.email) session.user.email = token.email;
-      if (token?.sub) session.user.sub = token.sub;
+      if (token?.sub) session.user._id = token.sub;
 
       return session;
     }
@@ -107,4 +109,4 @@ export const authOptions = {
 };
 
 const handler = NextAuth(authOptions);
-export { handler as GET, handler as POST };
+export { handler as GET, handler as POST, handler as PATCH };
