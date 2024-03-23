@@ -1,4 +1,4 @@
-import UserProfileEditPage from "@/store/UserProfileEditPage";
+import UserProfileEditPage from "@/app/profile/edit/UserProfileEditPage";
 
 export default function Edit() {
   return (
