@@ -37,8 +37,8 @@ export default function Page({ params }) {
         method: "PATCH",
         headers: {
           //need this for image upload when implemented
-          // "Content-Type": "multipart/form-data"
-          "Content-Type": "application/json"
+          "Content-Type": "multipart/form-data"
+          //"Content-Type": "application/json"
         },
         body
       });

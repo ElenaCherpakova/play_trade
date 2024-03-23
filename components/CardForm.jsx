@@ -22,13 +22,8 @@ import { Image } from "@mui/icons-material";
 
 export default function CardForm({ cardValue, onSubmitForm }) {
   const [cardCategory, setCardCategory] = useState(cardValue?.category);
-  //comment it for form data
-  // const [image, setImage] = useState(value?.imageURL || "");
+  const [image, setImage] = useState(cardValue?.imageURL ||'');
   const editCard = cardValue.name ? true : false;
-  //we do will implement image upload and remove img
-  const img = "https://m.media-amazon.com/images/I/51skd-tjunL._AC_.jpg";
-
-  //condition variants for cards based on category
   const conditionVariants = cardCategory => {
     if (cardCategory === "Sport Card") {
       return ["near mint", "excellent", "very good", "poor"];
@@ -38,20 +33,14 @@ export default function CardForm({ cardValue, onSubmitForm }) {
   };
   //submit form function
   const handleSubmit = async e => {
-    const { imageURL, cardName, set, price, currency, shippingCost, description, conditions, quantity, available } =
+    const { cardName, set, price, currency, shippingCost, description, conditions, quantity, available } =
       e.target.elements;
-    //comment it for form data
-    // const imageFile = imageURL.files[0];
-    // if (imageFile) {
-    //   setImage(imageFile);
-    // }
+    const imageFile = imageURL.files[0];
+    if (imageFile) {
+      setImage(imageFile);
+    }
     onSubmitForm({
-      //comment it for form data
-      //fpr form data
-      // imageURL: image,
-      //comment this for form data
-      imageURL: imageURL.value,
-      //comes from state
+      imageURL: image,
       category: cardCategory,
       name: cardName.value,
       set: set.value,
@@ -93,7 +82,7 @@ export default function CardForm({ cardValue, onSubmitForm }) {
                   textAlign: "center"
                 }}
                 sx={{ overflow: "hidden", aspectRatio: "3/4" }}>
-                {cardValue.imageURL ? (
+                {image ? (
                   <img src={cardValue.imageURL} alt="card" style={{ width: "100%" }} />
                 ) : (
                   <>
@@ -103,16 +92,7 @@ export default function CardForm({ cardValue, onSubmitForm }) {
                   </>
                 )}
               </Paper>
-              {/* comment it for form data */}
-              <TextField
-                fullWidth
-                name="imageURL"
-                label="image URL"
-                //we do will implement image upload and remove img
-                defaultValue={cardValue?.imageURL || img}
-              />
-              {/* //need this for image upload when implemented */}
-              {/* <TextField variant="standard" type="file" name="cardName" accept="image/png, image/jpeg, image/jpg" /> */}
+              <TextField variant="standard" type="file" name="cardName" accept="image/png, image/jpeg, image/jpg" />
             </Box>
           </Grid>
           <Grid item xs>

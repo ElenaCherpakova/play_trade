@@ -40,8 +40,8 @@ export default function Sell() {
         method: "POST",
         headers: {
           //need this for image upload when implemented
-          // "Content-Type": "multipart/form-data"
-          "Content-Type": "application/json"
+          "Content-Type": "multipart/form-data"
+          //"Content-Type": "application/json"
         },
         body
       });
