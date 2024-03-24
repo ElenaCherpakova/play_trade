@@ -91,7 +91,7 @@ export const authOptions = {
       if (user) {
         token.user = user;
       }
-       if (trigger === "update" && session?.user._id) {
+      if (trigger === "update" && session?.user._id) {
         const fieldsToUpdate = ["name", "email", "location"];
         fieldsToUpdate.forEach(field => {
           if (session[field]) {
@@ -109,7 +109,7 @@ export const authOptions = {
         session.user.email = email || session.user.email;
         session.user.location = location || session.user.location;
       }
-      console.log("SESSION", session)
+      console.log("SESSION", session);
       return session;
     }
   },
