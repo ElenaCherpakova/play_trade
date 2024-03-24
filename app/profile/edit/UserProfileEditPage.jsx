@@ -6,8 +6,8 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { theme as importedTheme } from "/styles/theme.js";
 
-export default function UserProfileEditPage({ user = {} }) {
-  const { nickname = "", password = "", email = "", location = "", photo = "" } = user;
+export default function UserProfileEditPage(props) {
+  // const { nickname = "", password = "", email = "", location = "", photo = "" } = user;
   const { data: session } = useSession();
   const router = useRouter();
   const theme = useTheme();
@@ -21,7 +21,9 @@ export default function UserProfileEditPage({ user = {} }) {
     // Toggle edit mode
     setIsEditing(!isEditing);
   };
-
+  if (!session) {
+    return null;
+  }
   return (
     //entire screen
     <ThemeProvider theme={importedTheme}>
@@ -39,9 +41,8 @@ export default function UserProfileEditPage({ user = {} }) {
         <Typography
           variant="h4"
           align="center"
+          color="primary"
           sx={{
-            color: theme.palette.primary.main,
-            fontFamily: theme.typography.fontFamily,
             flexGrow: 0,
             p: 0,
             mt: 0
@@ -74,11 +75,9 @@ export default function UserProfileEditPage({ user = {} }) {
                   color="secondary"
                   onClick={() => router.push("./addphoto")}
                   sx={{
-                    "fontFamily": theme.typography.fontFamily,
                     "letterSpacing": "0.1em",
                     "mt": 2,
                     "width": "50%",
-                    "borderRadius": theme.shape.borderRadius,
                     "&:hover": {
                       backgroundColor: theme.palette.accent.main
                     }
@@ -89,11 +88,9 @@ export default function UserProfileEditPage({ user = {} }) {
                   variant="contained"
                   color="secondary"
                   sx={{
-                    "fontFamily": theme.typography.fontFamily,
                     "letterSpacing": "0.1em",
                     "mt": 2,
                     "width": "50%",
-                    "borderRadius": theme.shape.borderRadius,
                     "&:hover": {
                       backgroundColor: theme.palette.accent.main
                     }
@@ -105,12 +102,11 @@ export default function UserProfileEditPage({ user = {} }) {
             <Grid item xs={12} md={8}>
               {/* right side of screen */}
               <Paper
+                padding={2}
                 sx={{
                   display: "flex",
                   flexDirection: "column",
-                  alignItems: "center",
-                  padding: theme.spacing(2),
-                  borderRadius: theme.shape.borderRadius
+                  alignItems: "center"
                 }}>
                 <Box
                   display="flex"
@@ -122,60 +118,22 @@ export default function UserProfileEditPage({ user = {} }) {
                     width: "80%"
                   }}>
                   <TextField
+                    name="name"
                     label="Nickname"
-                    defaultValue={user.nickname}
-                    InputProps={{
-                      sx: {
-                        fontFamily: theme.typography.fontFamily,
-                        borderRadius: theme.shape.borderRadius
-                      }
-                    }}
+                    defaultValue={session?.user?.name}
                     sx={{ mb: 2 }} //margin bottom
                   />
-                  <TextField
-                    label="Password"
-                    defaultValue={password}
-                    type="password"
-                    InputProps={{
-                      sx: {
-                        fontFamily: theme.typography.fontFamily,
-                        borderRadius: theme.shape.borderRadius
-                      }
-                    }}
-                    sx={{ mb: 2 }}
-                  />
-                  <TextField
-                    label="Email"
-                    defaultValue={email}
-                    InputProps={{
-                      sx: {
-                        fontFamily: theme.typography.fontFamily,
-                        borderRadius: theme.shape.borderRadius
-                      }
-                    }}
-                    sx={{ mb: 2 }}
-                  />
-                  <TextField
-                    label="Location"
-                    defaultValue={location}
-                    InputProps={{
-                      sx: {
-                        fontFamily: theme.typography.fontFamily,
-                        borderRadius: theme.shape.borderRadius
-                      }
-                    }}
-                    sx={{ mb: 2 }}
-                  />
+                  <TextField label="Password" name="password" defaultValue="" type="password" sx={{ mb: 2 }} />
+                  <TextField label="Email" name="email" defaultValue={session?.user?.email} sx={{ mb: 2 }} />
+                  <TextField label="Location" name="location" defaultValue="" sx={{ mb: 2 }} />
                   <Box display="flex" justifyContent="space-between" width="100%" mt={2}>
                     <Button
                       variant="contained"
                       color="secondary"
                       onClick={handleButtonClick}
                       sx={{
-                        "fontFamily": theme.typography.fontFamily,
                         "mt": 2,
                         "width": "40%",
-                        "borderRadius": theme.shape.borderRadius,
                         "letterSpacing": "0.1em",
                         "&:hover": {
                           backgroundColor: theme.palette.accent.main
@@ -187,10 +145,8 @@ export default function UserProfileEditPage({ user = {} }) {
                       variant="contained"
                       color="secondary"
                       sx={{
-                        "fontFamily": theme.typography.fontFamily,
                         "mt": 2, // Add a top margin
                         "width": "40%", // Make the button full width
-                        "borderRadius": theme.shape.borderRadius,
                         "letterSpacing": "0.1em",
                         "&:hover": {
                           backgroundColor: theme.palette.accent.main
