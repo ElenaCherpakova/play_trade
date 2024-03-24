@@ -91,8 +91,7 @@ export const authOptions = {
       if (user) {
         token.user = user;
       }
-
-      if (trigger === "update" && session?.name) {
+       if (trigger === "update" && session?.user._id) {
         const fieldsToUpdate = ["name", "email", "location"];
         fieldsToUpdate.forEach(field => {
           if (session[field]) {
