@@ -23,12 +23,15 @@ export const PATCH = async (req, res) => {
 
   try {
     const userId = session.user._id;
-    const body = await req.json();
-    const { name, email, location, trigger } = body;
+    const { name, email, location, trigger } = await req.json();
     if (!name || !email || !location || !trigger) {
       return NextResponse.json({ success: false, message: "Name and Email are required" }, { status: 400 });
     }
-    const updateUser = await User.findByIdAndUpdate(userId, body, {
+    // console.log("NAME", name);
+    // console.log("Email", email);
+    // console.log("location", location);
+    // console.log("userId", userId);
+    const updateUser = await User.findByIdAndUpdate(userId, {name, email, location}, {
       new: true,
       runValidators: true
     });

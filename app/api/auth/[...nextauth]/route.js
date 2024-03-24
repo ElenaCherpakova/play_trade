@@ -109,6 +109,7 @@ export const authOptions = {
         session.user.email = email || session.user.email;
         session.user.location = location || session.user.location;
       }
+      console.log("SESSION", session)
       return session;
     }
   },
