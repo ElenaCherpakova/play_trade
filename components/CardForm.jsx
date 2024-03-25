@@ -23,7 +23,7 @@ import { Image } from "@mui/icons-material";
 export default function CardForm({ cardValue, onSubmitForm }) {
   const [cardCategory, setCardCategory] = useState(cardValue?.category);
   const [image, setImage] = useState(cardValue?.imageURL || "");
-  const [imageUrl, setImageUrl] = useState("");
+  const [imageURL, setImageURL] = useState("");
   const [isHovered, setIsHovered] = useState(false);
   const fileInputRef = useRef(null);
 
@@ -57,8 +57,8 @@ export default function CardForm({ cardValue, onSubmitForm }) {
       const uploadData = await uploadRes.json();
 
       if (!uploadRes.ok) throw new Error(uploadData.error?.message || 'Upload to Cloudinary failed.');
-      let imageUrl = uploadData.secure_url;
-      return imageUrl;
+      let imageURL = uploadData.secure_url;
+      return imageURL;
     } catch (error) {
       return ''; 
     }
@@ -67,10 +67,10 @@ export default function CardForm({ cardValue, onSubmitForm }) {
   const handleFileChange = async (event) => {
     const file = event.target.files[0];
     if (file) {
-        const uploadedImageUrl = await handleImageUpload(file); 
-        if (uploadedImageUrl) {
+        const uploadedimageURL = await handleImageUpload(file); 
+        if (uploadedimageURL) {
           setImage(URL.createObjectURL(file)); 
-          setImageUrl(uploadedImageUrl);
+          setImageURL(uploadedimageURL);
         } else {
           console.error("Failed to upload image.");
         }
@@ -95,13 +95,11 @@ const handleSubmit = async (e) => {
     quantity: e.target.elements.quantity.value,
     available: e.target.elements.available.value,
     category: cardCategory, 
-    imageUrl: imageUrl
+    imageURL: imageURL
   };
-  console.log(formData)//url exists
   await onSubmitForm(formData);
 };
 
-console.log(cardValue)//url is lost, no url in mongo
   return (
     <Container>
       <Box

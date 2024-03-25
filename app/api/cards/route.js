@@ -36,9 +36,9 @@ export async function POST(req) {
     const userId = token.sub;
     const body = await req.json();
     body.createdBy = userId;
-    console.log(body)
+
     const card = await Card.create(body);
-    //console.log(card)
+
     if (!card) {
       return NextResponse.json({ success: false, message: error.message || "Error saving a card" }, { status: 400 });
     }

@@ -48,7 +48,6 @@ export default function Sell() {
         throw new Error(response.statusText);
       }
       const data = await response.json();
-      console.log(data);
       setId(data.data._id);
     } catch (error) {
       console.log(error.message);
