@@ -33,18 +33,17 @@ export default function Sell() {
   };
 
   //fetch data need to move to file in utils
-  const addCard = async card => {
-    const body = JSON.stringify(card);
+  const addCard = async (formData) => {
+    const body = JSON.stringify(formData);
     try {
       const response = await fetch("/api/cards", {
         method: "POST",
         headers: {
-          //need this for image upload when implemented
-          "Content-Type": "multipart/form-data"
-          //"Content-Type": "application/json"
+          'Content-Type': 'application/json',
         },
-        body
+        body,       
       });
+
       if (!response.ok) {
         throw new Error(response.statusText);
       }
@@ -53,7 +52,6 @@ export default function Sell() {
       setId(data.data._id);
     } catch (error) {
       console.log(error.message);
-      console.error(error);
       setOpenError(true);
       setErrorMessage(error.message || "unknown error");
     }

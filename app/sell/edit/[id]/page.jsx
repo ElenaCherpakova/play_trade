@@ -36,9 +36,7 @@ export default function Page({ params }) {
       const response = await fetch(`/api/cards/${id}`, {
         method: "PATCH",
         headers: {
-          //need this for image upload when implemented
-          "Content-Type": "multipart/form-data"
-          //"Content-Type": "application/json"
+          'Content-Type': 'application/json',
         },
         body
       });
