@@ -5,23 +5,52 @@ import { ThemeProvider, useTheme } from "@mui/material/styles";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { theme as importedTheme } from "/styles/theme.js";
+import useAuthUser from "../store/useAuthUser";
 
-export default function UserProfileEditPage({ user = {} }) {
-  const { nickname = "", password = "", email = "", location = "", photo = "" } = user;
-  const { data: session } = useSession();
+export default function UserProfileEditPage(props) {
   const router = useRouter();
   const theme = useTheme();
-  // for edit mode
+  const updateProfile = useAuthUser(state => state.updateProfile);
+
+  const { data: session, update: updateSession } = useSession();
+  console.log("session", session);
+  const [formData, setFormData] = useState({
+    name: session?.user?.name || "",
+    email: session?.user?.email || ""
+  });
+
   const [isEditing, setIsEditing] = useState(false);
 
-  const handleButtonClick = () => {
-    if (isEditing) {
-    }
-
-    // Toggle edit mode
-    setIsEditing(!isEditing);
+  const handleInputChange = e => {
+    const { name, value } = e.target;
+    setFormData(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
   };
 
+  const handleButtonClick = async () => {
+    if (isEditing) {
+      try {
+        console.log("formData", formData);
+        await updateSession({
+          ...session,
+          user: { ...session.user, ...formData }
+        });
+        await updateProfile(formData);
+
+        setIsEditing(false);
+      } catch (error) {
+        throw new Error("Error occurred during profile update:", error);
+      }
+    } else {
+      setIsEditing(true);
+    }
+  };
+
+  if (!session) {
+    return null;
+  }
   return (
     //entire screen
     <ThemeProvider theme={importedTheme}>
@@ -39,9 +68,8 @@ export default function UserProfileEditPage({ user = {} }) {
         <Typography
           variant="h4"
           align="center"
+          color="primary"
           sx={{
-            color: theme.palette.primary.main,
-            fontFamily: theme.typography.fontFamily,
             flexGrow: 0,
             p: 0,
             mt: 0
@@ -74,11 +102,9 @@ export default function UserProfileEditPage({ user = {} }) {
                   color="secondary"
                   onClick={() => router.push("./addphoto")}
                   sx={{
-                    "fontFamily": theme.typography.fontFamily,
                     "letterSpacing": "0.1em",
                     "mt": 2,
                     "width": "50%",
-                    "borderRadius": theme.shape.borderRadius,
                     "&:hover": {
                       backgroundColor: theme.palette.accent.main
                     }
@@ -89,11 +115,9 @@ export default function UserProfileEditPage({ user = {} }) {
                   variant="contained"
                   color="secondary"
                   sx={{
-                    "fontFamily": theme.typography.fontFamily,
                     "letterSpacing": "0.1em",
                     "mt": 2,
                     "width": "50%",
-                    "borderRadius": theme.shape.borderRadius,
                     "&:hover": {
                       backgroundColor: theme.palette.accent.main
                     }
@@ -105,12 +129,11 @@ export default function UserProfileEditPage({ user = {} }) {
             <Grid item xs={12} md={8}>
               {/* right side of screen */}
               <Paper
+                padding={2}
                 sx={{
                   display: "flex",
                   flexDirection: "column",
-                  alignItems: "center",
-                  padding: theme.spacing(2),
-                  borderRadius: theme.shape.borderRadius
+                  alignItems: "center"
                 }}>
                 <Box
                   display="flex"
@@ -122,60 +145,30 @@ export default function UserProfileEditPage({ user = {} }) {
                     width: "80%"
                   }}>
                   <TextField
+                    onChange={handleInputChange}
+                    name="name"
                     label="Nickname"
-                    defaultValue={user.nickname}
-                    InputProps={{
-                      sx: {
-                        fontFamily: theme.typography.fontFamily,
-                        borderRadius: theme.shape.borderRadius
-                      }
-                    }}
+                    defaultValue={formData.name}
                     sx={{ mb: 2 }} //margin bottom
-                  />
-                  <TextField
-                    label="Password"
-                    defaultValue={password}
-                    type="password"
-                    InputProps={{
-                      sx: {
-                        fontFamily: theme.typography.fontFamily,
-                        borderRadius: theme.shape.borderRadius
-                      }
-                    }}
-                    sx={{ mb: 2 }}
+                    disabled={!isEditing}
                   />
                   <TextField
                     label="Email"
-                    defaultValue={email}
-                    InputProps={{
-                      sx: {
-                        fontFamily: theme.typography.fontFamily,
-                        borderRadius: theme.shape.borderRadius
-                      }
-                    }}
+                    name="email"
+                    defaultValue={formData.email}
                     sx={{ mb: 2 }}
+                    disabled={!isEditing}
+                    onChange={handleInputChange}
                   />
-                  <TextField
-                    label="Location"
-                    defaultValue={location}
-                    InputProps={{
-                      sx: {
-                        fontFamily: theme.typography.fontFamily,
-                        borderRadius: theme.shape.borderRadius
-                      }
-                    }}
-                    sx={{ mb: 2 }}
-                  />
+
                   <Box display="flex" justifyContent="space-between" width="100%" mt={2}>
                     <Button
                       variant="contained"
                       color="secondary"
                       onClick={handleButtonClick}
                       sx={{
-                        "fontFamily": theme.typography.fontFamily,
                         "mt": 2,
                         "width": "40%",
-                        "borderRadius": theme.shape.borderRadius,
                         "letterSpacing": "0.1em",
                         "&:hover": {
                           backgroundColor: theme.palette.accent.main
@@ -187,10 +180,8 @@ export default function UserProfileEditPage({ user = {} }) {
                       variant="contained"
                       color="secondary"
                       sx={{
-                        "fontFamily": theme.typography.fontFamily,
                         "mt": 2, // Add a top margin
                         "width": "40%", // Make the button full width
-                        "borderRadius": theme.shape.borderRadius,
                         "letterSpacing": "0.1em",
                         "&:hover": {
                           backgroundColor: theme.palette.accent.main

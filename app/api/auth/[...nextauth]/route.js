@@ -6,6 +6,7 @@ import User from "@/models/User";
 import bcrypt from "bcryptjs";
 import dbConnect from "@/lib/mongo/dbConnect";
 import createAssociatedModels from "@/utils/createAssociatedModels";
+import { use } from "react";
 /**
  *
  * @param {Account} account
@@ -87,29 +88,35 @@ export const authOptions = {
       }
       return true;
     },
-    jwt: async ({ token, user, session, trigger }) => {
+    async jwt({ token, user, session, trigger }) {
+      console.log("jwt", { token, session, user });
       if (user) {
         token.user = user;
       }
-      if (trigger === "update" && session?.user._id) {
-        const fieldsToUpdate = ["name", "email", "location"];
-        fieldsToUpdate.forEach(field => {
-          if (session[field]) {
-            token.user[field] = session[field];
-          }
-        });
+
+      if (trigger === "update" && (session.user.name || session.user.email)) {
+        return {
+          ...token,
+          _id: session.user._id || session.user.sub,
+          name: session.user.name,
+          email: session.user.email
+        };
       }
+
       return token;
     },
-    session: async ({ session, token }) => {
-      if (token?.user) {
-        const { _id, name, email, sub, location } = token.user;
-        session.user._id = session.user._id || _id || sub;
-        session.user.name = name || session.user.name;
-        session.user.email = email || session.user.email;
-        session.user.location = location || session.user.location;
+    async session({ session, token }) {
+      if (token) {
+        return {
+          ...session,
+          user: {
+            ...session.user,
+            _id: token._id || token.sub,
+            name: token.name,
+            email: token.email
+          }
+        };
       }
-      console.log("SESSION", session);
       return session;
     }
   },
@@ -124,4 +131,4 @@ export const authOptions = {
 };
 
 const handler = NextAuth(authOptions);
-export { handler as GET, handler as POST, handler as PATCH };
+export { handler as GET, handler as POST, handler as PUT };
