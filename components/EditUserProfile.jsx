@@ -97,7 +97,7 @@ export default function UserProfileEditPage(props) {
                 sx={{
                   p: 2
                 }}>
-                <Avatar src="/broken-image.jpg" sx={{ width: "80%", height: "auto" }} />
+                <Avatar src="/broken-image.jpg" sx={{ width: "50%", height: "30vh" }} />
                 <Button
                   variant="contained"
                   color="secondary"
