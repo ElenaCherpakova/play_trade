@@ -37,30 +37,30 @@ export default function CardForm({ cardValue, onSubmitForm }) {
   };
   async function handleImageUpload(file) {
     try {
-      const res = await fetch('/api/cloudinary-signature');
-      if (!res.ok) throw new Error('Failed to fetch the Cloudinary signature.');
+      const res = await fetch("/api/cloudinary-signature");
+      if (!res.ok) throw new Error("Failed to fetch the Cloudinary signature.");
 
       const { signature, timestamp, api_key } = await res.json();
 
       const formData = new FormData();
-      formData.append('file', file);
-      formData.append('api_key', api_key);
-      formData.append('timestamp', timestamp);
-      formData.append('signature', signature);
+      formData.append("file", file);
+      formData.append("api_key", api_key);
+      formData.append("timestamp", timestamp);
+      formData.append("signature", signature);
 
       const uploadUrl = `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_NAME}/image/upload`;
       const uploadRes = await fetch(uploadUrl, {
-        method: 'POST',
+        method: "POST",
         body: formData,
       });
 
       const uploadData = await uploadRes.json();
 
-      if (!uploadRes.ok) throw new Error(uploadData.error?.message || 'Upload to Cloudinary failed.');
+      if (!uploadRes.ok) throw new Error(uploadData.error?.message || "Upload to Cloudinary failed.");
       let imageURL = uploadData.secure_url;
       return imageURL;
     } catch (error) {
-      return ''; 
+      return ""; 
     }
   }
 
@@ -125,19 +125,19 @@ const handleSubmit = async (e) => {
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
                 style={{
-                  position: 'relative',
-                  aspectRatio: '3/4',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  textAlign: 'center',
-                  cursor: 'pointer',
+                  position: "relative",
+                  aspectRatio: "3/4",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  textAlign: "center",
+                  cursor: "pointer",
                 }}
-                sx={{ overflow: 'hidden' }}
+                sx={{ overflow: "hidden" }}
               >
                 {(image || cardValue.imageURL) ? (
-                  <img src={image} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute' }} />
+                  <img src={image} alt="Preview" style={{ width: "100%", height: "100%", objectFit: "cover", position: "absolute" }} />
                 ) : (
                   <>
                     <Image fontSize="large" color="secondary" />
@@ -147,18 +147,18 @@ const handleSubmit = async (e) => {
                 {isHovered && (image || cardValue.imageURL) && (
                   <Box
                     style={{
-                      position: 'absolute',
+                      position: "absolute",
                       top: 0,
                       left: 0,
-                      width: '100%',
-                      height: '100%',
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                      width: "100%",
+                      height: "100%",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      backgroundColor: "rgba(0, 0, 0, 0.5)",
                     }}
                   >
-                    <Typography variant="body1" style={{ color: '#fff', textAlign: 'center' }}>
+                    <Typography variant="body1" style={{ color: "#fff", textAlign: "center" }}>
                       Click to upload a new image
                     </Typography>
                   </Box>
