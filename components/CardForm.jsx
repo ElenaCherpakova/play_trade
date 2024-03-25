@@ -23,6 +23,7 @@ import { Image } from "@mui/icons-material";
 export default function CardForm({ cardValue, onSubmitForm }) {
   const [cardCategory, setCardCategory] = useState(cardValue?.category);
   const [image, setImage] = useState(cardValue?.imageURL || "");
+  const [imageUrl, setImageUrl] = useState("");
   const [isHovered, setIsHovered] = useState(false);
   const fileInputRef = useRef(null);
 
@@ -34,12 +35,45 @@ export default function CardForm({ cardValue, onSubmitForm }) {
       return ["near mint", "lightly played", "moderately played", "heavily played", "damaged"];
     }
   };
+  async function handleImageUpload(file) {
+    try {
+      const res = await fetch('/api/cloudinary-signature');
+      if (!res.ok) throw new Error('Failed to fetch the Cloudinary signature.');
 
-  const handleFileChange = event => {
+      const { signature, timestamp, api_key } = await res.json();
+
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('api_key', api_key);
+      formData.append('timestamp', timestamp);
+      formData.append('signature', signature);
+
+      const uploadUrl = `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_NAME}/image/upload`;
+      const uploadRes = await fetch(uploadUrl, {
+        method: 'POST',
+        body: formData,
+      });
+
+      const uploadData = await uploadRes.json();
+
+      if (!uploadRes.ok) throw new Error(uploadData.error?.message || 'Upload to Cloudinary failed.');
+      let imageUrl = uploadData.secure_url;
+      return imageUrl;
+    } catch (error) {
+      return ''; 
+    }
+  }
+
+  const handleFileChange = async (event) => {
     const file = event.target.files[0];
     if (file) {
-      setImage(URL.createObjectURL(file));
-      event.target.value = '' 
+        const uploadedImageUrl = await handleImageUpload(file); 
+        if (uploadedImageUrl) {
+          setImage(URL.createObjectURL(file)); 
+          setImageUrl(uploadedImageUrl);
+        } else {
+          console.error("Failed to upload image.");
+        }
     }
   };
 
@@ -47,27 +81,27 @@ export default function CardForm({ cardValue, onSubmitForm }) {
     fileInputRef.current.click();
   };
 
-  const handleSubmit = async e => {
-    const { cardName, set, price, currency, shippingCost, description, conditions, quantity, available } =
-      e.target.elements;
-    const imageFile = imageURL.files[0];
-    if (imageFile) {
-      setImage(imageFile);
-    }
-    onSubmitForm({
-      imageURL: image,
-      category: cardCategory,
-      name: cardName.value,
-      set: set.value,
-      price: price.value,
-      currency: currency.value,
-      shippingCost: shippingCost.value,
-      description: description.value,
-      conditions: conditions.value,
-      quantity: quantity.value,
-      available: available.value
-    });
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  const formData = {
+    name: e.target.elements.cardName.value,
+    set: e.target.elements.set.value,
+    price: e.target.elements.price.value,
+    currency: e.target.elements.currency.value,
+    shippingCost: e.target.elements.shippingCost.value,
+    description: e.target.elements.description.value,
+    conditions: e.target.elements.conditions.value,
+    quantity: e.target.elements.quantity.value,
+    available: e.target.elements.available.value,
+    category: cardCategory, 
+    imageUrl: imageUrl
   };
+  console.log(formData)//url exists
+  await onSubmitForm(formData);
+};
+
+console.log(cardValue)//url is lost, no url in mongo
   return (
     <Container>
       <Box
@@ -104,19 +138,15 @@ export default function CardForm({ cardValue, onSubmitForm }) {
                 }}
                 sx={{ overflow: 'hidden' }}
               >
-                {image && (
-                  <img
-                    src={image}
-                    alt="Preview"
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      objectFit: 'cover',
-                      position: 'absolute',
-                    }}
-                  />
+                {(image || cardValue.imageURL) ? (
+                  <img src={image} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute' }} />
+                ) : (
+                  <>
+                    <Image fontSize="large" color="secondary" />
+                    <Typography sx={theme => ({ color: theme.palette.text.secondary })}>Click to upload an image</Typography>
+                  </>
                 )}
-                {isHovered && image && (
+                {isHovered && (image || cardValue.imageURL) && (
                   <Box
                     style={{
                       position: 'absolute',
@@ -131,17 +161,9 @@ export default function CardForm({ cardValue, onSubmitForm }) {
                     }}
                   >
                     <Typography variant="body1" style={{ color: '#fff', textAlign: 'center' }}>
-                      Click to change image
+                      Click to upload a new image
                     </Typography>
                   </Box>
-                )}
-                {!image && (
-                  <>
-                    <Image fontSize="large" color="secondary" />
-                    <Typography sx={(theme) => ({ color: theme.palette.text.secondary })}>
-                      Click to upload image
-                    </Typography>
-                  </>
                 )}
               </Paper>
               <input
