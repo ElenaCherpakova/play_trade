@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/mongo/dbConnect";
-import { getSession } from "next-auth/react";
 import { getToken } from "next-auth/jwt";
 import Card from "@/models/Card";
-import formidable from "formidable-serverless";
 import cloudinary from "cloudinary"; 
 
 export const config = {
@@ -44,7 +42,8 @@ export async function GET(req, res) {
   }
 }
 
-/*export async function PATCH(req, res) {
+//edit data
+export async function PATCH(req, res) {
   await dbConnect();
   try {
     const token = await getToken({ req });
@@ -76,67 +75,7 @@ export async function GET(req, res) {
     return NextResponse.json({ success: false, message: error }, { status: 400 });
   }
 }
-*/
 
-// const parseFormData = (req) => new Promise((resolve, reject) => {
-//   const form = new formidable.IncomingForm();
-//   form.parse(req, (err, fields, files) => {
-//     if (err) reject(err);
-//     resolve({ fields, files });
-//   });
-// });
-
-
-export async function PATCH(req, res) {
-  await dbConnect();
-
-  const form = new formidable.IncomingForm();
-  form.parse(req, async (err, fields, files) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({ success: false, message: "Form parsing error" });
-    }
-
-    // Authentication check
-    const token = await getToken({ req });
-    if (!token) {
-      return res.status(401).json({ success: false, message: "Unauthorized" });
-    }
-
-    const userId = token.sub;
-    const cardId = req.url.split("cards/")[1];
-
-    // Process image upload if file exists
-    let imageUrl = fields.imageUrl; // Default to existing or sent URL
-    if (files.image) {
-      try {
-        const result = await cloudinary.v2.uploader.upload(files.image.filepath);
-        imageUrl = result.secure_url;
-      } catch (uploadError) {
-        console.error(uploadError);
-        return res.status(500).json({ success: false, message: "Image upload failed" });
-      }
-    }
-
-    // Update card with new data, including the new image URL
-    try {
-      const updatedCard = await Card.findOneAndUpdate(
-        { _id: cardId, createdBy: userId },
-        { ...fields, imageUrl },
-        { new: true, runValidators: true }
-      );
-
-      if (!updatedCard) {
-        return res.status(404).json({ success: false, message: `No card with id ${cardId}` });
-      }
-
-      return res.status(200).json({ success: true, data: updatedCard });
-    } catch (error) {
-      console.error(error);
-      return res.status(400).json({ success: false, message: error.toString() });
-    }
-  });
-}
 //delete data
 export async function DELETE(req, res) {
   await dbConnect();
