@@ -132,10 +132,8 @@ const useAuthUser = create(set => ({
     }
   },
   updateProfile: async userData => {
-    console.log("userData", userData);
     set({ isLoading: true, error: null });
     try {
-      // userData.trigger = trigger;
       const response = await fetch("/api/auth/profile/update", {
         method: "PUT",
         headers: {
@@ -145,7 +143,6 @@ const useAuthUser = create(set => ({
       });
       if (response.ok) {
         const data = await response.json();
-        console.log("HIT DATA", data);
         set({ isLoading: false, data, error: null });
       } else {
         const errorData = await response.json();

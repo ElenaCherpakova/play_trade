@@ -13,7 +13,7 @@ export default function UserProfileEditPage(props) {
   const updateProfile = useAuthUser(state => state.updateProfile);
 
   const { data: session, update: updateSession } = useSession();
-  console.log("session", session);
+  
   const [formData, setFormData] = useState({
     name: session?.user?.name || "",
     email: session?.user?.email || ""
@@ -21,7 +21,11 @@ export default function UserProfileEditPage(props) {
 
   const [isEditing, setIsEditing] = useState(false);
 
-  const handleInputChange = e => {
+  if (!session) {
+    return null;
+  }
+
+  const handleChange = e => {
     const { name, value } = e.target;
     setFormData(prevState => ({
       ...prevState,
@@ -29,7 +33,7 @@ export default function UserProfileEditPage(props) {
     }));
   };
 
-  const handleButtonClick = async () => {
+  const handleSubmit = async () => {
     if (isEditing) {
       try {
         console.log("formData", formData);
@@ -48,9 +52,6 @@ export default function UserProfileEditPage(props) {
     }
   };
 
-  if (!session) {
-    return null;
-  }
   return (
     //entire screen
     <ThemeProvider theme={importedTheme}>
@@ -145,7 +146,7 @@ export default function UserProfileEditPage(props) {
                     width: "80%"
                   }}>
                   <TextField
-                    onChange={handleInputChange}
+                    onChange={handleChange}
                     name="name"
                     label="Nickname"
                     defaultValue={formData.name}
@@ -158,14 +159,14 @@ export default function UserProfileEditPage(props) {
                     defaultValue={formData.email}
                     sx={{ mb: 2 }}
                     disabled={!isEditing}
-                    onChange={handleInputChange}
+                    onChange={handleChange}
                   />
 
                   <Box display="flex" justifyContent="space-between" width="100%" mt={2}>
                     <Button
                       variant="contained"
                       color="secondary"
-                      onClick={handleButtonClick}
+                      onClick={handleSubmit}
                       sx={{
                         "mt": 2,
                         "width": "40%",
