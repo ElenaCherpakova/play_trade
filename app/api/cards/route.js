@@ -17,7 +17,7 @@ export async function GET(req, res) {
     // Fetch all cards from the database
     const cards = await Card.find({});
     if (!cards) {
-      return NextResponse.json({ success: false, message: "No cards found" }, { status: 400 });
+      return NextResponse.json({ success: false, message: error.message || "No cards found" }, { status: 400 });
     }
     return NextResponse.json({ success: true, data: cards }, { status: 200 });
   } catch (error) {
@@ -26,7 +26,7 @@ export async function GET(req, res) {
 }
 
 //Create card
-/*export async function POST(req) {
+export async function POST(req) {
   await dbConnect();
   try {
     const token = await getToken({ req });
@@ -36,62 +36,39 @@ export async function GET(req, res) {
     const userId = token.sub;
     const body = await req.json();
     body.createdBy = userId;
-    // Create a new card based on the request body
+    console.log(body)
     const card = await Card.create(body);
+    //console.log(card)
     if (!card) {
-      return NextResponse.json({ success: false, message: "Something wrong" }, { status: 400 });
+      return NextResponse.json({ success: false, message: error.message || "Error saving a card" }, { status: 400 });
     }
-    return NextResponse.json({ success: true, data: card }, { status: 201 });
+    return new NextResponse(JSON.stringify({ success: true, data: card }), {
+      status: 201 
+    })
   } catch (error) {
-    return NextResponse.json({ success: false, message: error }, { status: 400 });
+    let status = 500;
+    let message = 'Server error';
+    let errors = []; 
+    if (error.name === 'ValidationError') {
+      // Extracting specific validation errors for a ValidationError
+      errors = Object.values(error.errors).map(val => val.message);
+      message = 'Validation error';
+      status = 400; // Client error - Bad Request
+    }
+
+    const responseData = JSON.stringify({
+      success: false,
+      message,
+      errors
+    });
+
+    return new NextResponse(responseData, {
+      status: status,
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
   }
-}*/
-export async function POST(req) {
-  await dbConnect();
-
-  const form = new formidable.IncomingForm();
-  form.parse(req, async (err, fields, files) => {
-    if (err) {
-      console.error(err);
-      return NextResponse.json({ success: false, message: "Form parsing error" }, { status: 500 });
-    }
-
-    // Authentication check
-    const token = await getToken({ req });
-    if (!token) {
-      return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
-    }
-    const userId = token.sub;
-
-    let imageUrl = ""; // Initialize image URL variable
-    if (files.image) {
-      try {
-        const result = await cloudinary.v2.uploader.upload(files.image.filepath);
-        imageUrl = result.secure_url;
-      } catch (uploadError) {
-        console.error(uploadError);
-        return NextResponse.json({ success: false, message: "Image upload failed" }, { status: 500 });
-      }
-    }
-
-    // Adding the userId and imageUrl to the card data
-    const cardData = {
-      ...fields,
-      createdBy: userId,
-      imageUrl,
-    };
-
-    try {
-      const card = await Card.create(cardData);
-      if (!card) {
-        return NextResponse.json({ success: false, message: "Something went wrong" }, { status: 400 });
-      }
-      return NextResponse.json({ success: true, data: card }, { status: 201 });
-    } catch (error) {
-      console.error(error);
-      return NextResponse.json({ success: false, message: error.toString() }, { status: 400 });
-    }
-  });
 }
 
 //Delete all cards
@@ -105,10 +82,12 @@ export async function DELETE(req) {
     const userId = token.sub;
     const cards = await Card.deleteMany({ createdBy: userId });
     if (!cards) {
-      return NextResponse.json({ success: false, message: "No cards found" }, { status: 400 });
+      console.log(error)
+      return NextResponse.json({ success: false, message: error.message || "No cards found" }, { status: 400 });
     }
     return NextResponse.json({ success: true, data: {} }, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ success: false, message: error }, { status: 400 });
+    console.log(error.message)
+    return NextResponse.json({ success: false, message: error.message }, { status: 400 });
   }
 }
