@@ -25,6 +25,7 @@ export default function CardForm({ cardValue, onSubmitForm }) {
   const [image, setImage] = useState(cardValue?.imageURL || "");
   const [imageURL, setImageURL] = useState("");
   const [isHovered, setIsHovered] = useState(false);
+  const [error, setError] = useState('');
   const fileInputRef = useRef(null);
 
   const editCard = cardValue.name ? true : false;
@@ -60,6 +61,7 @@ export default function CardForm({ cardValue, onSubmitForm }) {
       let imageURL = uploadData.secure_url;
       return imageURL;
     } catch (error) {
+      setError("Failed to upload the image. Please try again.");
       return ""; 
     }
   }
@@ -72,7 +74,7 @@ export default function CardForm({ cardValue, onSubmitForm }) {
           setImage(URL.createObjectURL(file)); 
           setImageURL(uploadedimageURL);
         } else {
-          console.error("Failed to upload image.");
+          setError("Failed to upload the image for preview")
         }
     }
   };
@@ -83,6 +85,10 @@ export default function CardForm({ cardValue, onSubmitForm }) {
 
 const handleSubmit = async (e) => {
   e.preventDefault();
+  setError('');
+
+  const defaultImageUrl = "https://res.cloudinary.com/dfoiixlup/image/upload/v1711381226/vr2hc3udhtc8z9u1hrp4.png"; 
+  const finalImageUrl = imageURL || defaultImageUrl;
 
   const formData = {
     name: e.target.elements.cardName.value,
@@ -95,7 +101,7 @@ const handleSubmit = async (e) => {
     quantity: e.target.elements.quantity.value,
     available: e.target.elements.available.value,
     category: cardCategory, 
-    imageURL: imageURL
+    imageURL: finalImageUrl
   };
   await onSubmitForm(formData);
 };
@@ -162,6 +168,11 @@ const handleSubmit = async (e) => {
                       Click to upload a new image
                     </Typography>
                   </Box>
+                )}
+                {error && (
+                <Typography color="error" style={{ marginBottom: '10px' }}>
+                  {error}
+                </Typography>
                 )}
               </Paper>
               <input
