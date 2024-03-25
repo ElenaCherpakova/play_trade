@@ -39,7 +39,7 @@ export default function Sell() {
       const response = await fetch("/api/cards", {
         method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body,       
       });

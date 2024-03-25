@@ -36,7 +36,7 @@ export default function Page({ params }) {
       const response = await fetch(`/api/cards/${id}`, {
         method: "PATCH",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body
       });

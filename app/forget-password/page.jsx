@@ -2,13 +2,13 @@
 
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useState, useEffect } from 'react';
-import useAuthUser from '../../store/useAuthUser';
-import { Container, Box, TextField, Button, Typography, CircularProgress, Paper, Link } from '@mui/material';
+import { useState, useEffect } from "react";
+import useAuthUser from "../../store/useAuthUser";
+import { Container, Box, TextField, Button, Typography, CircularProgress, Paper, Link } from "@mui/material";
 
 const ForgetPasswordPage = () => {
   const [formData, setFormData] = useState({
-    email: ''
+    email: ""
   });
 
   const router = useRouter();
@@ -16,8 +16,8 @@ const ForgetPasswordPage = () => {
   const { status: sessionStatus } = useSession();
 
   useEffect(() => {
-    if (sessionStatus === 'authenticated') {
-      router.replace('/market'); 
+    if (sessionStatus === "authenticated") {
+      router.replace("/market"); 
     } 
   }, [sessionStatus, router]);
 
@@ -35,18 +35,18 @@ const ForgetPasswordPage = () => {
   };
 
   const handleLoginRedirect = () => {
-    router.push('/signin'); 
+    router.push("/signin"); 
   };
 
   return (
-    sessionStatus !== 'authenticated' && (
+    sessionStatus !== "authenticated" && (
     <Container component="main" maxWidth="xs">
       <Paper
         sx={(theme)=>({
           marginTop: 8,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
           padding: theme.spacing(6),
         })}
       >
@@ -85,10 +85,10 @@ const ForgetPasswordPage = () => {
               mb: 2,
             }}
           >
-            {isLoading ? <CircularProgress size={24} /> : 'Submit'}
+            {isLoading ? <CircularProgress size={24} /> : "Submit"}
           </Button>
           <Typography variant="body2" textAlign="center">
-            Already have an account?{' '}
+            Already have an account?{" "}
             <Link href="#" onClick={handleLoginRedirect} variant="body2">
               Login 
             </Link>

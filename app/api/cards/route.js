@@ -47,12 +47,12 @@ export async function POST(req) {
     })
   } catch (error) {
     let status = 500;
-    let message = 'Server error';
+    let message = "Server error";
     let errors = []; 
-    if (error.name === 'ValidationError') {
+    if (error.name === "ValidationError") {
       // Extracting specific validation errors for a ValidationError
       errors = Object.values(error.errors).map(val => val.message);
-      message = 'Validation error';
+      message = "Validation error";
       status = 400; // Client error - Bad Request
     }
 
@@ -65,7 +65,7 @@ export async function POST(req) {
     return new NextResponse(responseData, {
       status: status,
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json"
       }
     });
   }

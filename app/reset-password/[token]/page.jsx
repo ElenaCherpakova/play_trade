@@ -2,15 +2,15 @@
 
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useState, useEffect } from 'react';
-import useAuthUser from '../../../store/useAuthUser';
-import { Container, Box, TextField, Button, Typography, CircularProgress, Paper, InputAdornment, IconButton, Link } from '@mui/material';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { useState, useEffect } from "react";
+import useAuthUser from "../../../store/useAuthUser";
+import { Container, Box, TextField, Button, Typography, CircularProgress, Paper, InputAdornment, IconButton, Link } from "@mui/material";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 const ResetPasswordPage = ({ params }) => {
   const [formData, setFormData] = useState({
-    password: ''
+    password: ""
   });
 
   const [showPassword, setShowPassword] = useState(false);
@@ -27,14 +27,14 @@ const ResetPasswordPage = ({ params }) => {
   }, [params.token, verifyToken]);
 
   useEffect(() => {
-    if (sessionStatus === 'authenticated') {
-      router.replace('/market'); 
+    if (sessionStatus === "authenticated") {
+      router.replace("/market"); 
     } 
   }, [sessionStatus, router]);
 
   useEffect(() => {
     if (passwordResetSuccess) {
-      router.push('/signin');
+      router.push("/signin");
     }
   }, [passwordResetSuccess, router]);
 
@@ -55,14 +55,14 @@ const ResetPasswordPage = ({ params }) => {
     resetPassword(formData.password, email); 
   };
   return (
-    sessionStatus !== 'authenticated' && (
+    sessionStatus !== "authenticated" && (
     <Container component="main" maxWidth="xs">
       <Paper
         sx={(theme)=>({
           marginTop: 8,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
           padding: theme.spacing(6),
         })}
       >
@@ -83,7 +83,7 @@ const ResetPasswordPage = ({ params }) => {
             fullWidth
             name="password"
             label="Password"
-            type={showPassword ? 'text' : 'password'}
+            type={showPassword ? "text" : "password"}
             id="password"
             autoComplete="current-password"
             value={formData.password}
