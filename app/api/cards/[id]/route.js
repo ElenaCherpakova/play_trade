@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/mongo/dbConnect";
-import { getSession } from "next-auth/react";
 import { getToken } from "next-auth/jwt";
 import Card from "@/models/Card";
 
@@ -29,6 +28,7 @@ export async function GET(req, res) {
   }
 }
 
+//edit data
 export async function PATCH(req, res) {
   await dbConnect();
   try {

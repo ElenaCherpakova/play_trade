@@ -2,17 +2,17 @@
 
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useState, useEffect } from 'react';
-import useAuthUser from '../../store/useAuthUser';
-import { Container, Box, TextField, Button, Typography, CircularProgress, InputAdornment, IconButton, Divider, Link, Paper } from '@mui/material';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import GoogleIcon from '@mui/icons-material/Google'; 
+import { useState, useEffect } from "react";
+import useAuthUser from "../../store/useAuthUser";
+import { Container, Box, TextField, Button, Typography, CircularProgress, InputAdornment, IconButton, Divider, Link, Paper } from "@mui/material";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import GoogleIcon from "@mui/icons-material/Google"; 
 
 const SignInPage = () => {
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
 
@@ -22,8 +22,8 @@ const SignInPage = () => {
 
   useEffect(() => {
     if (!session) return; 
-    if (sessionStatus === 'authenticated') {
-      router.replace('/market'); 
+    if (sessionStatus === "authenticated") {
+      router.replace("/market"); 
     } 
   }, [sessionStatus, router, session]);
 
@@ -45,7 +45,7 @@ const SignInPage = () => {
   };
 
   const handleRegisterRedirect = () => {
-    router.push('/signup'); 
+    router.push("/signup"); 
   };
 
 
@@ -59,9 +59,9 @@ const SignInPage = () => {
       <Paper
         sx={(theme)=>({
           marginTop: 8,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
           padding: theme.spacing(6),
         })}
       >
@@ -96,7 +96,7 @@ const SignInPage = () => {
             fullWidth
             name="password"
             label="Password"
-            type={showPassword ? 'text' : 'password'}
+            type={showPassword ? "text" : "password"}
             id="password"
             autoComplete="current-password"
             value={formData.password}
@@ -132,17 +132,17 @@ const SignInPage = () => {
               mb: 1,
             }}
           >
-            {isLoading ? <CircularProgress size={24} /> : 'Log In'}
+            {isLoading ? <CircularProgress size={24} /> : "Log In"}
           </Button>
           <Typography variant="body2" textAlign="center">
-            Don't have an account?{' '}
+            Don"t have an account?{" "}
             <Link href="#" onClick={handleRegisterRedirect} variant="body2">
               Register
             </Link>
           </Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center', my: 2 }}>
+          <Box sx={{ display: "flex", alignItems: "center", my: 2 }}>
             <Divider sx={{ flexGrow: 1 }} />
-            <Typography sx={{ mx: 2, color: 'text.secondary' }}>OR</Typography>
+            <Typography sx={{ mx: 2, color: "text.secondary" }}>OR</Typography>
             <Divider sx={{ flexGrow: 1 }} />
           </Box>
           <Button

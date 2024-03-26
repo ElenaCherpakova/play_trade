@@ -16,6 +16,7 @@
     "@mui/material": "^5.15.13",
     "@mui/material-nextjs": "^5.15.11",
     "bcryptjs": "^2.4.3",
+    "cloudinary": "^2.0.3",
     "express-mongo-sanitize": "^2.2.0",
     "googleapis": "^134.0.0",
     "jsonwebtoken": "^9.0.2",
