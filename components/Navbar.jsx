@@ -103,7 +103,70 @@ const Navbar = ({ isLoggedIn }) => {
                     </Typography>
                   </Link>
                 </li>
-                {/* Other categories */}
+                <li style={{ marginBottom: theme.spacing(1) }}>
+                  <Link href="/cards/category2" passHref>
+                    <Typography
+                      variant="body1"
+                      sx={{
+                        color: theme.palette.primary.main,
+                        textDecoration: "none",
+                        "&:hover": {
+                          textDecoration: "underline",
+                        },
+                      }}
+                    >
+                      Hockey
+                    </Typography>
+                  </Link>
+                </li>
+                <li style={{ marginBottom: theme.spacing(1) }}>
+                  <Link href="/cards/category3" passHref>
+                    <Typography
+                      variant="body1"
+                      sx={{
+                        color: theme.palette.primary.main,
+                        textDecoration: "none",
+                        "&:hover": {
+                          textDecoration: "underline",
+                        },
+                      }}
+                    >
+                      Soccer
+                    </Typography>
+                  </Link>
+                </li>
+                <li style={{ marginBottom: theme.spacing(1) }}>
+                  <Link href="/cards/category4" passHref>
+                    <Typography
+                      variant="body1"
+                      sx={{
+                        color: theme.palette.primary.main,
+                        textDecoration: "none",
+                        "&:hover": {
+                          textDecoration: "underline",
+                        },
+                      }}
+                    >
+                      Baseball
+                    </Typography>
+                  </Link>
+                </li>
+                <li style={{ marginBottom: theme.spacing(1) }}>
+                  <Link href="/cards/category5" passHref>
+                    <Typography
+                      variant="body1"
+                      sx={{
+                        color: theme.palette.primary.main,
+                        textDecoration: "none",
+                        "&:hover": {
+                          textDecoration: "underline",
+                        },
+                      }}
+                    >
+                      Basketball
+                    </Typography>
+                  </Link>
+                </li>
               </ul>
             )}
           </li>
@@ -126,7 +189,80 @@ const Navbar = ({ isLoggedIn }) => {
             </Link>
           </li>
 
-          {/* Remaining code for other links */}
+          <li>
+            <Link href="/signup" passHref>
+              <span
+                style={{
+                  cursor: "pointer",
+                  textDecoration: "none",
+                  color: theme.palette.background.paper,
+                  "&:hover": {
+                    color: theme.palette.accent.main,
+                    textDecoration: "underline",
+                  },
+                }}
+              >
+                Signup
+              </span>
+            </Link>
+          </li>
+
+          <li>
+            <Link href="/signin" passHref>
+              <span
+                style={{
+                  cursor: "pointer",
+                  textDecoration: "none",
+                  color: theme.palette.background.paper,
+                  "&:hover": {
+                    color: theme.palette.accent.main,
+                    textDecoration: "underline",
+                  },
+                }}
+              >
+                Login
+              </span>
+            </Link>
+          </li>
+
+          {isLoggedIn && (
+            <>
+              <li>
+                <Link href="/profile" passHref>
+                  <span
+                    style={{
+                      cursor: "pointer",
+                      textDecoration: "none",
+                      color: theme.palette.background.paper,
+                      "&:hover": {
+                        color: theme.palette.accent.main,
+                        textDecoration: "underline",
+                      },
+                    }}
+                  >
+                    Profile
+                  </span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/logout" passHref>
+                  <span
+                    style={{
+                      cursor: "pointer",
+                      textDecoration: "none",
+                      color: theme.palette.background.paper,
+                      "&:hover": {
+                        color: theme.palette.accent.main,
+                        textDecoration: "underline",
+                      },
+                    }}
+                  >
+                    Logout
+                  </span>
+                </Link>
+              </li>
+            </>
+          )}
         </ul>
       </nav>
     </Box>
@@ -134,3 +270,5 @@ const Navbar = ({ isLoggedIn }) => {
 };
 
 export default Navbar;
+
+
