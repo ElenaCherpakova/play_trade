@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server";
-
 import cloudinary from "@/app/config/cloudinaryConfig";
-// export const config = {
-//   api: {
-//     bodyParser: {
-//       sizeLimit: "8mb"
-//     }
-//   }
-// };
+
+export const routeConfig = {
+  api: {
+    bodyParser: {
+      sizeLimit: "8mb"
+    }
+  }
+};
 
 //Get signiture
 export async function GET(req) {
