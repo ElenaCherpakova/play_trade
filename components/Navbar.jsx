@@ -57,23 +57,25 @@ const Navbar = ({ isLoggedIn }) => {
             onMouseLeave={toggleCardDropdown}
             style={{ position: "relative" }}
           >
-            <span
-              style={{
+            <Typography
+              variant="body1"
+              component="span"
+              sx={{
                 cursor: "pointer",
+
+
+
                 color: theme.palette.background.paper,
                 "&:hover": {
                   color: theme.palette.accent.main,
-                  textDecoration: "none",
+
                 },
               }}
             >
-              <Link
-                href="/cards"
-                passHref
-                style={{ textDecoration: "none", color: "inherit" }}>
+              <Link href="/cards" passHref style={{ textDecoration: "none", color: "inherit" }}>
                 Cards
               </Link>
-            </span>
+            </Typography>
             {showCardDropdown && (
               <ul
                 className="dropdown-content"
@@ -175,9 +177,11 @@ const Navbar = ({ isLoggedIn }) => {
             )}
           </li>
           <li>
-            <Link href="/about" passHref legacyBehavior>
-              <span
-                style={{
+            <Link href="/about" passHref style={{ textDecoration: "none", color: "inherit" }}>
+              <Typography
+                variant="body1"
+                component="span"
+                sx={{
                   cursor: "pointer",
                   textDecoration: "none",
                   color: theme.palette.background.paper,
@@ -187,24 +191,7 @@ const Navbar = ({ isLoggedIn }) => {
                 }}
               >
                 About
-              </span>
-            </Link>
-          </li>
-
-          <li>
-            <Link href="/signup" passHref legacyBehavior>
-              <span
-                style={{
-                  cursor: "pointer",
-                  textDecoration: "none",
-                  color: theme.palette.background.paper,
-                  "&:hover": {
-                    color: theme.palette.accent.main,
-                  },
-                }}
-              >
-                Signup
-              </span>
+              </Typography>
             </Link>
           </li>
 
