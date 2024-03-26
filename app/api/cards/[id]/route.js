@@ -3,12 +3,6 @@ import dbConnect from "@/lib/mongo/dbConnect";
 import { getToken } from "next-auth/jwt";
 import Card from "@/models/Card";
 
-export const config = {
-  api: {
-    bodyParser: false
-  }
-};
-
 /**
  *
  * @param {NextRequest} req
