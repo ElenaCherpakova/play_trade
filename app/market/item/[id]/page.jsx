@@ -32,6 +32,12 @@ export default function Page({ params }) {
       <Button variant="contained" color="primary" onClick={() => router.push(`/sell/edit/${id}`)}>
         Edit card
       </Button>
+      <Button variant="contained" color="primary" onClick={() => router.push(`/market/seller/[id]`)}>
+        Watch information about the seller
+      </Button>
+      <Button variant="contained" color="primary" onClick={() => router.push("/cart")}>
+        Add card to cart
+      </Button>
     </Box>
   );
 }

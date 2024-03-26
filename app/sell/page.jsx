@@ -70,6 +70,9 @@ export default function Sell() {
         <Button variant="contained" color="primary" onClick={() => setAdd(true)}>
           Add card
         </Button>
+        <Button variant="contained" color="primary" onClick={() => router.push("/market/item/[id]")}>
+          Delete card
+        </Button>
         {add && <CardForm cardValue={card} onSubmitForm={addCard} />}
       </Box>
       <Snackbar
