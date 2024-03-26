@@ -12,7 +12,6 @@ export const routeConfig = {
 //Get signiture
 export async function GET(req) {
   try {
-    console.log("Handler function invoked.");
     const timestamp = Math.round(new Date().getTime() / 1000);
     const signature = cloudinary.v2.utils.api_sign_request(
       {
