@@ -39,7 +39,8 @@ const AuthControl = () => {
       ) : (
         <Button
           variant="contained"
-          color="primary"
+          color="accent"
+          size="small"
           onClick={handleLogin}
         >
           Login
