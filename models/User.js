@@ -31,7 +31,11 @@ const UserSchema = new Schema({
   },
   passwordResetToken: {
     type: String,
-    default: null
+    required: false,
+  },
+  passwordResetExpiry: {
+    type: Date,
+    required: false,
   },
   role: {
     type: String,
@@ -42,27 +46,17 @@ const UserSchema = new Schema({
 
 // Encrypt password before saving
 UserSchema.pre("save", async function () {
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
+  if (this.isModified('password')) {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+  }
 });
+
 
 UserSchema.methods.createJWT = function () {
   return jwt.sign({ userId: this._id, email: this.email }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_LIFETIME
   });
-};
-
-UserSchema.methods.createResetPasswordToken = function () {
-  return jwt.sign(
-    {
-      userId: this._id,
-      timestamp: new Date().getTime()
-    },
-    process.env.JWT_SECRET,
-    {
-      expiresIn: process.env.JWT_RESET_PASSWORD_EXPIRES_IN
-    }
-  );
 };
 
 UserSchema.methods.comparePassword = async function (userPassword) {

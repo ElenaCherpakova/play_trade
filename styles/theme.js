@@ -51,7 +51,7 @@ export const theme = createTheme({
     }
   },
   shape: {
-    borderRadius: 2
+    borderRadius: 8
   },
   components: {
     MuiPaper: {

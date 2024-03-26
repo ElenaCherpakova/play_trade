@@ -1,61 +1,77 @@
 "use client";
 import { useState, useEffect } from "react";
-import { Button } from "@mui/material";
-
-import CardComponent from "@/components/CardComponent";
+import { useRouter } from "next/navigation";
+import { Alert, Box, Snackbar } from "@mui/material";
+import CardForm from "@/components/CardForm";
 
 export default function Page({ params }) {
+  const [openError, setOpenError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [data, setData] = useState(null);
-  useEffect(() => {
-    const fetchCard = async () => {
-      const response = await fetch(`/api/cards/${params.id}`);
-      const data = await response.json();
-      setData(data.data);
-    };
-    fetchCard();
-  }, []);
-
+  const router = useRouter();
   const id = params.id;
-  const editProperty = {
-    name: "edited card's name",
-    imageURL: "https://m.media-amazon.com/images/I/615ij7aqRJL._AC_SL1000_.jpg"
-  };
-  // console.log("card", card);
+  useEffect(() => {
+    if (id) {
+      //fetch data need to move to file in utils
+      const fetchCard = async () => {
+        const response = await fetch(`/api/cards/${id}`);
+        if (!response.ok) {
+          throw new Error(response.statusText);
+        }
+        const data = await response.json();
+        setData(data.data);
+      };
+      fetchCard();
+    }
+  }, [id]);
+
+  //fetch data need to move to file in utils
   const editCard = async editProperty => {
     const editCard = {
       ...data,
       ...editProperty
     };
-    console.log("editCard", editCard);
     const body = JSON.stringify({ ...editCard });
-    console.log("body", body);
-    console.log("url", `/api/cards/${id}`);
     try {
       const response = await fetch(`/api/cards/${id}`, {
         method: "PATCH",
         headers: {
+          //need this for image upload when implemented
+          // "Content-Type": "multipart/form-data"
           "Content-Type": "application/json"
         },
         body
       });
-      if (!response.ok) {
-        throw new Error(data.error || "Something went wrong!");
-      } else {
-        const data = await response.json();
-        console.log(data);
-        setData(data.data);
-      }
+
+      const data = await response.json();
+      console.log(data);
+      setData(data.data);
+      router.push(`/market/item/${id}`);
     } catch (error) {
       console.log(error.message);
-      return null;
+      console.error(error);
+      setOpenError(true);
+      setErrorMessage(error.message || "unknown error");
     }
   };
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenError(false);
+  };
   return (
-    <div>
-      <Button variant="contained" color="primary" onClick={() => editCard(editProperty)}>
-        Edit card
-      </Button>
-      {data && <CardComponent card={data} />}
-    </div>
+    <Box>
+      {data && <CardForm cardValue={data} onSubmitForm={editCard} />}
+      <Snackbar
+        open={openError}
+        autoHideDuration={5000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}>
+        <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
+          {errorMessage}
+        </Alert>
+      </Snackbar>
+    </Box>
   );
 }
