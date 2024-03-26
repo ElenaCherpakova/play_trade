@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useTheme } from "@mui/material/styles";
 import { Box, Typography, InputBase } from "@mui/material";
+import AuthControl from "./AuthControl"; // Importing AuthControl component
 
 const Navbar = ({ isLoggedIn }) => {
   const theme = useTheme();
@@ -173,7 +174,6 @@ const Navbar = ({ isLoggedIn }) => {
               </ul>
             )}
           </li>
-
           <li>
             <Link href="/about" passHref legacyBehavior>
               <span
@@ -183,7 +183,6 @@ const Navbar = ({ isLoggedIn }) => {
                   color: theme.palette.background.paper,
                   "&:hover": {
                     color: theme.palette.accent.main,
-
                   },
                 }}
               >
@@ -201,7 +200,6 @@ const Navbar = ({ isLoggedIn }) => {
                   color: theme.palette.background.paper,
                   "&:hover": {
                     color: theme.palette.accent.main,
-
                   },
                 }}
               >
@@ -210,61 +208,8 @@ const Navbar = ({ isLoggedIn }) => {
             </Link>
           </li>
 
-          <li>
-            <Link href="/signin" passHref legacyBehavior>
-              <span
-                style={{
-                  cursor: "pointer",
-                  textDecoration: "none",
-                  color: theme.palette.background.paper,
-                  "&:hover": {
-                    color: theme.palette.accent.main,
-
-                  },
-                }}
-              >
-                Login
-              </span>
-            </Link>
-          </li>
-
-          {isLoggedIn && (
-            <>
-              <li>
-                <Link href="/profile" passHref legacyBehavior>
-                  <span
-                    style={{
-                      cursor: "pointer",
-                      textDecoration: "none",
-                      color: theme.palette.background.paper,
-                      "&:hover": {
-                        color: theme.palette.accent.main,
-                      },
-                    }}
-                  >
-                    Profile
-                  </span>
-                </Link>
-              </li>
-              <li>
-                <Link href="/logout" passHref legacyBehavior>
-                  <span
-                    style={{
-                      cursor: "pointer",
-                      textDecoration: "none",
-                      color: theme.palette.background.paper,
-                      "&:hover": {
-                        color: theme.palette.accent.main,
-
-                      },
-                    }}
-                  >
-                    Logout
-                  </span>
-                </Link>
-              </li>
-            </>
-          )}
+          {/* AuthControl component for authentication controls */}
+          <AuthControl isLoggedIn={isLoggedIn} />
         </ul>
       </nav>
     </Box>
@@ -272,5 +217,3 @@ const Navbar = ({ isLoggedIn }) => {
 };
 
 export default Navbar;
-
-
