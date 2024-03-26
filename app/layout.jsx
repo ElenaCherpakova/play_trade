@@ -3,7 +3,7 @@ import "./globals.css";
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
 import { ThemeProvider } from "@mui/material/styles";
 import { theme } from "@/styles/theme";
-
+import Footer from "@/components/Footer";
 import { getServerSession } from "next-auth/next";
 import SessionProvider from "@/utils/SessionProvider";
 import Navbar from "../components/Navbar";
@@ -24,8 +24,9 @@ export default async function RootLayout({ children }) {
         <SessionProvider session={session}>
           <AppRouterCacheProvider>
             <ThemeProvider theme={theme}>
-              <Navbar/>
-              {children}
+              <Navbar />
+              <main>{children}</main>
+              <Footer />
             </ThemeProvider>
           </AppRouterCacheProvider>
         </SessionProvider>

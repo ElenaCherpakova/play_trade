@@ -2,10 +2,8 @@ import dbConnect from "@lib/mongo/dbConnect";
 import User from "@/models/User";
 import { NextResponse, NextRequest } from "next/server";
 import createAssociatedModels from "@/utils/createAssociatedModels";
-// import useAuthUser from '@/store/useAuthUser';
 
 /**
- *
  * @param {NextResponse} res
  * @param {NextRequest} req
  */
@@ -21,7 +19,7 @@ export const POST = async req => {
     const emailExist = await User.findOne({ email });
     const nameExist = await User.findOne({ name });
     if (emailExist || nameExist) {
-      return NextResponse.json({ error: "Email or name already exists" }, { status: 400 });
+      return NextResponse.json({ error: "email or name already exists" }, { status: 400 });
     }
 
     const newUser = await new User({
@@ -36,7 +34,7 @@ export const POST = async req => {
 
     return NextResponse.json(
       {
-        message: "User saved successfully",
+        message: "User is saved successfully",
         user: newUser,
         token
       },
