@@ -82,9 +82,10 @@ const Navbar = ({ isLoggedIn }) => {
                 style={{
                   position: "absolute",
                   left: 0,
+                  top: 36,
                   backgroundColor: theme.palette.background.paper,
                   color: theme.palette.text.primary,
-                  paddingRight: theme.spacing(8),
+                  paddingRight: theme.spacing(6),
                   listStyleType: "none",
                   borderRadius: theme.shape.borderRadius,
                   boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
