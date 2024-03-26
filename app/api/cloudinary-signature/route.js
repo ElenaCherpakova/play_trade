@@ -26,7 +26,7 @@ export async function GET(req) {
       signature,
       api_key: process.env.CLOUDINARY_API_KEY
     });
-    console.log("response", responseData);
+
     return new NextResponse(responseData, {
       status: 200,
       headers: {
