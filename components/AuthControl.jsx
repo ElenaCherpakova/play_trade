@@ -1,21 +1,23 @@
 
 'use client';
 import { useTheme } from "@mui/material/styles";
+import { useSession, signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { Typography, Button, Box } from "@mui/material";
-import { useSession } from "next-auth/react";
-import useAuthUser from "../store/useAuthUser";
+import useAuthUser from '../store/useAuthUser';
 
 const AuthControl = () => {
   const theme = useTheme();
   const { logout } = useAuthUser();
   const { data: session } = useSession();
+  const router = useRouter();
 
   const handleLogin = async () => {
-    // Handle login logic
+    router.push('/signin');
   };
 
   const handleLogout = async () => {
-    // Handle logout logic
+    await logout();
   };
 
   return (
