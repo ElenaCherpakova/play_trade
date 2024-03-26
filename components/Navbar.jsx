@@ -29,8 +29,8 @@ const Navbar = ({ isLoggedIn }) => {
         padding: theme.spacing(2),
       }}
     >
-      <Box className="logo">
-        <Link href="/">
+      <Box className="logo" sx={{ cursor: "pointer" }}>
+        <Link href="/" legacyBehavior>
           <Image src="/logo.png" alt="Play Trade" width={50} height={50} />
         </Link>
       </Box>
@@ -66,8 +66,11 @@ const Navbar = ({ isLoggedIn }) => {
                 },
               }}
             >
-              <Link href="/cards" passHref>
-                <a style={{ textDecoration: "none", color: "inherit" }}>Cards</a>
+              <Link
+                href="/cards"
+                passHref
+                style={{ textDecoration: "none", color: "inherit" }}>
+                Cards
               </Link>
             </span>
             {showCardDropdown && (
@@ -88,14 +91,14 @@ const Navbar = ({ isLoggedIn }) => {
                   Categories
                 </Typography>
                 <li style={{ marginBottom: theme.spacing(1) }}>
-                  <Link href="/cards/category1" passHref>
+                  <Link href="/cards/category1" passHref legacyBehavior>
                     <Typography
                       variant="body1"
                       sx={{
                         color: theme.palette.primary.main,
                         textDecoration: "none",
                         "&:hover": {
-                          textDecoration: "underline",
+                          color: theme.palette.accent.main,
                         },
                       }}
                     >
@@ -104,14 +107,14 @@ const Navbar = ({ isLoggedIn }) => {
                   </Link>
                 </li>
                 <li style={{ marginBottom: theme.spacing(1) }}>
-                  <Link href="/cards/category2" passHref>
+                  <Link href="/cards/category2" passHref legacyBehavior>
                     <Typography
                       variant="body1"
                       sx={{
                         color: theme.palette.primary.main,
                         textDecoration: "none",
                         "&:hover": {
-                          textDecoration: "underline",
+                          color: theme.palette.accent.main,
                         },
                       }}
                     >
@@ -120,14 +123,14 @@ const Navbar = ({ isLoggedIn }) => {
                   </Link>
                 </li>
                 <li style={{ marginBottom: theme.spacing(1) }}>
-                  <Link href="/cards/category3" passHref>
+                  <Link href="/cards/category3" passHref legacyBehavior>
                     <Typography
                       variant="body1"
                       sx={{
                         color: theme.palette.primary.main,
                         textDecoration: "none",
                         "&:hover": {
-                          textDecoration: "underline",
+                          color: theme.palette.accent.main,
                         },
                       }}
                     >
@@ -136,14 +139,14 @@ const Navbar = ({ isLoggedIn }) => {
                   </Link>
                 </li>
                 <li style={{ marginBottom: theme.spacing(1) }}>
-                  <Link href="/cards/category4" passHref>
+                  <Link href="/cards/category4" passHref legacyBehavior>
                     <Typography
                       variant="body1"
                       sx={{
                         color: theme.palette.primary.main,
                         textDecoration: "none",
                         "&:hover": {
-                          textDecoration: "underline",
+                          color: theme.palette.accent.main,
                         },
                       }}
                     >
@@ -152,14 +155,14 @@ const Navbar = ({ isLoggedIn }) => {
                   </Link>
                 </li>
                 <li style={{ marginBottom: theme.spacing(1) }}>
-                  <Link href="/cards/category5" passHref>
+                  <Link href="/cards/category5" passHref legacyBehavior>
                     <Typography
                       variant="body1"
                       sx={{
                         color: theme.palette.primary.main,
                         textDecoration: "none",
                         "&:hover": {
-                          textDecoration: "underline",
+                          color: theme.palette.accent.main,
                         },
                       }}
                     >
@@ -172,7 +175,7 @@ const Navbar = ({ isLoggedIn }) => {
           </li>
 
           <li>
-            <Link href="/about" passHref>
+            <Link href="/about" passHref legacyBehavior>
               <span
                 style={{
                   cursor: "pointer",
@@ -180,7 +183,7 @@ const Navbar = ({ isLoggedIn }) => {
                   color: theme.palette.background.paper,
                   "&:hover": {
                     color: theme.palette.accent.main,
-                    textDecoration: "underline",
+
                   },
                 }}
               >
@@ -190,7 +193,7 @@ const Navbar = ({ isLoggedIn }) => {
           </li>
 
           <li>
-            <Link href="/signup" passHref>
+            <Link href="/signup" passHref legacyBehavior>
               <span
                 style={{
                   cursor: "pointer",
@@ -198,7 +201,7 @@ const Navbar = ({ isLoggedIn }) => {
                   color: theme.palette.background.paper,
                   "&:hover": {
                     color: theme.palette.accent.main,
-                    textDecoration: "underline",
+
                   },
                 }}
               >
@@ -208,7 +211,7 @@ const Navbar = ({ isLoggedIn }) => {
           </li>
 
           <li>
-            <Link href="/signin" passHref>
+            <Link href="/signin" passHref legacyBehavior>
               <span
                 style={{
                   cursor: "pointer",
@@ -216,7 +219,7 @@ const Navbar = ({ isLoggedIn }) => {
                   color: theme.palette.background.paper,
                   "&:hover": {
                     color: theme.palette.accent.main,
-                    textDecoration: "underline",
+
                   },
                 }}
               >
@@ -228,7 +231,7 @@ const Navbar = ({ isLoggedIn }) => {
           {isLoggedIn && (
             <>
               <li>
-                <Link href="/profile" passHref>
+                <Link href="/profile" passHref legacyBehavior>
                   <span
                     style={{
                       cursor: "pointer",
@@ -236,7 +239,6 @@ const Navbar = ({ isLoggedIn }) => {
                       color: theme.palette.background.paper,
                       "&:hover": {
                         color: theme.palette.accent.main,
-                        textDecoration: "underline",
                       },
                     }}
                   >
@@ -245,7 +247,7 @@ const Navbar = ({ isLoggedIn }) => {
                 </Link>
               </li>
               <li>
-                <Link href="/logout" passHref>
+                <Link href="/logout" passHref legacyBehavior>
                   <span
                     style={{
                       cursor: "pointer",
@@ -253,7 +255,7 @@ const Navbar = ({ isLoggedIn }) => {
                       color: theme.palette.background.paper,
                       "&:hover": {
                         color: theme.palette.accent.main,
-                        textDecoration: "underline",
+
                       },
                     }}
                   >
