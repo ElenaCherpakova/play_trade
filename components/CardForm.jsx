@@ -38,7 +38,9 @@ export default function CardForm({ cardValue, onSubmitForm }) {
   };
   async function handleImageUpload(file) {
     try {
-      const res = await fetch("/api/cloudinary-signature");
+      const res = await fetch('/api/cloudinary-signature');
+      
+      console.log("RES", res)
       if (!res.ok) throw new Error("Failed to fetch the Cloudinary signature.");
 
       const { signature, timestamp, api_key } = await res.json();

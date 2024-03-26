@@ -1,16 +1,18 @@
 import { NextResponse } from "next/server";
+
 import cloudinary from "@/app/config/cloudinaryConfig";
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: "8mb"
-    }
-  }
-};
+// export const config = {
+//   api: {
+//     bodyParser: {
+//       sizeLimit: "8mb"
+//     }
+//   }
+// };
 
 //Get signiture
 export async function GET(req) {
   try {
+    console.log("Handler function invoked.");
     const timestamp = Math.round(new Date().getTime() / 1000);
     const signature = cloudinary.v2.utils.api_sign_request(
       {
@@ -25,7 +27,7 @@ export async function GET(req) {
       signature,
       api_key: process.env.CLOUDINARY_API_KEY
     });
-
+    console.log("response", responseData);
     return new NextResponse(responseData, {
       status: 200,
       headers: {
