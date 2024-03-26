@@ -177,7 +177,7 @@ const Navbar = ({ isLoggedIn }) => {
             )}
           </li>
           <li>
-            <Link href="/about" passHref style={{ textDecoration: "none", color: "inherit" }}>
+            <Link href="/team" passHref style={{ textDecoration: "none", color: "inherit" }}>
               <Typography
                 variant="body1"
                 component="span"
