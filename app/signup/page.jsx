@@ -1,17 +1,17 @@
-'use client'
+"use client"
 
 import { useRouter } from "next/navigation";
-import { useState } from 'react';
-import useAuthUser from '../../store/useAuthUser';
-import { Container, Box, TextField, Button, Typography, CircularProgress, Link, InputAdornment, IconButton, Paper } from '@mui/material';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { useState } from "react";
+import useAuthUser from "../../store/useAuthUser";
+import { Container, Box, TextField, Button, Typography, CircularProgress, Link, InputAdornment, IconButton, Paper } from "@mui/material";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 const SignUpPage = () => {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
+    name: "",
+    email: "",
+    password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
 
@@ -40,7 +40,7 @@ const SignUpPage = () => {
   };
 
   const handleLoginRedirect = () => {
-    router.push('/signin'); 
+    router.push("/signin"); 
   };
 
   return (
@@ -48,9 +48,9 @@ const SignUpPage = () => {
       <Paper
         sx={(theme)=>({
           marginTop: 8,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
           padding: theme.spacing(6),
         })}
       >
@@ -96,7 +96,7 @@ const SignUpPage = () => {
             fullWidth
             name="password"
             label="Password"
-            type={showPassword ? 'text' : 'password'}
+            type={showPassword ? "text" : "password"}
             id="password"
             autoComplete="current-password"
             value={formData.password}
@@ -127,10 +127,10 @@ const SignUpPage = () => {
               mb: 2,
             }}
           >
-            {isLoading ? <CircularProgress size={24} /> : 'Sign Up'}
+            {isLoading ? <CircularProgress size={24} /> : "Sign Up"}
           </Button>
           <Typography variant="body2" textAlign="center">
-            Already have an account?{' '}
+            Already have an account?{" "}
             <Link href="#" onClick={handleLoginRedirect} variant="body2">
               Login 
             </Link>

@@ -17,7 +17,7 @@ export async function GET(req, res) {
     // Fetch all cards from the database
     const cards = await Card.find({});
     if (!cards) {
-      return NextResponse.json({ success: false, message: "No cards found" }, { status: 400 });
+      return NextResponse.json({ success: false, message: error.message || "No cards found" }, { status: 400 });
     }
     return NextResponse.json({ success: true, data: cards }, { status: 200 });
   } catch (error) {
@@ -36,14 +36,38 @@ export async function POST(req) {
     const userId = token.sub;
     const body = await req.json();
     body.createdBy = userId;
-    // Create a new card based on the request body
+
     const card = await Card.create(body);
+
     if (!card) {
-      return NextResponse.json({ success: false, message: "Something wrong" }, { status: 400 });
+      return NextResponse.json({ success: false, message: error.message || "Error saving a card" }, { status: 400 });
     }
-    return NextResponse.json({ success: true, data: card }, { status: 201 });
+    return new NextResponse(JSON.stringify({ success: true, data: card }), {
+      status: 201 
+    })
   } catch (error) {
-    return NextResponse.json({ success: false, message: error }, { status: 400 });
+    let status = 500;
+    let message = "Server error";
+    let errors = []; 
+    if (error.name === "ValidationError") {
+      // Extracting specific validation errors for a ValidationError
+      errors = Object.values(error.errors).map(val => val.message);
+      message = "Validation error";
+      status = 400; // Client error - Bad Request
+    }
+
+    const responseData = JSON.stringify({
+      success: false,
+      message,
+      errors
+    });
+
+    return new NextResponse(responseData, {
+      status: status,
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
   }
 }
 
@@ -58,10 +82,12 @@ export async function DELETE(req) {
     const userId = token.sub;
     const cards = await Card.deleteMany({ createdBy: userId });
     if (!cards) {
-      return NextResponse.json({ success: false, message: "No cards found" }, { status: 400 });
+      console.log(error)
+      return NextResponse.json({ success: false, message: error.message || "No cards found" }, { status: 400 });
     }
     return NextResponse.json({ success: true, data: {} }, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ success: false, message: error }, { status: 400 });
+    console.log(error.message)
+    return NextResponse.json({ success: false, message: error.message }, { status: 400 });
   }
 }

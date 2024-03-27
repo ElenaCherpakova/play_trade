@@ -130,6 +130,30 @@ const useAuthUser = create(set => ({
     } catch (error) {
       set({ isLoading: false, verifyError: error.message });
     }
+  },
+  updateProfile: async userData => {
+    set({ isLoading: true, error: null });
+    try {
+      const response = await fetch("/api/auth/profile/update", {
+        method: "PUT",
+        headers: {
+          "Content-type": "application/json"
+        },
+        body: JSON.stringify(userData)
+      });
+      if (response.ok) {
+        const data = await response.json();
+        set({ isLoading: false, data, error: null });
+      } else {
+        const errorData = await response.json();
+        console.log("error Data", errorData);
+        set({ isLoading: false, error: errorData.error || "Update profile failed" });
+        throw new Error(errorData.error || "Update profile failed");
+      }
+    } catch (error) {
+      set({ isLoading: false, error: error.message });
+      throw error;
+    }
   }
 }));
 export default useAuthUser;

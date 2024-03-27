@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import {
   Box,
   Button,
@@ -22,13 +22,13 @@ import { Image } from "@mui/icons-material";
 
 export default function CardForm({ cardValue, onSubmitForm }) {
   const [cardCategory, setCardCategory] = useState(cardValue?.category);
-  //comment it for form data
-  // const [image, setImage] = useState(value?.imageURL || "");
-  const editCard = cardValue.name ? true : false;
-  //we do will implement image upload and remove img
-  const img = "https://m.media-amazon.com/images/I/51skd-tjunL._AC_.jpg";
+  const [image, setImage] = useState(cardValue?.imageURL || "");
+  const [imageURL, setImageURL] = useState("");
+  const [isHovered, setIsHovered] = useState(false);
+  const [error, setError] = useState("");
+  const fileInputRef = useRef(null);
 
-  //condition variants for cards based on category
+  const editCard = cardValue.name ? true : false;
   const conditionVariants = cardCategory => {
     if (cardCategory === "Sport Card") {
       return ["near mint", "excellent", "very good", "poor"];
@@ -36,34 +36,77 @@ export default function CardForm({ cardValue, onSubmitForm }) {
       return ["near mint", "lightly played", "moderately played", "heavily played", "damaged"];
     }
   };
-  //submit form function
-  const handleSubmit = async e => {
-    const { imageURL, cardName, set, price, currency, shippingCost, description, conditions, quantity, available } =
-      e.target.elements;
-    //comment it for form data
-    // const imageFile = imageURL.files[0];
-    // if (imageFile) {
-    //   setImage(imageFile);
-    // }
-    onSubmitForm({
-      //comment it for form data
-      //fpr form data
-      // imageURL: image,
-      //comment this for form data
-      imageURL: imageURL.value,
-      //comes from state
-      category: cardCategory,
-      name: cardName.value,
-      set: set.value,
-      price: price.value,
-      currency: currency.value,
-      shippingCost: shippingCost.value,
-      description: description.value,
-      conditions: conditions.value,
-      quantity: quantity.value,
-      available: available.value
-    });
+  async function handleImageUpload(file) {
+    try {
+      const res = await fetch('/api/cloudinary-signature');
+
+      if (!res.ok) throw new Error("Failed to fetch the Cloudinary signature.");
+
+      const { signature, timestamp, api_key } = await res.json();
+
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("api_key", api_key);
+      formData.append("timestamp", timestamp);
+      formData.append("signature", signature);
+
+      const uploadUrl = `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_NAME}/image/upload`;
+      const uploadRes = await fetch(uploadUrl, {
+        method: "POST",
+        body: formData
+      });
+
+      const uploadData = await uploadRes.json();
+
+      if (!uploadRes.ok) throw new Error(uploadData.error?.message || "Upload to Cloudinary failed.");
+      let imageURL = uploadData.secure_url;
+      return imageURL;
+    } catch (error) {
+      setError("Failed to upload the image. Please try again.");
+      return "";
+    }
+  }
+
+  const handleFileChange = async event => {
+    const file = event.target.files[0];
+    if (file) {
+      const uploadedimageURL = await handleImageUpload(file);
+      if (uploadedimageURL) {
+        setImage(URL.createObjectURL(file));
+        setImageURL(uploadedimageURL);
+      } else {
+        setError("Failed to upload the image for preview");
+      }
+    }
   };
+
+  const handlePaperClick = () => {
+    fileInputRef.current.click();
+  };
+
+  const handleSubmit = async e => {
+    e.preventDefault();
+    setError("");
+
+    const defaultImageUrl = "https://res.cloudinary.com/dfoiixlup/image/upload/v1711381226/vr2hc3udhtc8z9u1hrp4.png";
+    const finalImageUrl = imageURL || defaultImageUrl;
+
+    const formData = {
+      name: e.target.elements.cardName.value,
+      set: e.target.elements.set.value,
+      price: e.target.elements.price.value,
+      currency: e.target.elements.currency.value,
+      shippingCost: e.target.elements.shippingCost.value,
+      description: e.target.elements.description.value,
+      conditions: e.target.elements.conditions.value,
+      quantity: e.target.elements.quantity.value,
+      available: e.target.elements.available.value,
+      category: cardCategory,
+      imageURL: finalImageUrl
+    };
+    await onSubmitForm(formData);
+  };
+
   return (
     <Container>
       <Box
@@ -85,34 +128,66 @@ export default function CardForm({ cardValue, onSubmitForm }) {
           <Grid item xs={6} md={4}>
             <Box display="flex" flexDirection="column" gap={2}>
               <Paper
+                onClick={handlePaperClick}
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
                 style={{
+                  position: "relative",
+                  aspectRatio: "3/4",
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "center",
                   alignItems: "center",
-                  textAlign: "center"
+                  textAlign: "center",
+                  cursor: "pointer"
                 }}
-                sx={{ overflow: "hidden", aspectRatio: "3/4" }}>
-                {cardValue.imageURL ? (
-                  <img src={cardValue.imageURL} alt="card" style={{ width: "100%" }} />
+                sx={{ overflow: "hidden" }}>
+                {image || cardValue.imageURL ? (
+                  <img
+                    src={image}
+                    alt="Preview"
+                    style={{ width: "100%", height: "100%", objectFit: "cover", position: "absolute" }}
+                  />
                 ) : (
                   <>
-                    <Image alt="no image" fontSize="large" color="secondary" />
-                    <Typography sx={theme => ({ color: theme.palette.text.secondary })}>Click Choose File </Typography>
-                    <Typography sx={theme => ({ color: theme.palette.text.secondary })}> to upload image</Typography>
+                    <Image fontSize="large" color="secondary" />
+                    <Typography sx={theme => ({ color: theme.palette.text.secondary })}>
+                      Click to upload an image
+                    </Typography>
                   </>
                 )}
+                {isHovered && (image || cardValue.imageURL) && (
+                  <Box
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      width: "100%",
+                      height: "100%",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      backgroundColor: "rgba(0, 0, 0, 0.5)"
+                    }}>
+                    <Typography variant="body1" style={{ color: "#fff", textAlign: "center" }}>
+                      Click to upload a new image
+                    </Typography>
+                  </Box>
+                )}
+                {error && (
+                  <Typography color="error" style={{ marginBottom: "10px" }}>
+                    {error}
+                  </Typography>
+                )}
               </Paper>
-              {/* comment it for form data */}
-              <TextField
-                fullWidth
-                name="imageURL"
-                label="image URL"
-                //we do will implement image upload and remove img
-                defaultValue={cardValue?.imageURL || img}
+              <input
+                ref={fileInputRef}
+                type="file"
+                name="image"
+                accept="image/png, image/jpeg, image/jpg"
+                style={{ display: "none" }}
+                onChange={handleFileChange}
               />
-              {/* //need this for image upload when implemented */}
-              {/* <TextField variant="standard" type="file" name="cardName" accept="image/png, image/jpeg, image/jpg" /> */}
             </Box>
           </Grid>
           <Grid item xs>
@@ -127,7 +202,6 @@ export default function CardForm({ cardValue, onSubmitForm }) {
                   label="category"
                   value={cardCategory}
                   onChange={e => {
-                    // e.preventDefault();
                     setCardCategory(e.target.value);
                   }}>
                   <MenuItem value="Magic">Magic</MenuItem>

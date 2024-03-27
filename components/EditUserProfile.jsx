@@ -5,25 +5,53 @@ import { ThemeProvider, useTheme } from "@mui/material/styles";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { theme as importedTheme } from "/styles/theme.js";
+import useAuthUser from "../store/useAuthUser";
 
 export default function UserProfileEditPage(props) {
-  // const { nickname = "", password = "", email = "", location = "", photo = "" } = user;
-  const { data: session } = useSession();
   const router = useRouter();
   const theme = useTheme();
-  // for edit mode
+  const updateProfile = useAuthUser(state => state.updateProfile);
+
+  const { data: session, update: updateSession } = useSession();
+
+  const [formData, setFormData] = useState({
+    name: session?.user?.name || "",
+    email: session?.user?.email || ""
+  });
+
   const [isEditing, setIsEditing] = useState(false);
 
-  const handleButtonClick = () => {
-    if (isEditing) {
-    }
-
-    // Toggle edit mode
-    setIsEditing(!isEditing);
-  };
   if (!session) {
     return null;
   }
+
+  const handleChange = e => {
+    const { name, value } = e.target;
+    setFormData(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async () => {
+    if (isEditing) {
+      try {
+        console.log("formData", formData);
+        await updateSession({
+          ...session,
+          user: { ...session.user, ...formData }
+        });
+        await updateProfile(formData);
+
+        setIsEditing(false);
+      } catch (error) {
+        throw new Error("Error occurred during profile update:", error);
+      }
+    } else {
+      setIsEditing(true);
+    }
+  };
+
   return (
     //entire screen
     <ThemeProvider theme={importedTheme}>
@@ -69,7 +97,7 @@ export default function UserProfileEditPage(props) {
                 sx={{
                   p: 2
                 }}>
-                <Avatar src="/broken-image.jpg" sx={{ width: "80%", height: "auto" }} />
+                <Avatar src="/broken-image.jpg" sx={{ width: "50%", height: "30vh" }} />
                 <Button
                   variant="contained"
                   color="secondary"
@@ -118,19 +146,27 @@ export default function UserProfileEditPage(props) {
                     width: "80%"
                   }}>
                   <TextField
+                    onChange={handleChange}
                     name="name"
                     label="Nickname"
-                    defaultValue={session?.user?.name}
+                    defaultValue={formData.name}
                     sx={{ mb: 2 }} //margin bottom
+                    disabled={!isEditing}
                   />
-                  <TextField label="Password" name="password" defaultValue="" type="password" sx={{ mb: 2 }} />
-                  <TextField label="Email" name="email" defaultValue={session?.user?.email} sx={{ mb: 2 }} />
-                  <TextField label="Location" name="location" defaultValue="" sx={{ mb: 2 }} />
+                  <TextField
+                    label="Email"
+                    name="email"
+                    defaultValue={formData.email}
+                    sx={{ mb: 2 }}
+                    disabled={!isEditing}
+                    onChange={handleChange}
+                  />
+
                   <Box display="flex" justifyContent="space-between" width="100%" mt={2}>
                     <Button
                       variant="contained"
                       color="secondary"
-                      onClick={handleButtonClick}
+                      onClick={handleSubmit}
                       sx={{
                         "mt": 2,
                         "width": "40%",
