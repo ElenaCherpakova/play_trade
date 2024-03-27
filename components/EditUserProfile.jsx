@@ -13,7 +13,7 @@ export default function UserProfileEditPage(props) {
   const updateProfile = useAuthUser(state => state.updateProfile);
 
   const { data: session, update: updateSession } = useSession();
-  
+
   const [formData, setFormData] = useState({
     name: session?.user?.name || "",
     email: session?.user?.email || ""

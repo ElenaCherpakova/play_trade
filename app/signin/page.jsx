@@ -142,7 +142,7 @@ const SignInPage = () => {
             {isLoading ? <CircularProgress size={24} /> : "Log In"}
           </Button>
           <Typography variant="body2" textAlign="center">
-            Don't have an account?{" "}
+            Don"t have an account?{" "}
             <Link href="#" onClick={handleRegisterRedirect} variant="body2">
               Register
             </Link>

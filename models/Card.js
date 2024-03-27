@@ -48,7 +48,7 @@ const CardSchema = new Schema({
   },
   imageURL: {
     type: String,
-    match: [/(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|gif|png)/, "Invalid image URL format"]
+    match: [/(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|jpeg|gif|png|webp|svg|JPG|JPEG|GIF|PNG|WEBP|SVG)/, "Invalid image URL format"]
   },
   quantity: {
     type: Number,

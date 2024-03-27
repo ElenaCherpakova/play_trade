@@ -4,7 +4,7 @@ export default function Profile() {
   return (
     <div>
       <h2>Profile</h2>
-      <Link href='/profile/update'>Edit User Profile</Link>
+      <Link href="/profile/update">Edit User Profile</Link>
     </div>
   );
 }
