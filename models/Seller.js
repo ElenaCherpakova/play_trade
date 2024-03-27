@@ -22,7 +22,21 @@ const SellerSchema = new Schema({
   },
   location: {
     type: String
+  },
+  reqToBeSeller: {
+    type: Boolean,
+    default: false
+  },
+  isRequestedAt: {
+    type: Date
   }
+});
+
+SellerSchema.pre("save", function (next) {
+  if (this.isModified("reqToBeSeller") && reqToBeSeller && !this.isRequestedAt) {
+    this.isRequestedAt = new Date();
+  }
+  next();
 });
 
 const Seller = models.Seller || model("Seller", SellerSchema);
