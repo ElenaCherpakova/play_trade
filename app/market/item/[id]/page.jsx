@@ -6,15 +6,21 @@ import { useRouter } from 'next/navigation'; // Importing useRouter from next/na
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 
-const IndividualCardPage = () => {
-  const router = useRouter(); // Using useRouter hook
-  const theme = useTheme();
-  const { id, isReady } = router.query || {}; // Adding a null check for router.query
 
+
+const IndividualCardPage = ({ params }) => {
   const [cardDetails, setCardDetails] = React.useState(null);
+  const router = useRouter();
+  console.log(params)
+  const theme = useTheme();
+  const id = params.id;
+  console.log(id)
+
+
+
 
   React.useEffect(() => {
-    const fetchCardDetails = async (id) => {
+    const fetchCardDetails = async () => {
       try {
         const response = await fetch(`/api/cards/${id}`);
         if (!response.ok) {
@@ -22,19 +28,19 @@ const IndividualCardPage = () => {
         }
         const data = await response.json();
         console.log(data);
-        setCardDetails(data.data); // Assuming the card details are nested inside the 'data' key
+        setCardDetails(data.data);
       } catch (error) {
         console.error('Error fetching card details:', error);
         setCardDetails(null);
       }
     };
 
-    if (isReady && id) { // Check if router is ready and id is available
+    if (id) {
       fetchCardDetails(id)
         .then(data => setCardDetails(data))
         .catch(error => console.error('Error fetching card details:', error));
     }
-  }, [id, isReady]); // Adding isReady to the dependency array
+  }, [id]);
 
   const handleEditButtonClick = () => {
     router.push(`/sell/edit/${id}`);
@@ -47,10 +53,6 @@ const IndividualCardPage = () => {
   const handleAddToCartButtonClick = () => {
     router.push("/cart");
   };
-
-  if (!isReady) { // Check if router is not ready
-    return null;
-  }
 
   return (
     <ThemeProvider theme={theme}>
