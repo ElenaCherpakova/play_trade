@@ -36,7 +36,7 @@ SellerSchema.pre("save", async function (next) {
       // Check if a user is provided an address before to become a seller 
       const user = await User.findById(this.userId);
       if (!user.address) {;
-        throw new Error("Usee should provide an address to become a seller");
+        throw new Error("User should provide an address to become a seller");
       }
       this.isRequestedAt = new Date();
     }
