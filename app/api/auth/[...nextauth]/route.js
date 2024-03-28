@@ -104,8 +104,6 @@ export const authOptions = {
           }
         };
       }
-      console.log("token", token.user.email);
-
       return token;
     },
     async session({ session, token }) {
