@@ -1,4 +1,5 @@
 import { Schema, model, models } from "mongoose";
+import User from "./User";
 
 const SellerSchema = new Schema({
   userId: {
@@ -20,8 +21,28 @@ const SellerSchema = new Schema({
     type: Number,
     default: 0
   },
-  location: {
-    type: String
+  reqToBeSeller: {
+    type: Boolean,
+    default: false
+  },
+  isRequestedAt: {
+    type: Date
+  }
+});
+
+SellerSchema.pre("save", async function (next) {
+  try {
+    if (this.isModified("reqToBeSeller") && this.reqToBeSeller && !this.isRequestedAt) {
+      // Check if a user is provided an address before to become a seller 
+      const user = await User.findById(this.userId);
+      if (!user.address) {
+        throw new Error("Usee should provide an address to become a seller");
+      }
+      this.isRequestedAt = new Date();
+    }
+    next();
+  } catch (error) {
+    next(error);
   }
 });
 
