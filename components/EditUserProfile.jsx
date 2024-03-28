@@ -49,7 +49,7 @@ console.log("USERDATA", userData)
       }
       try {
         await updateSession({
-          ...session.user,
+          ...session,
           user: { ...session.user, ...userData }
         });
 
