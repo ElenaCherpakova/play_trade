@@ -41,7 +41,10 @@ const UserSchema = new Schema({
     type: String,
     enum: ["admin", "user"],
     default: "user"
-  }
+  },
+  address: {
+    type: String
+  },
 });
 
 // Encrypt password before saving
