@@ -91,6 +91,10 @@ export default function UserProfileEditPage(props) {
     }));
   };
 
+  const handleSubmitImage = async () => {
+    console.log("submit image");
+  };
+
   const handleSubmit = async () => {
     if (isEditing) {
       try {
@@ -101,6 +105,7 @@ export default function UserProfileEditPage(props) {
 
         await updateProfile(userData);
         setIsEditing(false);
+        setErr(null);
       } catch (error) {
         setIsEditing(true);
       }
