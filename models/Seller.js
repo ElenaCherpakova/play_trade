@@ -30,21 +30,7 @@ const SellerSchema = new Schema({
   }
 });
 
-SellerSchema.pre("save", async function (next) {
-  try {
-    if (this.isModified("isSeller") && this.isSeller && !this.isRequestedAt) {
-      // Check if a user is provided an address before to become a seller 
-      const user = await User.findById(this.userId);
-      if (!user.address) {;
-        throw new Error("User should provide an address to become a seller");
-      }
-      this.isRequestedAt = new Date();
-    }
-    next();
-  } catch (error) {
-    next(error);
-  }
-});
+
 
 const Seller = models.Seller || model("Seller", SellerSchema);
 export default Seller;
