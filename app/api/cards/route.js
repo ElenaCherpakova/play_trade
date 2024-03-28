@@ -46,28 +46,32 @@ export async function POST(req) {
       status: 201 
     })
   } catch (error) {
-    let status = 500;
-    let message = "Server error";
-    let errors = []; 
     if (error.name === "ValidationError") {
-      // Extracting specific validation errors for a ValidationError
-      errors = Object.values(error.errors).map(val => val.message);
-      message = "Validation error";
-      status = 400; // Client error - Bad Request
+      const errorMessages = Object.values(error.errors).map(err => {
+        let message = err.message;
+        // Customize messages based on the validation error
+        if (err.kind === 'maxlength') {
+          message = `The ${err.path} '${err.value}' is too long. Maximum allowed length is ${err.properties.maxlength}.`;
+        } else if (err.kind === 'minlength') {
+          message = `The ${err.path} is too short. Minimum required length is ${err.properties.minlength}.`;
+        } else if (err.kind === 'required') {
+          message = `Please provide a ${err.path}.`;
+        } else if (err.kind === 'enum') {
+          message = `The ${err.path} '${err.value}' is not allowed. Allowed values are: ${err.properties.enumValues.join(", ")}.`;
+        }
+        return message;
+      });
+      return NextResponse.json({ 
+        success: false, 
+        message: "Validation error", 
+        errors: errorMessages 
+      }, { status: 400 });
+    } else {
+      return NextResponse.json({ 
+        success: false, 
+        message: error.message || "Server error"
+      }, { status: 500 });
     }
-
-    const responseData = JSON.stringify({
-      success: false,
-      message,
-      errors
-    });
-
-    return new NextResponse(responseData, {
-      status: status,
-      headers: {
-        "Content-Type": "application/json"
-      }
-    });
   }
 }
 
