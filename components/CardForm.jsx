@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import useImageUpload  from "../hooks/useImageUpload";
 import {
   Box,
   Button,
@@ -22,18 +23,30 @@ import { Image } from "@mui/icons-material";
 
 export default function CardForm({ cardValue, onSubmitForm }) {
   const [cardCategory, setCardCategory] = useState(cardValue?.category);
-  const [image, setImage] = useState(cardValue?.imageURL || "");
-  const [imageURL, setImageURL] = useState("");
+  const { handleImageUpload, error } = useImageUpload();
   const [isHovered, setIsHovered] = useState(false);
-  const [error, setError] = useState("");
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [previewImage, setPreviewImage] = useState(cardValue?.imageURL || '');
   const fileInputRef = useRef(null);
 
   useEffect(() => {
     const { imageURL } = cardValue;
     if (imageURL) {
-      setImageURL(imageURL);
+      setPreviewImage(imageURL);
     }
   }, [cardValue]);
+
+  useEffect(() => {
+    if (!selectedFile) {
+      setPreviewImage('');
+      return;
+    }
+    const fileReader = new FileReader();
+    fileReader.onloadend = () => {
+      setPreviewImage(fileReader.result);
+    };
+    fileReader.readAsDataURL(selectedFile);
+  }, [selectedFile]);
 
   const editCard = cardValue.name ? true : false;
   const conditionVariants = cardCategory => {
@@ -43,49 +56,13 @@ export default function CardForm({ cardValue, onSubmitForm }) {
       return ["near mint", "lightly played", "moderately played", "heavily played", "damaged"];
     }
   };
-  async function handleImageUpload(file) {
-    try {
-      const res = await fetch('/api/cloudinary-signature');
 
-      if (!res.ok) throw new Error("Failed to fetch the Cloudinary signature.");
-
-      const { signature, timestamp, api_key } = await res.json();
-
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("api_key", api_key);
-      formData.append("timestamp", timestamp);
-      formData.append("signature", signature);
-
-      const uploadUrl = `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_NAME}/image/upload`;
-      const uploadRes = await fetch(uploadUrl, {
-        method: "POST",
-        body: formData
-      });
-
-      const uploadData = await uploadRes.json();
-
-      if (!uploadRes.ok) throw new Error(uploadData.error?.message || "Upload to Cloudinary failed.");
-      let imageURL = uploadData.secure_url;
-      return imageURL;
-    } catch (error) {
-      setError("Failed to upload the image. Please try again.");
-      return "";
-    }
-  }
-
-  const handleFileChange = async event => {
+  const handleFileChange = (event) => {
     const file = event.target.files[0];
     if (file) {
-      const uploadedimageURL = await handleImageUpload(file);
-      if (uploadedimageURL) {
-        setImage(URL.createObjectURL(file));
-        setImageURL(uploadedimageURL);
-      } else {
-        setError("Failed to upload the image for preview");
-      }
+      setSelectedFile(file);
     }
-  };
+  }
 
   const handlePaperClick = () => {
     fileInputRef.current.click();
@@ -93,30 +70,36 @@ export default function CardForm({ cardValue, onSubmitForm }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
-  
+
     const { 
       cardName, set, price, currency, shippingCost, 
       description, conditions, quantity, available 
     } = e.target.elements;
-  
-    const finalImageUrl = imageURL || `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_NAME}/image/upload/v1711381226/vr2hc3udhtc8z9u1hrp4.png`;
+
+    const defaultImage = `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_NAME}/image/upload/v1711381226/vr2hc3udhtc8z9u1hrp4.png`;
     
-    const formData = {
-      name: cardName.value,
-      set: set.value,
-      price: price.value,
-      currency: currency.value,
-      shippingCost: shippingCost.value,
-      description: description.value,
-      conditions: conditions.value,
-      quantity: quantity.value,
-      available: available.value,
-      category: cardCategory,
-      imageURL: finalImageUrl
+    const submitFormData = (imageURL) => {
+      const formData = {
+        name: cardName.value,
+        set: set.value,
+        price: price.value,
+        currency: currency.value,
+        shippingCost: shippingCost.value,
+        description: description.value,
+        conditions: conditions.value,
+        quantity: quantity.value,
+        available: available.value,
+        category: cardCategory,
+        imageURL: imageURL || cardValue?.imageURL || defaultImage 
+      };
+      onSubmitForm(formData);
     };
-  
-    await onSubmitForm(formData);
+
+    if (selectedFile) {
+      await handleImageUpload(selectedFile, submitFormData); 
+    } else {
+      submitFormData(cardValue?.imageURL || defaultImage);
+    }
   };
 
   return (
@@ -154,9 +137,9 @@ export default function CardForm({ cardValue, onSubmitForm }) {
                   cursor: "pointer"
                 }}
                 sx={{ overflow: "hidden" }}>
-                {image || cardValue.imageURL ? (
+                {previewImage ? (
                   <img
-                    src={image}
+                    src={previewImage}
                     alt="Preview"
                     style={{ width: "100%", height: "100%", objectFit: "cover", position: "absolute" }}
                   />
@@ -168,7 +151,7 @@ export default function CardForm({ cardValue, onSubmitForm }) {
                     </Typography>
                   </>
                 )}
-                {isHovered && (image || cardValue.imageURL) && (
+                {isHovered && previewImage && (
                   <Box
                     style={{
                       position: "absolute",
