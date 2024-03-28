@@ -11,7 +11,9 @@ import {
   Typography,
   Paper,
   Grid,
-  Container
+  Container,
+  Backdrop, 
+  CircularProgress
 } from "@mui/material";
 import { Image } from "@mui/icons-material";
 
@@ -27,6 +29,7 @@ export default function CardForm({ cardValue, onSubmitForm }) {
   const [isHovered, setIsHovered] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewImage, setPreviewImage] = useState(cardValue?.imageURL || '');
+  const [loading, setLoading] = useState(false);
   const fileInputRef = useRef(null);
 
   useEffect(() => {
@@ -95,10 +98,17 @@ export default function CardForm({ cardValue, onSubmitForm }) {
       onSubmitForm(formData);
     };
 
-    if (selectedFile) {
-      await handleImageUpload(selectedFile, submitFormData); 
-    } else {
-      submitFormData(cardValue?.imageURL || defaultImage);
+    try {
+      setLoading(true); 
+      if (selectedFile) {
+        await handleImageUpload(selectedFile, submitFormData); 
+      } else {
+        submitFormData(cardValue?.imageURL || defaultImage);
+      }
+    } catch {
+      console.log(error)
+    } finally {
+      setLoading(false); 
     }
   };
 
@@ -302,6 +312,12 @@ export default function CardForm({ cardValue, onSubmitForm }) {
           </Grid>
         </Grid>
       </Box>
+      <Backdrop
+      sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1, backdropFilter: 'blur(2px)' }}
+      open={loading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </Container>
   );
 }
