@@ -146,12 +146,13 @@ const useAuthUser = create(set => ({
         set({ isLoading: false, data, error: null });
       } else {
         const errorData = await response.json();
-        console.log("error Data", errorData);
-        set({ isLoading: false, error: errorData.error || "Update profile failed" });
-        throw new Error(errorData.error || "Update profile failed");
+        console.log("errorData", errorData)
+        const errorMsg = errorData?.message ? 'Invalid email format' : "Failed to update profile";
+        set({ isLoading: false, error: errorMsg });
+        throw new Error(errorMsg);
       }
     } catch (error) {
-      set({ isLoading: false, error: error.message });
+      set({ isLoading: false, error });
       throw error;
     }
   }

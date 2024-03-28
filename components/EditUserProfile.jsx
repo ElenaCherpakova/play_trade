@@ -3,23 +3,23 @@ import { React, useState } from "react";
 import { Box, TextField, Button, Typography, Paper, Grid, Avatar } from "@mui/material";
 import { ThemeProvider, useTheme } from "@mui/material/styles";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import { theme as importedTheme } from "/styles/theme.js";
 import useAuthUser from "../store/useAuthUser";
 
 export default function UserProfileEditPage(props) {
-  const router = useRouter();
   const theme = useTheme();
   const updateProfile = useAuthUser(state => state.updateProfile);
-
+  const [avatar, setAvatar] = useState("");
+  const [avatarPreview, setAvatarPreview] = useState("/images/AllmageElena.jpeg"); // Default av
+  const [isEditing, setIsEditing] = useState(false);
+  const [isEditAvatar, setIsEditAvatar] = useState(false);
+  const [err, setErr] = useState(null);
   const { data: session, update: updateSession } = useSession();
 
-  const [formData, setFormData] = useState({
+  const [userData, setUserData] = useState({
     name: session?.user?.name || "",
     email: session?.user?.email || ""
   });
-
-  const [isEditing, setIsEditing] = useState(false);
 
   if (!session) {
     return null;
@@ -27,25 +27,39 @@ export default function UserProfileEditPage(props) {
 
   const handleChange = e => {
     const { name, value } = e.target;
-    setFormData(prevState => ({
+    setUserData(prevState => ({
       ...prevState,
       [name]: value
     }));
   };
 
+  const handleSubmitImage = async () => {
+    console.log("submit image");
+  };
+
   const handleSubmit = async () => {
     if (isEditing) {
+      if (!userData.email || !userData.email.includes("@")) {
+        setErr("Please enter an email");
+        return;
+      }
+      if (!userData.name) {
+        setErr("Please enter a name");
+        return;
+      }
       try {
-        console.log("formData", formData);
         await updateSession({
           ...session,
-          user: { ...session.user, ...formData }
+          user: { ...session.user, ...userData }
         });
-        await updateProfile(formData);
+
+        await updateProfile(userData);
 
         setIsEditing(false);
+        setErr(null);
       } catch (error) {
-        throw new Error("Error occurred during profile update:", error);
+        setErr(error.message);
+        setIsEditing(true);
       }
     } else {
       setIsEditing(true);
@@ -78,6 +92,11 @@ export default function UserProfileEditPage(props) {
           Welcome {session?.user?.name}!
         </Typography>
         {/* left and right side of screen */}
+        {err && (
+          <Typography color="error" style={{ marginBottom: "10px" }}>
+            {err}
+          </Typography>
+        )}
         <Box
           display="flex"
           justifyContent="space-between"
@@ -97,11 +116,11 @@ export default function UserProfileEditPage(props) {
                 sx={{
                   p: 2
                 }}>
-                <Avatar src="/broken-image.jpg" sx={{ width: "50%", height: "30vh" }} />
+                <Avatar src={avatarPreview} sx={{ width: "50%", height: "30vh" }} />
                 <Button
                   variant="contained"
                   color="secondary"
-                  onClick={() => router.push("./addphoto")}
+                  onClick={handleSubmitImage}
                   sx={{
                     "letterSpacing": "0.1em",
                     "mt": 2,
@@ -110,7 +129,7 @@ export default function UserProfileEditPage(props) {
                       backgroundColor: theme.palette.accent.main
                     }
                   }}>
-                  Edit Photo
+                  {isEditAvatar ? "Save" : "Edit"} Photo
                 </Button>
                 <Button
                   variant="contained"
@@ -149,17 +168,19 @@ export default function UserProfileEditPage(props) {
                     onChange={handleChange}
                     name="name"
                     label="Nickname"
-                    defaultValue={formData.name}
+                    defaultValue={userData.name}
                     sx={{ mb: 2 }} //margin bottom
                     disabled={!isEditing}
+                    required
                   />
                   <TextField
                     label="Email"
                     name="email"
-                    defaultValue={formData.email}
+                    defaultValue={userData.email}
                     sx={{ mb: 2 }}
                     disabled={!isEditing}
                     onChange={handleChange}
+                    required
                   />
 
                   <Box display="flex" justifyContent="space-between" width="100%" mt={2}>
