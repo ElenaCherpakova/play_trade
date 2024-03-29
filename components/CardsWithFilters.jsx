@@ -1,23 +1,40 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Grid, Paper, Typography, FormControl, InputLabel, Select, MenuItem, Box } from "@mui/material";
+import { Grid, Typography, FormControl, InputLabel, Select, MenuItem, Box, Container } from "@mui/material";
 // import { SelectChangeEvent } from "@mui/material";
 import CardComponent from "./CardComponent";
 import SelectComponent from "./SelectComponent";
-
 // const currentCards = cards.slice(indexOfFirstItem, indexOfLastItem);
-const card = {
-  name: "Pikachu V - SWSH061",
-  price: "$ 0.42",
-  imageURL: "https://m.media-amazon.com/images/I/51skd-tjunL._AC_.jpg"
-};
+// const card = {
+//   name: "Pikachu V - SWSH061",
+//   price: "$ 0.42",
+//   imageURL: "https://m.media-amazon.com/images/I/51skd-tjunL._AC_.jpg"
+// };
 
 // const handleChange = (event: SelectChangeEvent) => {
 //   const newValue = event.target.value; // Assuming value is a string
 //   setCategory(newValue);
 // };
-const CardsWithFilters = () => {
+const CardsWithFilters = ({ card }) => {
   const [errorMessage, setErrorMessage] = useState("");
+  const [cards, setCards] = useState([]);
+
+  useEffect(() => {
+    async function fetchCards() {
+      try {
+        const response = await fetch("/api/cards");
+        if (!response.ok) {
+          throw new Error("Failed to fetch cards");
+        }
+        const data = await response.json();
+        setCards(data.data);
+      } catch (error) {
+        console.error("Error fetching cards:", error);
+      }
+    }
+
+    fetchCards();
+  }, []);
 
   //   const value = [10, 20, 30, 40, 50, 60];
   const category = [" ", "Magic", "Pokemon", "Digimon", "Yu-Gi-Oh!", "Sport Card"];
@@ -31,56 +48,63 @@ const CardsWithFilters = () => {
   const conditions = [" ", "near mint", "excellent", "very good", "poor"]; //Sport Card
   const conditions1 = ["near mint", "lightly played", "moderately played", "heavily played", "damaged"];
 
-  //   const [selectedCategory, setSelectedCategory] = useState("");
-  //   const [selectedConditions, setSelectedConditions] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedConditions, setSelectedConditions] = useState("");
 
-  //   const handleSelectCategoryChange = event => {
-  //     const selectedCardCategory = event.target.value;
-  //     setSelectedCategory(selectedCardCategory);
-  //   };
-  //   const handleSelectConditionsChange = event => {
-  //     const selectedCardConditions = event.target.value;
-  //     setSelectedConditions(selectedCardConditions);
-  //   };
+  const handleSelectCategoryChange = event => {
+    const selectedCardCategory = event.target.value;
+    setSelectedCategory(selectedCardCategory);
+  };
+  const handleSelectConditionsChange = event => {
+    const selectedCardConditions = event.target.value;
+    setSelectedConditions(selectedCardConditions);
+  };
 
   // useEffect for Conditions
 
-  //   useEffect(() => {
-  //     const fetchConditions = async () => {
-  //       if (selectedCategory === "Sport Card") {
-  //         try {
-  //           await getSportCardConditions(dispatchSportCardConditions);
-  //         } catch (error) {
-  //           setErrorMessage("");
-  //           setErrorMessage("Error loading sport card conditions");
-  //         }
-  //       } else {
-  //         try {
-  //           await getGameCardConditions(dispatchGameCardConditions);
-  //         } catch (error) {
-  //           setErrorMessage("");
-  //           setErrorMessage("Error loading game card conditions");
-  //         }
-  //       }
-  //     };
-  //     fetchConditions();
-  //   }, [selectedCategory]);
+  useEffect(() => {
+    const fetchConditions = async () => {
+      if (selectedCategory === "Sport Card") {
+        try {
+          await getSportCardConditions(dispatchSportCardConditions);
+        } catch (error) {
+          setErrorMessage("");
+          setErrorMessage("Error loading sport card conditions");
+        }
+      } else {
+        try {
+          await getGameCardConditions(dispatchGameCardConditions);
+        } catch (error) {
+          setErrorMessage("");
+          setErrorMessage("Error loading game card conditions");
+        }
+      }
+    };
+    fetchConditions();
+  }, [selectedCategory]);
 
   return (
-    <>
-      <Grid container spacing={2}>
-        {/* Filters Section*/}
-
-        <Grid item xs={6} md={3}>
-          <Paper>
+    <Container maxWidth="lg">
+      <Box container display="flex" flexDirection="row" spacing={2}>
+        <Grid container direction="column" spacing={2} xs={4}>
+          <Grid item>
+            {/* <Box display="flex" flexDirection="row" alignItems="center" justifyContent="center" margin={2} gap={2}> */}
+            {/* <Box display="flex" flexDirection="column" margin={2} gap={2} alignItems={"flex-start"}> */}
+            {/* Filters Section*/}
             <Typography variant="h4" align="center">
               Filters
             </Typography>
-            <Box display="flex" flexDirection="column" padding="1rem">
-              <SelectComponent selectId="category" label="category" options={category} />
-              <SelectComponent selectId="conditions" label="conditions" options={conditions} />
-
-              {/* <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+          </Grid>
+          {/* <Grid container spacing={2} flexDirection="column">
+          <Grid item xs={6} md={3} display="flex" flexDirection="column" padding="1rem"> */}
+          {/* <Paper> */}
+          {/* <Box display="flex" flexDirection="column" padding="1rem"> */}
+          <Grid item container direction="column">
+            <SelectComponent selectId="category" label="category" options={category} />
+            <SelectComponent selectId="conditions" label="conditions" options={conditions} />
+          </Grid>
+        </Grid>
+        {/* <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
                 <InputLabel id="label">Category</InputLabel>
                 <Select
                   labelId="label"
@@ -115,58 +139,59 @@ const CardsWithFilters = () => {
                   <MenuItem value={30}>poor</MenuItem>
                 </Select>
               </FormControl> */}
-            </Box>
-          </Paper>
-        </Grid>
+        {/* </Box> */}
+        {/* </Grid> */}
+        {/* </Paper> */}
+        {/* </Grid>
+        </Grid> */}
+        {/* </Box> */}
         {/* Cards Section*/}
-        <Grid item xs={6} md={9}>
-          <Paper>
-            <Typography variant="h4" align="center" sx={{ marginBottom: 2 }}>
+
+        {/* <Grid container direction="column" spacing={2}> */}
+        {/* <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" margin={2} gap={2}> */}
+        {/* <Grid item container>
+            <Typography variant="h4" align="center">
               Cards
             </Typography>
+          </Grid> */}
+        {/* <Grid
+            item
+            xs={6}
+            md={9}
+            style={{ padding: 0, marginBottom: 2 }} */}
+        {/* // display="flex" // flexDirection="column" // alignItems="center" // justifyContent="center" // sx=
+          {{ marginBottom: 2 }} */}
+        {/* > */}
+        {/* <Paper display="flex" alignItems="center" justifyContent="center"> */}
+        <Grid
+          container
+          //   direction="row"
+          alignItems="center"
+          spacing={3}
+          // spacing={{ xs: 2, md: 3 }}
+          columns={{ xs: 4, sm: 8, md: 12 }}>
+          {cards.map(card => (
             <Grid
-              container
-              //   direction="row"
+              item
+              key={card._id}
+              xs={4}
+              //   align="center"
+              display="flex"
               alignItems="center"
-              spacing={{ xs: 2, md: 3 }}
-              columns={{ xs: 4, sm: 8, md: 12 }}>
-              {/* {cards.map((card, idx) => ( */}
-              <Grid
-                item
-                //    key={idx}
-                xs={4}
-                align="center"
-                sx={{ p: 2 }}>
-                <CardComponent card={card} />
-                {/* {Object.values(currentCards).map((pet, idx) => (
-                  <Col className="mb-4 ps-0 pe-0" key={idx}>
-                    <div>
-                      <CardComponent key={idx} card={card} />
-                    </div>
-                  </Col>
-                ))} */}
-              </Grid>
-              {/* ))} */}
-              <Grid item xs={4} align="center" sx={{ p: 2 }}>
-                <CardComponent card={card} />
-              </Grid>
-              <Grid item xs={4} align="center" sx={{ p: 2 }}>
-                <CardComponent card={card} />
-              </Grid>
-              <Grid item xs={4} align="center" sx={{ p: 2 }}>
-                <CardComponent card={card} />
-              </Grid>
-              <Grid item xs={4} align="center" sx={{ p: 2 }}>
-                <CardComponent card={card} />
-              </Grid>
-              <Grid item xs={4} align="center" sx={{ p: 2 }}>
-                <CardComponent card={card} />
-              </Grid>
+              justifyContent="center"
+              style={{ padding: "0" }}>
+              <CardComponent card={card} key={card._id} />
             </Grid>
-          </Paper>
+          ))}
         </Grid>
-      </Grid>
-    </>
+        {/* </Paper> */}
+        {/* </Grid> */}
+        {/* </Box> */}
+        {/* </Grid> */}
+        {/* </Grid> */}
+        {/* </Box> */}
+      </Box>
+    </Container>
   );
 };
 export { CardsWithFilters };

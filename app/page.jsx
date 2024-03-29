@@ -1,18 +1,10 @@
-import dbConnect from "@/lib/mongo/dbConnect";
-import { Typography, Box } from "@mui/material";
+"use state";
+import Home from "../components/Home"; // import Home component
 
-export default async function Home() {
-  await dbConnect();
+export default function Page() {
   return (
     <>
-      <Box p={5}>
-        <Typography color="primary" variant="h1">
-          Hello Next with
-        </Typography>
-        <Typography color="accent.main" variant="h2">
-          MongoDB
-        </Typography>
-      </Box>
+      <Home />
     </>
   );
 }
