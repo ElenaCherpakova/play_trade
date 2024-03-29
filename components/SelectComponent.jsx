@@ -14,12 +14,12 @@ const SelectComponent = ({ selectId, label, options }) => {
     setSelectedOption(event.target.value);
   };
 
-  useEffect(() => {
-    useSelectStore.setState(state => ({
-      ...state,
-      setSelectState: { ...state.setSelectState, [selectId]: selectState }
-    }));
-  }, [selectId, selectState]);
+  //   useEffect(() => {
+  //     useSelectStore.setState(state => ({
+  //       ...state,
+  //       setSelectState: { ...state.setSelectState, [selectId]: selectState }
+  //     }));
+  //   }, [selectId, selectState]);
 
   return (
     <>
@@ -27,8 +27,8 @@ const SelectComponent = ({ selectId, label, options }) => {
         <InputLabel id={`${selectId}-label`}>{label}</InputLabel>
         <Select labelId={`${selectId}-label`} id={selectId} value={selectedOption} onChange={handleSelectChange}>
           {options.map(option => (
-            <MenuItem key={option} value={option}>
-              <em>{option}</em>
+            <MenuItem key={option} value={selectedOption}>
+              {option}
             </MenuItem>
           ))}
         </Select>

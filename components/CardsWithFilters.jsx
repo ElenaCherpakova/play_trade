@@ -84,27 +84,27 @@ const CardsWithFilters = ({ card }) => {
   }, [selectedCategory]);
 
   return (
-    <Container maxWidth="lg">
-      <Box container display="flex" flexDirection="row" spacing={2}>
-        <Grid container direction="column" spacing={2} xs={4}>
-          <Grid item>
-            {/* <Box display="flex" flexDirection="row" alignItems="center" justifyContent="center" margin={2} gap={2}> */}
-            {/* <Box display="flex" flexDirection="column" margin={2} gap={2} alignItems={"flex-start"}> */}
-            {/* Filters Section*/}
-            <Typography variant="h4" align="center">
-              Filters
-            </Typography>
-          </Grid>
-          {/* <Grid container spacing={2} flexDirection="column">
-          <Grid item xs={6} md={3} display="flex" flexDirection="column" padding="1rem"> */}
-          {/* <Paper> */}
-          {/* <Box display="flex" flexDirection="column" padding="1rem"> */}
-          <Grid item container direction="column">
-            <SelectComponent selectId="category" label="category" options={category} />
-            <SelectComponent selectId="conditions" label="conditions" options={conditions} />
-          </Grid>
+    // <Container maxWidth="lg" container display="flex" flexDirection="row" spacing={2}>
+    <Box container display="flex" sx={{ flexDirection: { xs: "column", sm: "row" } }}>
+      <Grid container direction="column" xs={3}>
+        <Grid item>
+          {/* <Box display="flex" flexDirection="row" alignItems="center" justifyContent="center" margin={2} gap={2}> */}
+          {/* <Box display="flex" flexDirection="column" margin={2} gap={2} alignItems={"flex-start"}> */}
+          {/* Filters Section*/}
+          <Typography variant="h4" align="center">
+            Filters
+          </Typography>
         </Grid>
-        {/* <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+        {/* <Grid container spacing={2} flexDirection="column">
+          <Grid item xs={6} md={3} display="flex" flexDirection="column" padding="1rem"> */}
+        {/* <Paper> */}
+        {/* <Box display="flex" flexDirection="column" padding="1rem"> */}
+        <Grid item container direction="column">
+          <SelectComponent selectId="category" label="category" options={category} />
+          <SelectComponent selectId="conditions" label="conditions" options={conditions} />
+        </Grid>
+      </Grid>
+      {/* <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
                 <InputLabel id="label">Category</InputLabel>
                 <Select
                   labelId="label"
@@ -139,59 +139,25 @@ const CardsWithFilters = ({ card }) => {
                   <MenuItem value={30}>poor</MenuItem>
                 </Select>
               </FormControl> */}
-        {/* </Box> */}
-        {/* </Grid> */}
-        {/* </Paper> */}
-        {/* </Grid>
-        </Grid> */}
-        {/* </Box> */}
-        {/* Cards Section*/}
 
-        {/* <Grid container direction="column" spacing={2}> */}
-        {/* <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" margin={2} gap={2}> */}
-        {/* <Grid item container>
-            <Typography variant="h4" align="center">
-              Cards
-            </Typography>
-          </Grid> */}
-        {/* <Grid
+      <Grid container alignItems="center" columns={{ xs: 4, sm: 8, md: 12 }}>
+        {cards.map(card => (
+          <Grid
             item
-            xs={6}
-            md={9}
-            style={{ padding: 0, marginBottom: 2 }} */}
-        {/* // display="flex" // flexDirection="column" // alignItems="center" // justifyContent="center" // sx=
-          {{ marginBottom: 2 }} */}
-        {/* > */}
-        {/* <Paper display="flex" alignItems="center" justifyContent="center"> */}
-        <Grid
-          container
-          //   direction="row"
-          alignItems="center"
-          spacing={3}
-          // spacing={{ xs: 2, md: 3 }}
-          columns={{ xs: 4, sm: 8, md: 12 }}>
-          {cards.map(card => (
-            <Grid
-              item
-              key={card._id}
-              xs={4}
-              //   align="center"
-              display="flex"
-              alignItems="center"
-              justifyContent="center"
-              style={{ padding: "0" }}>
-              <CardComponent card={card} key={card._id} />
-            </Grid>
-          ))}
-        </Grid>
-        {/* </Paper> */}
-        {/* </Grid> */}
-        {/* </Box> */}
-        {/* </Grid> */}
-        {/* </Grid> */}
-        {/* </Box> */}
-      </Box>
-    </Container>
+            // margin={1}
+            // gap={1}
+            key={card._id}
+            xs={4}
+            //   align="center"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            style={{ padding: "0", margin: "1" }}>
+            <CardComponent card={card} key={card._id} />
+          </Grid>
+        ))}
+      </Grid>
+    </Box>
   );
 };
 export { CardsWithFilters };
