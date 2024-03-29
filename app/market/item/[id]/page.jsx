@@ -4,20 +4,13 @@ import { Typography, Button, Card, CardMedia, ThemeProvider, Breadcrumbs, Link }
 import { useTheme } from "@mui/material/styles";
 import { useRouter } from 'next/navigation'; // Importing useRouter from next/navigation
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-
 
 
 const IndividualCardPage = ({ params }) => {
   const [cardDetails, setCardDetails] = React.useState(null);
   const router = useRouter();
-  console.log(params)
   const theme = useTheme();
   const id = params.id;
-  console.log(id)
-
-
-
 
   React.useEffect(() => {
     const fetchCardDetails = async () => {
@@ -27,12 +20,13 @@ const IndividualCardPage = ({ params }) => {
           throw new Error('Failed to fetch card details');
         }
         const data = await response.json();
-        console.log(data);
-        setCardDetails(data.data);
+        setCardDetails(data); // Update to set the entire data object
+       
       } catch (error) {
         console.error('Error fetching card details:', error);
         setCardDetails(null);
       }
+      console.log(cardDetails)
     };
 
     if (id) {
@@ -76,7 +70,6 @@ const IndividualCardPage = ({ params }) => {
               style={{ width: 300, height: "auto" }}
             />
           </Card>
-
           {/* Details Section */}
           <div style={{ maxWidth: 600, paddingLeft: theme.spacing(2), borderRadius: theme.shape.borderRadius }}>
             <Typography variant="h4" gutterBottom>
@@ -89,58 +82,58 @@ const IndividualCardPage = ({ params }) => {
               Description: {cardDetails?.description || ""}
             </Typography>
             <Typography variant="body1" gutterBottom>
-              Rarity: {cardDetails?.rarity || ""}
+              Conditions: {cardDetails?.conditions || ""}
             </Typography>
             <Typography variant="body1" gutterBottom>
               Category: {cardDetails?.category || ""}
             </Typography>
             <Typography variant="body1" gutterBottom>
-              Condition: {cardDetails?.condition || ""}
+              Quantity: {cardDetails?.quantity || ""}
             </Typography>
             <Typography variant="body1" gutterBottom>
-              Seller: {cardDetails?.seller || ""}
+              Available: {cardDetails?.available || ""}
             </Typography>
             <Typography variant="body1" gutterBottom>
-              Location: {cardDetails?.location || ""}
+              Created By: {cardDetails?.createdBy || ""}
             </Typography>
-
-            {/* Action Buttons */}
-            <div style={{ display: 'flex', gap: theme.spacing(1), marginTop: theme.spacing(2) }}>
-              <Button
-                variant="contained"
-                color="accent"
-                style={{ color: theme.palette.background.paper }}
-                startIcon={<ShoppingCartIcon />}
-                onClick={handleAddToCartButtonClick}
-              >
-                Add to Cart
-              </Button>
-              <Button
-                variant="contained"
-                color="secondary"
-                startIcon={<FavoriteIcon />}
-              >
-                Add to Favorites
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleEditButtonClick}
-              >
-                Edit card
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleSellerInfoButtonClick}
-              >
-                Watch information about the seller
-              </Button>
-            </div>
+            <Typography variant="body1" gutterBottom>
+              Created At: {cardDetails?.createdAt || ""}
+            </Typography>
+            <Typography variant="body1" gutterBottom>
+              __v: {cardDetails?.__v || ""}
+            </Typography>
           </div>
         </div>
+
+        {/* Action Buttons */}
+        <div style={{ display: 'flex', marginTop: theme.spacing(2), gap: theme.spacing(1) }}>
+          <Button
+            variant="contained"
+            color="accent"
+            style={{ color: theme.palette.background.paper }}
+            startIcon={<ShoppingCartIcon />}
+            onClick={handleAddToCartButtonClick}
+          >
+            Add to Cart
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleEditButtonClick}
+          >
+            Edit card
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleSellerInfoButtonClick}
+          >
+            Watch information about the seller
+          </Button>
+        </div>
       </div>
-    </ThemeProvider>
+
+    </ThemeProvider >
   );
 };
 
