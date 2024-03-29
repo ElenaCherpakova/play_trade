@@ -1,4 +1,5 @@
 import { Schema, model, models } from "mongoose";
+import User from "./User";
 
 const SellerSchema = new Schema({
   userId: {
@@ -20,10 +21,16 @@ const SellerSchema = new Schema({
     type: Number,
     default: 0
   },
-  location: {
-    type: String
+
+  isRequestedAt: {
+    type: Date,
+    required: function(){
+      return this.isSeller === true
+    }
   }
 });
+
+
 
 const Seller = models.Seller || model("Seller", SellerSchema);
 export default Seller;

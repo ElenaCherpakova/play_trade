@@ -18,10 +18,27 @@ import SelectComponent from "./SelectComponent";
 const CardsWithFilters = ({ card }) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [cards, setCards] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedConditions, setSelectedConditions] = useState("");
 
+  const handleSelectCategoryChange = event => {
+    const selectedCardCategory = event.target.value;
+    setSelectedCategory(selectedCardCategory);
+  };
+  const handleSelectConditionsChange = event => {
+    const selectedCardConditions = event.target.value;
+    setSelectedConditions(selectedCardConditions);
+  };
+
+  // useEffect getAllCards
   useEffect(() => {
     async function fetchCards() {
       try {
+        // const response = await fetch(`/api/cards/${id}`);
+        // if (!response.ok) {
+        //   console.log(response);
+        //   throw new Error(response.statusText);
+        // }
         const response = await fetch("/api/cards");
         if (!response.ok) {
           throw new Error("Failed to fetch cards");
@@ -36,6 +53,10 @@ const CardsWithFilters = ({ card }) => {
     fetchCards();
   }, []);
 
+  // useEffect for cards by category
+
+  // useEffect for Conditions
+
   //   const value = [10, 20, 30, 40, 50, 60];
   const category = [" ", "Magic", "Pokemon", "Digimon", "Yu-Gi-Oh!", "Sport Card"];
   //   if (this.category === "Sport Card") {
@@ -47,41 +68,6 @@ const CardsWithFilters = ({ card }) => {
   //   }
   const conditions = [" ", "near mint", "excellent", "very good", "poor"]; //Sport Card
   const conditions1 = ["near mint", "lightly played", "moderately played", "heavily played", "damaged"];
-
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedConditions, setSelectedConditions] = useState("");
-
-  const handleSelectCategoryChange = event => {
-    const selectedCardCategory = event.target.value;
-    setSelectedCategory(selectedCardCategory);
-  };
-  const handleSelectConditionsChange = event => {
-    const selectedCardConditions = event.target.value;
-    setSelectedConditions(selectedCardConditions);
-  };
-
-  // useEffect for Conditions
-
-  useEffect(() => {
-    const fetchConditions = async () => {
-      if (selectedCategory === "Sport Card") {
-        try {
-          await getSportCardConditions(dispatchSportCardConditions);
-        } catch (error) {
-          setErrorMessage("");
-          setErrorMessage("Error loading sport card conditions");
-        }
-      } else {
-        try {
-          await getGameCardConditions(dispatchGameCardConditions);
-        } catch (error) {
-          setErrorMessage("");
-          setErrorMessage("Error loading game card conditions");
-        }
-      }
-    };
-    fetchConditions();
-  }, [selectedCategory]);
 
   return (
     // <Container maxWidth="lg" container display="flex" flexDirection="row" spacing={2}>
