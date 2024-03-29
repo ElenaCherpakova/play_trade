@@ -44,15 +44,18 @@ export default function Sell() {
         body,       
       });
 
-      if (!response.ok) {
-        throw new Error(response.statusText);
-      }
       const data = await response.json();
+
+      if (!response.ok) {
+        console.log(data.errors )
+        const detailedErrorMessage = data.errors ? data.errors.join(", ") : data.message;
+        throw new Error(detailedErrorMessage || "Unknown error occurred.");      }
+
       setId(data.data._id);
     } catch (error) {
-      console.log(error.message);
+      console.log(error);
       setOpenError(true);
-      setErrorMessage(error.message || "unknown error");
+      setErrorMessage(error.toString() || "unknown error");
     }
   };
   const handleClose = (event, reason) => {
