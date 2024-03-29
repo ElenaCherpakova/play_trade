@@ -89,7 +89,6 @@ export const authOptions = {
       return true;
     },
     async jwt({ token, user, session, trigger }) {
-      console.log("jwt", { token, session, user });
       if (user) {
         token.user = user;
       }
@@ -97,12 +96,14 @@ export const authOptions = {
       if (trigger === "update" && (session.user.name || session.user.email)) {
         return {
           ...token,
-          _id: session.user._id || session.user.sub,
-          name: session.user.name,
-          email: session.user.email
+          user: {
+            ...token.user,
+            _id: session.user._id || session.user.sub,
+            name: session.user.name,
+            email: session.user.email
+          }
         };
       }
-
       return token;
     },
     async session({ session, token }) {
@@ -111,9 +112,9 @@ export const authOptions = {
           ...session,
           user: {
             ...session.user,
-            _id: token._id || token.sub,
-            name: token.name,
-            email: token.email
+            _id: token.user._id || token.user.sub,
+            name: token.user.name,
+            email: token.user.email
           }
         };
       }
