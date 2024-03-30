@@ -33,7 +33,7 @@ export async function POST(req) {
     if (!token) {
       return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
     }
-    const userId = token.sub;
+    const userId = token.user._id;
     const body = await req.json();
     body.createdBy = userId;
 
@@ -43,34 +43,42 @@ export async function POST(req) {
       return NextResponse.json({ success: false, message: error.message || "Error saving a card" }, { status: 400 });
     }
     return new NextResponse(JSON.stringify({ success: true, data: card }), {
-      status: 201 
-    })
+      status: 201
+    });
   } catch (error) {
     if (error.name === "ValidationError") {
       const errorMessages = Object.values(error.errors).map(err => {
         let message = err.message;
         // Customize messages based on the validation error
-        if (err.kind === 'maxlength') {
+        if (err.kind === "maxlength") {
           message = `The ${err.path} '${err.value}' is too long. Maximum allowed length is ${err.properties.maxlength}.`;
-        } else if (err.kind === 'minlength') {
+        } else if (err.kind === "minlength") {
           message = `The ${err.path} is too short. Minimum required length is ${err.properties.minlength}.`;
-        } else if (err.kind === 'required') {
+        } else if (err.kind === "required") {
           message = `Please provide a ${err.path}.`;
-        } else if (err.kind === 'enum') {
-          message = `The ${err.path} '${err.value}' is not allowed. Allowed values are: ${err.properties.enumValues.join(", ")}.`;
+        } else if (err.kind === "enum") {
+          message = `The ${err.path} '${
+            err.value
+          }' is not allowed. Allowed values are: ${err.properties.enumValues.join(", ")}.`;
         }
         return message;
       });
-      return NextResponse.json({ 
-        success: false, 
-        message: "Validation error", 
-        errors: errorMessages 
-      }, { status: 400 });
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Validation error",
+          errors: errorMessages
+        },
+        { status: 400 }
+      );
     } else {
-      return NextResponse.json({ 
-        success: false, 
-        message: error.message || "Server error"
-      }, { status: 500 });
+      return NextResponse.json(
+        {
+          success: false,
+          message: error.message || "Server error"
+        },
+        { status: 500 }
+      );
     }
   }
 }
@@ -83,15 +91,15 @@ export async function DELETE(req) {
     if (!token) {
       return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
     }
-    const userId = token.sub;
+    const userId = token.user._id;
     const cards = await Card.deleteMany({ createdBy: userId });
     if (!cards) {
-      console.log(error)
+      console.log(error);
       return NextResponse.json({ success: false, message: error.message || "No cards found" }, { status: 400 });
     }
     return NextResponse.json({ success: true, data: {} }, { status: 200 });
   } catch (error) {
-    console.log(error.message)
+    console.log(error.message);
     return NextResponse.json({ success: false, message: error.message }, { status: 400 });
   }
 }

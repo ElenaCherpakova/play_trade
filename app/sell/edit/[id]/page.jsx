@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { fetchCardData, editCardData } from "@/utils/fetchData";
 import { Alert, Box, Snackbar } from "@mui/material";
 import CardForm from "@/components/CardForm";
 
@@ -10,40 +11,32 @@ export default function Page({ params }) {
   const [data, setData] = useState(null);
   const router = useRouter();
   const id = params.id;
+
+  //get card data
   useEffect(() => {
     if (id) {
-      //fetch data need to move to file in utils
-      const fetchCard = async () => {
-        const response = await fetch(`/api/cards/${id}`);
-        if (!response.ok) {
-          throw new Error(response.statusText);
+      const fetchData = async () => {
+        try {
+          const cardData = await fetchCardData(id);
+          setData(cardData);
+        } catch (error) {
+          console.error;
+          setOpenError(true);
+          setErrorMessage(error.message || "unknown error");
         }
-        const data = await response.json();
-        setData(data.data);
       };
-      fetchCard();
+      fetchData();
     }
   }, [id]);
 
-  //fetch data need to move to file in utils
+  //edit card
   const editCard = async editProperty => {
     const editCard = {
       ...data,
       ...editProperty
     };
-    const body = JSON.stringify({ ...editCard });
     try {
-      const response = await fetch(`/api/cards/${id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body
-      });
-
-      const data = await response.json();
-      console.log(data);
-      setData(data.data);
+      await editCardData(id, editCard);
       router.push(`/market/item/${id}`);
     } catch (error) {
       console.log(error.message);

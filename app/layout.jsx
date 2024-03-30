@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import { getServerSession } from "next-auth/next";
 import SessionProvider from "@/utils/SessionProvider";
 import Navbar from "../components/Navbar";
+import { CssBaseline, Box } from "@mui/material";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,9 +24,18 @@ export default async function RootLayout({ children }) {
       <body className={inter.className}>
         <SessionProvider session={session}>
           <AppRouterCacheProvider>
+            <CssBaseline />
             <ThemeProvider theme={theme}>
               <Navbar />
-              <main>{children}</main>
+              <main>
+                <Box
+                  display="flex"
+                  flexDirection="column"
+                  flexGrow={1}
+                  sx={{ display: "flex", flexDirection: "column", flexGrow: "1" }}>
+                  {children}
+                </Box>
+              </main>
               <Footer />
             </ThemeProvider>
           </AppRouterCacheProvider>
