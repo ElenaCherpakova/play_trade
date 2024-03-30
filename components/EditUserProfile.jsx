@@ -24,7 +24,7 @@ export default function UserProfileEditPage(props) {
   if (!session) {
     return null;
   }
-
+console.log("USERDATA", userData)
   const handleChange = e => {
     const { name, value } = e.target;
     setUserData(prevState => ({
@@ -49,7 +49,7 @@ export default function UserProfileEditPage(props) {
       }
       try {
         await updateSession({
-          ...session,
+          ...session.user,
           user: { ...session.user, ...userData }
         });
 
@@ -66,6 +66,7 @@ export default function UserProfileEditPage(props) {
     }
   };
 
+  
   return (
     //entire screen
     <ThemeProvider theme={importedTheme}>

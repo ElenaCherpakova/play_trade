@@ -16,7 +16,7 @@ export const PUT = async req => {
   await dbConnect();
   const session = await getServerSession(authOptions);
 
-  console.log("PUT IS HERE", session);
+  console.log("PUT IS HERE", session.user._id);
   if (!session || !session.user) {
     return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
   }

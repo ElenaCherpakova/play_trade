@@ -132,6 +132,7 @@ const useAuthUser = create(set => ({
     }
   },
   updateProfile: async userData => {
+    console.log("received Data", userData)
     set({ isLoading: true, error: null });
     try {
       const response = await fetch("/api/auth/profile/update", {
@@ -143,6 +144,7 @@ const useAuthUser = create(set => ({
       });
       if (response.ok) {
         const data = await response.json();
+        console.log("Data", data)
         set({ isLoading: false, data, error: null });
       } else {
         const errorData = await response.json();
