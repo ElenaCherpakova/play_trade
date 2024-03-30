@@ -1,5 +1,6 @@
 "use client";
-import { React, useState } from "react";
+import { React, useState, useEffect } from "react";
+import useImageUpload from "../hooks/useImageUpload";
 import { Box, TextField, Button, Typography, Paper, Grid, Avatar } from "@mui/material";
 import { ThemeProvider, useTheme } from "@mui/material/styles";
 import { useSession } from "next-auth/react";
@@ -9,22 +10,32 @@ import useAuthUser from "../store/useAuthUser";
 export default function UserProfileEditPage(props) {
   const theme = useTheme();
   const updateProfile = useAuthUser(state => state.updateProfile);
-  const [avatar, setAvatar] = useState("");
-  const [avatarPreview, setAvatarPreview] = useState("/images/AllmageElena.jpeg"); // Default av
+  const { handleImageUpload, error } = useImageUpload();
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [previewAvatar, setPreviewAvatar] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isEditAvatar, setIsEditAvatar] = useState(false);
-  const [err, setErr] = useState(null);
-  const { data: session, update: updateSession } = useSession();
-
   const [userData, setUserData] = useState({
     name: session?.user?.name || "",
     email: session?.user?.email || ""
   });
 
-  if (!session) {
-    return null;
-  }
-console.log("USERDATA", userData)
+  const [err, setErr] = useState(null);
+  const { data: session, update: updateSession } = useSession();
+
+  useEffect(() => {
+    if (!selectedFile) {
+      setPreviewImage("");
+      return;
+    }
+    const fileReader = new FileReader();
+    fileReader.onloadend = () => {
+      setPreviewImage(fileReader.result);
+    };
+    fileReader.readAsDataURL(selectedFile);
+  }, [selectedFile]);
+
+  console.log("USERDATA", userData);
   const handleChange = e => {
     const { name, value } = e.target;
     setUserData(prevState => ({
@@ -66,7 +77,10 @@ console.log("USERDATA", userData)
     }
   };
 
-  
+  if (!session) {
+    return null;
+  }
+
   return (
     //entire screen
     <ThemeProvider theme={importedTheme}>
