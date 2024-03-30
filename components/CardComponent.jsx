@@ -19,7 +19,7 @@ export default function CardComponent({ card, params }) {
   const buyNow = () => {
     console.log("buy now");
   };
-  console.log(params);
+  // console.log(params);
   // const id = params.id;
   return (
     <Card

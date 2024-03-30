@@ -6,8 +6,8 @@ import CardComponent from "./CardComponent";
 import SelectComponent from "./SelectComponent";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
-import { fetchData } from "next-auth/client/_utils";
-import { fetchAllCardsData } from "../utils/fetchData";
+// import { fetchData } from "next-auth/client/_utils";
+// import { fetchAllCardsData } from "../utils/fetchData";
 
 // const currentCards = cards.slice(indexOfFirstItem, indexOfLastItem);
 // const card = {
@@ -29,20 +29,20 @@ const CardsWithFilters = ({ id }) => {
   const [data, setData] = useState(null);
   //
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        await fetchAllCardsData(id);
-        // setData(cardData);
-        setOpenError(false); // Reset error state if data is fetched successfully
-      } catch (error) {
-        // console.error(error); // Log the actual error
-        setOpenError(true);
-        setErrorMessage(error.message || "Unknown error");
-      }
-    };
-    fetchData();
-  }, []);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       await fetchAllCardsData(id);
+  //       setData(cardData);
+  //       setOpenError(false);
+  //     } catch (error) {
+  //       console.error(error);
+  //       setOpenError(true);
+  //       setErrorMessage(error.message || "Unknown error");
+  //     }
+  //   };
+  //   fetchData();
+  // }, []);
 
   const handleSelectCategoryChange = event => {
     const selectedCardCategory = event.target.value;
@@ -54,22 +54,22 @@ const CardsWithFilters = ({ id }) => {
   };
 
   // useEffect getAllCards
-  // useEffect(() => {
-  //   async function fetchCards() {
-  //     try {
-  //       const response = await fetch("/api/cards");
-  //       if (!response.ok) {
-  //         throw new Error("Failed to fetch cards");
-  //       }
-  //       const data = await response.json();
-  //       setCards(data.data);
-  //     } catch (error) {
-  //       console.error("Error fetching cards:", error);
-  //     }
-  //   }
+  useEffect(() => {
+    async function fetchCards() {
+      try {
+        const response = await fetch("/api/cards");
+        if (!response.ok) {
+          throw new Error("Failed to fetch cards");
+        }
+        const data = await response.json();
+        setCards(data.data);
+      } catch (error) {
+        console.error("Error fetching cards:", error);
+      }
+    }
 
-  //   fetchCards();
-  // }, []);
+    fetchCards();
+  }, []);
 
   // useEffect for cards by category
 
