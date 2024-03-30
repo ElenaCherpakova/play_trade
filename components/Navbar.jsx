@@ -82,7 +82,6 @@ const Navbar = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-  console.log("session", session);
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar component="nav">

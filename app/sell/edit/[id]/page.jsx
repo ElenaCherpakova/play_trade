@@ -5,6 +5,10 @@ import { fetchCardData, editCardData } from "@/utils/fetchData";
 import { Alert, Box, Snackbar } from "@mui/material";
 import CardForm from "@/components/CardForm";
 
+/**
+ * @param {params} Object
+ 
+*/
 export default function Page({ params }) {
   const [openError, setOpenError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -51,6 +55,7 @@ export default function Page({ params }) {
     }
     setOpenError(false);
   };
+
   return (
     <Box>
       {data && <CardForm cardValue={data} onSubmitForm={editCard} />}

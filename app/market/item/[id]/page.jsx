@@ -40,6 +40,7 @@ export default function Page({ params }) {
     }
     setOpenError(false);
   };
+
   return (
     <Box>
       {data && <CardComponent card={data} />}
