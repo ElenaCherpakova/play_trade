@@ -100,7 +100,7 @@ export const authOptions = {
           };
         }
       }
-      console.log("token user", token.user.id);
+      console.log("token user", token.user._id);
       if (trigger === "update" && session.user) {
         return {
           ...token,

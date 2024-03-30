@@ -83,8 +83,14 @@ const Navbar = () => {
     setAnchorEl(null);
   };
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar component="nav">
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        p: 4,
+        flexGrow: 1
+      }}>
+      <AppBar component="nav" display="flex" sx={{ flexGrow: 1 }}>
         <Toolbar>
           <Box
             width="100%"
