@@ -13,20 +13,15 @@ import AddToCartButton from "./AddToCartButton";
 export default function CardComponent({ card, params }) {
   const router = useRouter();
 
-  // const addToCart = () => {
-  //   console.log("add to cart");
-  // };
   const buyNow = () => {
     console.log("buy now");
   };
-  // console.log(params);
-  // const id = params.id;
+
   return (
     <Card
       variant="outlined"
       style={{
         display: "flex",
-        // justifyContent: "center",
         flexDirection: "column",
         border: "none",
         maxWidth: 220,
@@ -40,8 +35,6 @@ export default function CardComponent({ card, params }) {
           image={card.imageURL}
           alt={card.name}
           height="300"
-          // image={data.eventImage || data.image}
-          // alt={eventDetails.value}
         />
         <CardContent sx={{ p: 0.5 }}>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
