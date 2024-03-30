@@ -33,7 +33,7 @@ export default function CardComponent({ card, params }) {
         height: "100%",
         justifyContent: "space-between"
       }}>
-      <CardActionArea type="button" onClick={() => router.push(`/api/cards/${_id}`)}>
+      <CardActionArea type="button" onClick={() => router.push(`/api/cards/${card._id}`)}>
         <CardMedia
           style={{ objectFit: "cover", padding: 0, objectFit: "cover", borderRadius: 8 }}
           component="img"
