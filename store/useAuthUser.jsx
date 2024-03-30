@@ -157,6 +157,7 @@ const useAuthUser = create(set => ({
       });
       if (response.ok) {
         const data = await response.json();
+        console.log("Data", data)
         set({ isLoading: false, data, error: null });
       } else {
         const errorData = await response.json();
