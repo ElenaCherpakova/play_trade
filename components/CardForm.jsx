@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import useImageUpload  from "../hooks/useImageUpload";
+import useImageUpload from "../hooks/useImageUpload";
 import {
   Box,
   Button,
@@ -12,10 +12,12 @@ import {
   Paper,
   Grid,
   Container,
-  Backdrop, 
-  CircularProgress
+  Backdrop,
+  CircularProgress,
+  useMediaQuery
 } from "@mui/material";
-import { Image } from "@mui/icons-material";
+import ImageIcon from "@mui/icons-material/Image";
+import Image from "next/image";
 
 /**
  *
@@ -28,7 +30,7 @@ export default function CardForm({ cardValue, onSubmitForm }) {
   const { handleImageUpload, error } = useImageUpload();
   const [isHovered, setIsHovered] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
-  const [previewImage, setPreviewImage] = useState(cardValue?.imageURL || '');
+  const [previewImage, setPreviewImage] = useState(cardValue?.imageURL || "");
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef(null);
 
@@ -41,7 +43,7 @@ export default function CardForm({ cardValue, onSubmitForm }) {
 
   useEffect(() => {
     if (!selectedFile) {
-      setPreviewImage('');
+      setPreviewImage("");
       return;
     }
     const fileReader = new FileReader();
@@ -60,28 +62,26 @@ export default function CardForm({ cardValue, onSubmitForm }) {
     }
   };
 
-  const handleFileChange = (event) => {
+  const handleFileChange = event => {
     const file = event.target.files[0];
     if (file) {
       setSelectedFile(file);
     }
-  }
+  };
 
   const handlePaperClick = () => {
     fileInputRef.current.click();
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
 
-    const { 
-      cardName, set, price, currency, shippingCost, 
-      description, conditions, quantity, available 
-    } = e.target.elements;
+    const { cardName, set, price, currency, shippingCost, description, conditions, quantity, available } =
+      e.target.elements;
 
     const defaultImage = `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_NAME}/image/upload/v1711381226/vr2hc3udhtc8z9u1hrp4.png`;
-    
-    const submitFormData = (imageURL) => {
+
+    const submitFormData = imageURL => {
       const formData = {
         name: cardName.value,
         set: set.value,
@@ -93,27 +93,27 @@ export default function CardForm({ cardValue, onSubmitForm }) {
         quantity: quantity.value,
         available: available.value,
         category: cardCategory,
-        imageURL: imageURL || cardValue?.imageURL || defaultImage 
+        imageURL: imageURL || cardValue?.imageURL || defaultImage
       };
       onSubmitForm(formData);
     };
 
     try {
-      setLoading(true); 
+      setLoading(true);
       if (selectedFile) {
-        await handleImageUpload(selectedFile, submitFormData); 
+        await handleImageUpload(selectedFile, submitFormData);
       } else {
         submitFormData(cardValue?.imageURL || defaultImage);
       }
     } catch {
-      console.log(error)
+      console.log(error);
     } finally {
-      setLoading(false); 
+      setLoading(false);
     }
   };
-
+  const isXS = useMediaQuery(theme => theme.breakpoints.down("sm"));
   return (
-    <Container>
+    <Container maxWidth="md">
       <Box
         component="form"
         display="flex"
@@ -126,12 +126,12 @@ export default function CardForm({ cardValue, onSubmitForm }) {
           e.preventDefault();
           handleSubmit(e);
         }}>
-        <Typography textAlign="center" variant="h4">
+        <Typography textAlign="center" variant="h1">
           {editCard ? "Edit" : "Add"} card
         </Typography>
         <Grid container spacing={4}>
-          <Grid item xs={6} md={4}>
-            <Box display="flex" flexDirection="column" gap={2}>
+          <Grid item xs={12} sm={6} md={4}>
+            <Box display="flex" flexDirection="column" gap={2} sx={{ px: isXS ? 10 : 0 }}>
               <Paper
                 onClick={handlePaperClick}
                 onMouseEnter={() => setIsHovered(true)}
@@ -148,14 +148,10 @@ export default function CardForm({ cardValue, onSubmitForm }) {
                 }}
                 sx={{ overflow: "hidden" }}>
                 {previewImage ? (
-                  <img
-                    src={previewImage}
-                    alt="Preview"
-                    style={{ width: "100%", height: "100%", objectFit: "cover", position: "absolute" }}
-                  />
+                  <Image src={previewImage} alt="Preview" fill={true} style={{ objectFit: "cover" }} />
                 ) : (
                   <>
-                    <Image fontSize="large" color="secondary" />
+                    <ImageIcon alt="no image icon" fontSize="large" color="secondary" />
                     <Typography sx={theme => ({ color: theme.palette.text.secondary })}>
                       Click to upload an image
                     </Typography>
@@ -239,7 +235,7 @@ export default function CardForm({ cardValue, onSubmitForm }) {
                     labelId="cardCurrency"
                     id="currency"
                     label="currency"
-                    defaultValue={cardValue?.currency}>
+                    defaultValue={cardValue?.currency || "USD"}>
                     <MenuItem value="USD">USD</MenuItem>
                     <MenuItem value="CAD">CAD</MenuItem>
                   </Select>
@@ -266,23 +262,24 @@ export default function CardForm({ cardValue, onSubmitForm }) {
                 defaultValue={cardValue?.description}
                 label="description"
               />
-              <FormControl required fullWidth size="small">
-                <InputLabel id="conditions">condition</InputLabel>
-                <Select
-                  fullWidth
-                  name="conditions"
-                  labelId="conditions"
-                  id="conditions"
-                  label="conditions"
-                  defaultValue={cardValue?.conditions}>
-                  {conditionVariants(cardCategory).map((condition, index) => (
-                    <MenuItem key={index} value={condition}>
-                      {condition}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+
               <Box display="flex" gap={2} sx={{ flexDirection: { xs: "column", md: "row" } }}>
+                <FormControl required fullWidth size="small">
+                  <InputLabel id="conditions">condition</InputLabel>
+                  <Select
+                    fullWidth
+                    name="conditions"
+                    labelId="conditions"
+                    id="conditions"
+                    label="conditions"
+                    defaultValue={cardValue?.conditions}>
+                    {conditionVariants(cardCategory).map((condition, index) => (
+                      <MenuItem key={index} value={condition}>
+                        {condition}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
                 <TextField
                   required
                   fullWidth
@@ -313,9 +310,8 @@ export default function CardForm({ cardValue, onSubmitForm }) {
         </Grid>
       </Box>
       <Backdrop
-      sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1, backdropFilter: 'blur(2px)' }}
-      open={loading}
-      >
+        sx={{ color: "#fff", zIndex: theme => theme.zIndex.drawer + 1, backdropFilter: "blur(2px)" }}
+        open={loading}>
         <CircularProgress color="inherit" />
       </Backdrop>
     </Container>

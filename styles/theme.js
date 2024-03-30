@@ -13,16 +13,17 @@ export const theme = createTheme({
   typography: {
     fontFamily: ibm.style.fontFamily,
     h1: {
-      fontSize: 24
+      fontSize: 30,
+      fontWeight: "bold"
     },
     h2: {
-      fontSize: 20
+      fontSize: 24
     },
     h3: {
       fontSize: 18
     },
     h4: {
-      fontSize: 14
+      fontSize: 12
     }
     // h5: {
     //   fontFamily: ""
@@ -64,6 +65,8 @@ export const theme = createTheme({
         variant: "contained",
         color: "secondary",
         sx: {
+          "fontWeight": "bold",
+          "transition": "all 0.3s",
           "&:hover": {
             opacity: 0.8
           }
