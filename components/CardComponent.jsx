@@ -1,5 +1,4 @@
 "use client";
-// import * as React from "react";
 import Card from "@mui/material/Card";
 import { CardActionArea, Box, Button, Typography, CardActions, CardContent, CardMedia } from "@mui/material";
 import { useRouter } from "next/navigation";
@@ -15,7 +14,7 @@ export default function CardComponent({ card }) {
   return (
     <Card
       variant="outlined"
-      style={{
+      sx={{
         display: "flex",
         flexDirection: "column",
         border: "none",
@@ -25,14 +24,14 @@ export default function CardComponent({ card }) {
       }}>
       <CardActionArea component="button" onClick={id => router.push(`/market/item/${card._id}`)}>
         <CardMedia
-          style={{ objectFit: "cover", padding: 0, objectFit: "cover", borderRadius: 8 }}
+          sx={{ objectFit: "cover", padding: 0, borderRadius: 1 }}
           component="img"
           image={card.imageURL}
           alt={card.name}
           height="300"
         />
         <CardContent sx={{ p: 0.5 }}>
-          <Box style={{ display: "flex" }}>
+          <Box sx={{ display: "flex" }}>
             <Typography gutterBottom variant="body2" component="div" flexGrow="1">
               {card.name}
             </Typography>
@@ -43,7 +42,7 @@ export default function CardComponent({ card }) {
         </CardContent>
       </CardActionArea>
 
-      <CardActions style={{ p: 0.5, justifyContent: "center" }}>
+      <CardActions sx={{ p: 0.5, justifyContent: "center" }}>
         <Button onClick={buyNow} variant="contained" color="secondary">
           Buy Now
         </Button>
