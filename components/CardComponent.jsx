@@ -47,7 +47,6 @@ export default function CardComponent({ card, showButtons = true }) {
           </Box>
         </CardContent>
       </CardActionArea>
-
       {showButtons && (
         <CardActions sx={{ p: 0.5 }}>
           <Button onClick={buyNow} variant="contained" color="secondary">
