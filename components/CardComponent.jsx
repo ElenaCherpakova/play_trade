@@ -10,7 +10,7 @@ import Typography from "@mui/material/Typography";
 import { useRouter } from "next/navigation";
 import AddToCartButton from "./AddToCartButton";
 
-export default function CardComponent({ card }) {
+export default function CardComponent({ card, showButtons = true }) {
   const router = useRouter();
   // const addToCart = () => {
   //   console.log("add to cart");
@@ -40,12 +40,15 @@ export default function CardComponent({ card }) {
         </CardContent>
       </CardActionArea>
 
-      <CardActions sx={{ p: 0.5 }}>
-        <Button onClick={buyNow} variant="contained" color="secondary">
-          Buy Now
-        </Button>
-        <AddToCartButton card={card} />
-      </CardActions>
+      {showButtons && ( // Conditionally render buttons based on showButtons prop
+        <CardActions sx={{ p: 0.5 }}>
+          <Button onClick={buyNow} variant="contained" color="secondary">
+            Buy Now
+          </Button>
+          <AddToCartButton card={card} />
+        </CardActions>
+      )}
+      
     </Card>
   );
 }
