@@ -42,3 +42,14 @@ export async function createCardData(formData) {
   const data = await response.json();
   return data.data;
 }
+
+export async function fetchSellerCards(sellerId) {
+  const response = await fetch(`/api/cards/seller/${sellerId}`);
+  if (!response.ok) {
+    console.log(data.errors);
+    const detailedErrorMessage = data.errors ? data.errors.join(", ") : data.message;
+    throw new Error(detailedErrorMessage || "Unknown error occurred.");
+  }
+  const data = await response.json();
+  return data.data;
+}
