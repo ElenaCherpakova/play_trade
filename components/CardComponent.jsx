@@ -1,16 +1,11 @@
 "use client";
 // import * as React from "react";
 import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import { CardActionArea, Container } from "@mui/material";
-import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
+import { CardActionArea, Box, Button, Typography, CardActions, CardContent, CardMedia } from "@mui/material";
 import { useRouter } from "next/navigation";
 import AddToCartButton from "./AddToCartButton";
 
-export default function CardComponent({ card, params }) {
+export default function CardComponent({ card }) {
   const router = useRouter();
 
   const buyNow = () => {
@@ -28,7 +23,7 @@ export default function CardComponent({ card, params }) {
         height: "100%",
         justifyContent: "space-between"
       }}>
-      <CardActionArea type="button" onClick={() => router.push(`/api/cards/${card._id}`)}>
+      <CardActionArea component="button" onClick={id => router.push(`/market/item/${card._id}`)}>
         <CardMedia
           style={{ objectFit: "cover", padding: 0, objectFit: "cover", borderRadius: 8 }}
           component="img"
@@ -37,19 +32,14 @@ export default function CardComponent({ card, params }) {
           height="300"
         />
         <CardContent sx={{ p: 0.5 }}>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <Typography gutterBottom variant="caption" component="div">
+          <Box style={{ display: "flex" }}>
+            <Typography gutterBottom variant="body2" component="div" flexGrow="1">
               {card.name}
             </Typography>
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <Typography gutterBottom variant="caption" component="div">
-                {card.price}
-              </Typography>
-              <Typography gutterBottom variant="caption" component="div">
-                {card.currency}
-              </Typography>
-            </div>
-          </div>
+            <Typography gutterBottom variant="body2" component="div">
+              {card.price} {card.currency}
+            </Typography>
+          </Box>
         </CardContent>
       </CardActionArea>
 

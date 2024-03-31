@@ -1,32 +1,66 @@
 "use client";
+import { useEffect, useState } from "react";
+import { Grid, Box } from "@mui/material";
+import CardComponent from "../../components/CardComponent";
+import SelectComponent from "../../components/SelectComponent";
+import Pagination from "@mui/material/Pagination";
+import Stack from "@mui/material/Stack";
 
-import { useRouter } from "next/navigation"; //new
+export default function Market({ id }) {
+  const [cards, setCards] = useState([]);
 
-import { Button, Box } from "@mui/material"; //new
+  // useEffect getAllCards
+  useEffect(() => {
+    async function fetchCards() {
+      try {
+        const response = await fetch("/api/cards");
+        if (!response.ok) {
+          throw new Error("Failed to fetch cards");
+        }
+        const data = await response.json();
+        setCards(data.data);
+      } catch (error) {
+        console.error("Error fetching cards:", error);
+      }
+    }
 
-import { CardsWithFilters } from "@/components/CardsWithFilters";
+    fetchCards();
+  }, []);
 
-export default function Market() {
-  //routing using next router (for OnClick event etc.)
-  const router = useRouter(); //new
+  const category = [" ", "Magic", "Pokemon", "Digimon", "Yu-Gi-Oh!", "Sport Card"];
 
-  // const card = {
-  //   name: "Pikachu V - SWSH061",
-  //   price: "$ 0.42",
-  //   imageURL: "https://m.media-amazon.com/images/I/51skd-tjunL._AC_.jpg"
-  // };
+  const conditions = [" ", "near mint", "excellent", "very good", "poor"]; //Sport Card
+  // const conditions1 = ["near mint", "lightly played", "moderately played", "heavily played", "damaged"]; //Other cards
+
   return (
-    //new
-    <Box>
-      <h2>Market</h2>
-      <CardsWithFilters />
-      <a>Here we will see all cards</a>
-      <Button variant="outlined" color="primary" onClick={() => router.push("/market/item/[id]")}>
-        view single card
-      </Button>
-      <Button variant="contained" color="primary" onClick={() => router.push("/sell")}>
-        view cards
-      </Button>
-    </Box>
+    <>
+      <Box display="flex" flexDirection="column" sx={{ m: 5 }}>
+        <Box display="flex" sx={{ gap: 2, flexDirection: { xs: "column", sm: "row" } }}>
+          <Box>
+            <SelectComponent selectId="category" label="category" options={category} />
+            <SelectComponent selectId="conditions" label="conditions" options={conditions} />
+          </Box>
+          <Grid container alignItems="center" sx={{ alignItems: "center", gap: 1, justifyContent: "center" }}>
+            {cards.map(card => (
+              <Grid
+                item
+                key={id}
+                xs={12}
+                md={4}
+                lg={3}
+                align="center"
+                alignItems="center"
+                justifyContent="center"
+                sx={{ p: 0, m: 1 }}>
+                <CardComponent card={card} key={id} />
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
+        <Stack spacing={2} alignItems="center">
+          <Pagination count={10} shape="rounded" />
+        </Stack>
+      </Box>
+    </>
   );
 }
