@@ -1,5 +1,5 @@
 "use client";
-import { React, useState, useEffect } from "react";
+import { React, useState, useEffect, useRef } from "react";
 import useImageUpload from "../hooks/useImageUpload";
 import { Box, TextField, Button, Typography, Paper, Grid, Avatar } from "@mui/material";
 import { ThemeProvider, useTheme } from "@mui/material/styles";
@@ -12,40 +12,60 @@ export default function UserProfileEditPage(props) {
   const updateProfile = useAuthUser(state => state.updateProfile);
   const { handleImageUpload, error } = useImageUpload();
   const [selectedFile, setSelectedFile] = useState(null);
-  const [previewAvatar, setPreviewAvatar] = useState(null);
+
+  const [avatarPreview, setAvatarPreview] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isEditAvatar, setIsEditAvatar] = useState(false);
+  const [err, setErr] = useState(null);
+  const fileInputRef = useRef(null);
+  console.log("setAvatar", avatarPreview);
+  const { data: session, update: updateSession } = useSession();
   const [userData, setUserData] = useState({
     name: session?.user?.name || "",
-    email: session?.user?.email || ""
+    email: session?.user?.email || "",
+    avatar: ""
   });
-
-  const [err, setErr] = useState(null);
-  const { data: session, update: updateSession } = useSession();
 
   useEffect(() => {
     if (!selectedFile) {
-      setPreviewImage("");
+      setAvatarPreview("");
       return;
     }
     const fileReader = new FileReader();
     fileReader.onloadend = () => {
-      setPreviewImage(fileReader.result);
+      setAvatarPreview(fileReader.result);
     };
     fileReader.readAsDataURL(selectedFile);
   }, [selectedFile]);
 
-  console.log("USERDATA", userData);
+  const handleAvatarChange = e => {
+    const file = e.target.files[0];
+    if (file) {
+      setSelectedFile(file);
+      setIsEditAvatar(true);
+    }
+  };
+
+  const submitAvatar = async () => {
+    try {
+      await handleImageUpload(selectedFile, imageURL => {
+        setUserData(prevUserData => ({
+          ...prevUserData,
+          avatar: imageURL
+        }));
+        setIsEditAvatar(false);
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleChange = e => {
     const { name, value } = e.target;
     setUserData(prevState => ({
       ...prevState,
       [name]: value
     }));
-  };
-
-  const handleSubmitImage = async () => {
-    console.log("submit image");
   };
 
   const handleSubmit = async () => {
@@ -65,7 +85,6 @@ export default function UserProfileEditPage(props) {
         });
 
         await updateProfile(userData);
-
         setIsEditing(false);
         setErr(null);
       } catch (error) {
@@ -80,7 +99,7 @@ export default function UserProfileEditPage(props) {
   if (!session) {
     return null;
   }
-
+  console.log("USERDATA", userData);
   return (
     //entire screen
     <ThemeProvider theme={importedTheme}>
@@ -132,20 +151,45 @@ export default function UserProfileEditPage(props) {
                   p: 2
                 }}>
                 <Avatar src={avatarPreview} sx={{ width: "50%", height: "30vh" }} />
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  onClick={handleSubmitImage}
-                  sx={{
-                    "letterSpacing": "0.1em",
-                    "mt": 2,
-                    "width": "50%",
-                    "&:hover": {
-                      backgroundColor: theme.palette.accent.main
-                    }
-                  }}>
-                  {isEditAvatar ? "Save" : "Edit"} Photo
-                </Button>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleAvatarChange}
+                  id="upload-photo"
+                  name="image"
+                  style={{ display: "none" }}
+                  accept="image/png, image/jpeg, image/jpg"
+                />
+                {isEditAvatar ? (
+                  <Button
+                    onClick={submitAvatar}
+                    type="submit"
+                    variant="contained"
+                    color="secondary"
+                    component="span"
+                    sx={{
+                      "letterSpacing": "0.1em",
+                      "mt": 2,
+                      "width": "100%",
+                      "&:hover": {
+                        backgroundColor: theme.palette.accent.main
+                      }
+                    }}>
+                    Save Photo
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={() => fileInputRef.current.click()}
+                    variant="contained"
+                    color="secondary"
+                    component="span"
+                    sx={{ mt: 2, width: "100%" }}>
+                    Edit Photo
+                  </Button>
+                )}
+              </Box>
+
+              <Box>
                 <Button
                   variant="contained"
                   color="secondary"

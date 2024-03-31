@@ -26,6 +26,7 @@ export const PUT = async req => {
     console.log("userId", userId);
     const body = await req.json();
     const { name, email } = body;
+   
     console.log("NAME", name);
     console.log("EMAIL", email);
     if (!name || !email) {
