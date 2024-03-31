@@ -148,7 +148,14 @@ export default function CardForm({ cardValue, onSubmitForm }) {
                 }}
                 sx={{ overflow: "hidden" }}>
                 {previewImage ? (
-                  <Image src={previewImage} alt="Preview" fill={true} style={{ objectFit: "cover" }} />
+                  <Image
+                    src={previewImage}
+                    alt="Preview"
+                    fill={true}
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    priority={true}
+                    style={{ objectFit: "cover" }}
+                  />
                 ) : (
                   <>
                     <ImageIcon alt="no image icon" fontSize="large" color="secondary" />
@@ -272,7 +279,7 @@ export default function CardForm({ cardValue, onSubmitForm }) {
                     labelId="conditions"
                     id="conditions"
                     label="conditions"
-                    defaultValue={cardValue?.conditions}>
+                    defaultValue={cardValue?.conditions || "near mint"}>
                     {conditionVariants(cardCategory).map((condition, index) => (
                       <MenuItem key={index} value={condition}>
                         {condition}
@@ -296,7 +303,7 @@ export default function CardForm({ cardValue, onSubmitForm }) {
                     labelId="availableCard"
                     id="available"
                     label="available"
-                    defaultValue={cardValue?.available}>
+                    defaultValue={cardValue?.available || "available"}>
                     <MenuItem value="available">available</MenuItem>
                     <MenuItem value="sold">sold</MenuItem>
                   </Select>
