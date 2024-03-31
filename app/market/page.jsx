@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { fetchAllCardsData } from "@/utils/fetchData";
 import { Grid, Box } from "@mui/material";
 import CardComponent from "../../components/CardComponent";
 import SelectComponent from "../../components/SelectComponent";
@@ -11,20 +12,17 @@ export default function Market({ id }) {
 
   // useEffect getAllCards
   useEffect(() => {
-    async function fetchCards() {
+    const fetchData = async () => {
       try {
-        const response = await fetch("/api/cards");
-        if (!response.ok) {
-          throw new Error("Failed to fetch cards");
-        }
-        const data = await response.json();
-        setCards(data.data);
+        const data = await fetchAllCardsData();
+        setCards(data);
       } catch (error) {
-        console.error("Error fetching cards:", error);
+        console.error;
+        setOpenError(true);
+        setErrorMessage(error.toString() || "unknown error");
       }
-    }
-
-    fetchCards();
+    };
+    fetchData();
   }, []);
 
   const category = [" ", "Magic", "Pokemon", "Digimon", "Yu-Gi-Oh!", "Sport Card"];
