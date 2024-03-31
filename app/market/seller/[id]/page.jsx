@@ -83,9 +83,12 @@ export default function Seller({ params }) {
           <Grid item xs={2}></Grid>
           <Grid item xs>
             <Grid container spacing={2}>
-              <Grid item xs={6} sm={4} md={3}>
-                {data && data.map(card => <CardComponent key={card._id} card={card} showButtons={showButtons} />)}
-              </Grid>
+              {data &&
+                data.map(card => (
+                  <Grid item key={card._id} xs={12} sm={6} md={4} lg={3}>
+                    <CardComponent key={card._id} card={card} showButtons={showButtons} />
+                  </Grid>
+                ))}
             </Grid>
           </Grid>
         </Grid>
