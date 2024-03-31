@@ -17,7 +17,8 @@ export const theme = createTheme({
       fontWeight: "bold"
     },
     h2: {
-      fontSize: 24
+      fontSize: 24,
+      fontWeight: "bold"
     },
     h3: {
       fontSize: 18

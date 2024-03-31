@@ -1,15 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTheme } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { fetchSellerCards } from "@/utils/fetchData";
 import CardComponent from "@/components/CardComponent";
-import { Alert, Avatar, Box, Container, Paper, Snackbar, Typography } from "@mui/material";
+import { Alert, Avatar, Box, Container, Grid, Paper, Snackbar, Typography } from "@mui/material";
 import { set } from "mongoose";
 
 const user = {
-  name: "123456",
+  name: "Our new seller",
   email: "123456@gmail.com",
   address: "123 Fake St., Springfield, IL 62701",
   isSeller: true
@@ -26,6 +27,7 @@ export default function Seller({ params }) {
   const [errorMessage, setErrorMessage] = useState("");
   const [data, setData] = useState(null);
   const router = useRouter();
+  const theme = useTheme();
   const { data: session, status } = useSession();
   const showButtons = false;
   //for now fot testing, later it will be a seller id
@@ -64,24 +66,40 @@ export default function Seller({ params }) {
           sx={{
             flexDirection: { xs: "column", sm: "row" },
             gap: { xs: 1, sm: 5 },
-            justifyContent: { xs: "center", sm: "flex-start" }
+            justifyContent: { xs: "center", sm: "flex-start" },
+            backgroundColor: "secondary.main",
+            // justifyContent: "center",
+            alignItems: "center",
+            height: 150,
+            px: 2
           }}>
           <Box>
-            <Avatar />
+            <Avatar alt="seller image" src={session?.user?.avatarImgURL} sx={{ width: 100, height: 100 }} />
           </Box>
-          <Typography variant="h4">{user.name}</Typography>
+          <Typography variant="h2">{user.name}</Typography>
         </Box>
-        {data && data.map(card => <CardComponent key={card._id} card={card} showButtons={showButtons} />)}
-        <Snackbar
-          open={openError}
-          autoHideDuration={5000}
-          onClose={handleClose}
-          anchorOrigin={{ vertical: "top", horizontal: "center" }}>
-          <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
-            {errorMessage}
-          </Alert>
-        </Snackbar>
+        {/* <Box p={5}> */}
+        <Grid container spacing={2}>
+          <Grid item xs={2}></Grid>
+          <Grid item xs>
+            <Grid container spacing={2}>
+              <Grid item xs={6} sm={4} md={3}>
+                {data && data.map(card => <CardComponent key={card._id} card={card} showButtons={showButtons} />)}
+              </Grid>
+            </Grid>
+          </Grid>
+        </Grid>
       </Box>
+      <Snackbar
+        open={openError}
+        autoHideDuration={5000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}>
+        <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
+          {errorMessage}
+        </Alert>
+      </Snackbar>
+      {/* </Box> */}
     </Container>
   );
 }
