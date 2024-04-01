@@ -43,7 +43,7 @@ export default function CardComponent({ card }) {
       </CardActionArea>
 
       <CardActions sx={{ p: 0.5, justifyContent: "center" }}>
-        <Button onClick={buyNow} variant="contained" color="secondary">
+        <Button disabled onClick={buyNow} variant="contained" color="secondary">
           Buy Now
         </Button>
         <AddToCartButton card={card} />
