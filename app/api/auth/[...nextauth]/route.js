@@ -89,20 +89,30 @@ export const authOptions = {
       return true;
     },
     async jwt({ token, user, session, trigger }) {
-      console.log("jwt", { token, session, user });
       if (user) {
-        token.user = user;
+        if (!user.authProvider) {
+          token.user = {
+            ...token.user,
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            isSeller: user.isSeller
+          };
+        }
       }
-
-      if (trigger === "update" && (session.user.name || session.user.email)) {
+      console.log("token user", token.user._id);
+      if (trigger === "update" && session.user) {
         return {
           ...token,
-          _id: session.user._id || session.user.sub,
-          name: session.user.name,
-          email: session.user.email
+          user: {
+            ...token.user,
+            _id: session.user._id,
+            name: session.user.name,
+            email: session.user.email,
+            isSeller: session.user.isSeller
+          }
         };
       }
-
       return token;
     },
     async session({ session, token }) {
@@ -111,16 +121,16 @@ export const authOptions = {
           ...session,
           user: {
             ...session.user,
-            _id: token._id || token.sub,
-            name: token.name,
-            email: token.email
+            _id: token.user._id,
+            name: token.user.name,
+            email: token.user.email,
+            isSeller: token.user.isSeller
           }
         };
       }
       return session;
     }
   },
-
   session: {
     strategy: "jwt"
   },

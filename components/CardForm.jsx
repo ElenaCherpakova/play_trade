@@ -1,4 +1,5 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import useImageUpload from "../hooks/useImageUpload";
 import {
   Box,
   Button,
@@ -10,9 +11,13 @@ import {
   Typography,
   Paper,
   Grid,
-  Container
+  Container,
+  Backdrop,
+  CircularProgress,
+  useMediaQuery
 } from "@mui/material";
-import { Image } from "@mui/icons-material";
+import ImageIcon from "@mui/icons-material/Image";
+import Image from "next/image";
 
 /**
  *
@@ -22,11 +27,31 @@ import { Image } from "@mui/icons-material";
 
 export default function CardForm({ cardValue, onSubmitForm }) {
   const [cardCategory, setCardCategory] = useState(cardValue?.category);
-  const [image, setImage] = useState(cardValue?.imageURL || "");
-  const [imageURL, setImageURL] = useState("");
+  const { handleImageUpload, error } = useImageUpload();
   const [isHovered, setIsHovered] = useState(false);
-  const [error, setError] = useState("");
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [previewImage, setPreviewImage] = useState(cardValue?.imageURL || "");
+  const [loading, setLoading] = useState(false);
   const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    const { imageURL } = cardValue;
+    if (imageURL) {
+      setPreviewImage(imageURL);
+    }
+  }, [cardValue]);
+
+  useEffect(() => {
+    if (!selectedFile) {
+      setPreviewImage("");
+      return;
+    }
+    const fileReader = new FileReader();
+    fileReader.onloadend = () => {
+      setPreviewImage(fileReader.result);
+    };
+    fileReader.readAsDataURL(selectedFile);
+  }, [selectedFile]);
 
   const editCard = cardValue.name ? true : false;
   const conditionVariants = cardCategory => {
@@ -36,47 +61,11 @@ export default function CardForm({ cardValue, onSubmitForm }) {
       return ["near mint", "lightly played", "moderately played", "heavily played", "damaged"];
     }
   };
-  async function handleImageUpload(file) {
-    try {
-      const res = await fetch('/api/cloudinary-signature');
 
-      if (!res.ok) throw new Error("Failed to fetch the Cloudinary signature.");
-
-      const { signature, timestamp, api_key } = await res.json();
-
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("api_key", api_key);
-      formData.append("timestamp", timestamp);
-      formData.append("signature", signature);
-
-      const uploadUrl = `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_NAME}/image/upload`;
-      const uploadRes = await fetch(uploadUrl, {
-        method: "POST",
-        body: formData
-      });
-
-      const uploadData = await uploadRes.json();
-
-      if (!uploadRes.ok) throw new Error(uploadData.error?.message || "Upload to Cloudinary failed.");
-      let imageURL = uploadData.secure_url;
-      return imageURL;
-    } catch (error) {
-      setError("Failed to upload the image. Please try again.");
-      return "";
-    }
-  }
-
-  const handleFileChange = async event => {
+  const handleFileChange = event => {
     const file = event.target.files[0];
     if (file) {
-      const uploadedimageURL = await handleImageUpload(file);
-      if (uploadedimageURL) {
-        setImage(URL.createObjectURL(file));
-        setImageURL(uploadedimageURL);
-      } else {
-        setError("Failed to upload the image for preview");
-      }
+      setSelectedFile(file);
     }
   };
 
@@ -86,29 +75,45 @@ export default function CardForm({ cardValue, onSubmitForm }) {
 
   const handleSubmit = async e => {
     e.preventDefault();
-    setError("");
 
-    const defaultImageUrl = "https://res.cloudinary.com/dfoiixlup/image/upload/v1711381226/vr2hc3udhtc8z9u1hrp4.png";
-    const finalImageUrl = imageURL || defaultImageUrl;
+    const { cardName, set, price, currency, shippingCost, description, conditions, quantity, available } =
+      e.target.elements;
 
-    const formData = {
-      name: e.target.elements.cardName.value,
-      set: e.target.elements.set.value,
-      price: e.target.elements.price.value,
-      currency: e.target.elements.currency.value,
-      shippingCost: e.target.elements.shippingCost.value,
-      description: e.target.elements.description.value,
-      conditions: e.target.elements.conditions.value,
-      quantity: e.target.elements.quantity.value,
-      available: e.target.elements.available.value,
-      category: cardCategory,
-      imageURL: finalImageUrl
+    const defaultImage = `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_NAME}/image/upload/v1711381226/vr2hc3udhtc8z9u1hrp4.png`;
+
+    const submitFormData = imageURL => {
+      const formData = {
+        name: cardName.value,
+        set: set.value,
+        price: price.value,
+        currency: currency.value,
+        shippingCost: shippingCost.value,
+        description: description.value,
+        conditions: conditions.value,
+        quantity: quantity.value,
+        available: available.value,
+        category: cardCategory,
+        imageURL: imageURL || cardValue?.imageURL || defaultImage
+      };
+      onSubmitForm(formData);
     };
-    await onSubmitForm(formData);
-  };
 
+    try {
+      setLoading(true);
+      if (selectedFile) {
+        await handleImageUpload(selectedFile, submitFormData);
+      } else {
+        submitFormData(cardValue?.imageURL || defaultImage);
+      }
+    } catch {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const isXS = useMediaQuery(theme => theme.breakpoints.down("sm"));
   return (
-    <Container>
+    <Container maxWidth="md">
       <Box
         component="form"
         display="flex"
@@ -121,12 +126,12 @@ export default function CardForm({ cardValue, onSubmitForm }) {
           e.preventDefault();
           handleSubmit(e);
         }}>
-        <Typography textAlign="center" variant="h4">
+        <Typography textAlign="center" variant="h1">
           {editCard ? "Edit" : "Add"} card
         </Typography>
         <Grid container spacing={4}>
-          <Grid item xs={6} md={4}>
-            <Box display="flex" flexDirection="column" gap={2}>
+          <Grid item xs={12} sm={6} md={4}>
+            <Box display="flex" flexDirection="column" gap={2} sx={{ px: isXS ? 10 : 0 }}>
               <Paper
                 onClick={handlePaperClick}
                 onMouseEnter={() => setIsHovered(true)}
@@ -142,21 +147,24 @@ export default function CardForm({ cardValue, onSubmitForm }) {
                   cursor: "pointer"
                 }}
                 sx={{ overflow: "hidden" }}>
-                {image || cardValue.imageURL ? (
-                  <img
-                    src={image}
+                {previewImage ? (
+                  <Image
+                    src={previewImage}
                     alt="Preview"
-                    style={{ width: "100%", height: "100%", objectFit: "cover", position: "absolute" }}
+                    fill={true}
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    priority={true}
+                    style={{ objectFit: "cover" }}
                   />
                 ) : (
                   <>
-                    <Image fontSize="large" color="secondary" />
+                    <ImageIcon alt="no image icon" fontSize="large" color="secondary" />
                     <Typography sx={theme => ({ color: theme.palette.text.secondary })}>
                       Click to upload an image
                     </Typography>
                   </>
                 )}
-                {isHovered && (image || cardValue.imageURL) && (
+                {isHovered && previewImage && (
                   <Box
                     style={{
                       position: "absolute",
@@ -234,7 +242,7 @@ export default function CardForm({ cardValue, onSubmitForm }) {
                     labelId="cardCurrency"
                     id="currency"
                     label="currency"
-                    defaultValue={cardValue?.currency}>
+                    defaultValue={cardValue?.currency || "USD"}>
                     <MenuItem value="USD">USD</MenuItem>
                     <MenuItem value="CAD">CAD</MenuItem>
                   </Select>
@@ -261,23 +269,24 @@ export default function CardForm({ cardValue, onSubmitForm }) {
                 defaultValue={cardValue?.description}
                 label="description"
               />
-              <FormControl required fullWidth size="small">
-                <InputLabel id="conditions">condition</InputLabel>
-                <Select
-                  fullWidth
-                  name="conditions"
-                  labelId="conditions"
-                  id="conditions"
-                  label="conditions"
-                  defaultValue={cardValue?.conditions}>
-                  {conditionVariants(cardCategory).map((condition, index) => (
-                    <MenuItem key={index} value={condition}>
-                      {condition}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
+
               <Box display="flex" gap={2} sx={{ flexDirection: { xs: "column", md: "row" } }}>
+                <FormControl required fullWidth size="small">
+                  <InputLabel id="conditions">condition</InputLabel>
+                  <Select
+                    fullWidth
+                    name="conditions"
+                    labelId="conditions"
+                    id="conditions"
+                    label="conditions"
+                    defaultValue={cardValue?.conditions || "near mint"}>
+                    {conditionVariants(cardCategory).map((condition, index) => (
+                      <MenuItem key={index} value={condition}>
+                        {condition}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
                 <TextField
                   required
                   fullWidth
@@ -294,7 +303,7 @@ export default function CardForm({ cardValue, onSubmitForm }) {
                     labelId="availableCard"
                     id="available"
                     label="available"
-                    defaultValue={cardValue?.available}>
+                    defaultValue={cardValue?.available || "available"}>
                     <MenuItem value="available">available</MenuItem>
                     <MenuItem value="sold">sold</MenuItem>
                   </Select>
@@ -307,6 +316,11 @@ export default function CardForm({ cardValue, onSubmitForm }) {
           </Grid>
         </Grid>
       </Box>
+      <Backdrop
+        sx={{ color: "#fff", zIndex: theme => theme.zIndex.drawer + 1, backdropFilter: "blur(2px)" }}
+        open={loading}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </Container>
   );
 }
