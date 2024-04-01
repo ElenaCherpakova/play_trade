@@ -7,19 +7,19 @@ import AddToCartButton from "./AddToCartButton";
 export default function CardComponent({ card, showButtons = true, buttonSet }) {
   const router = useRouter();
 
-  const buyNow = () => {
-    console.log("buy now");
-  };
+  // const buyNow = () => {
+  //   console.log("buy now");
+  // };
 
   const handleEdit = (event) => {
     event.stopPropagation(); // Prevents click event from bubbling up to CardActionArea
     onEdit(card.id);
   };
 
-  const handleDelete = (event) => {
-    event.stopPropagation(); // Prevents click event from bubbling up to CardActionArea
-    onDelete(card.id);
-  };
+  // const handleDelete = (event) => {
+  //   event.stopPropagation(); // Prevents click event from bubbling up to CardActionArea
+  //   onDelete(card.id);
+  // };
 
   return (
     <Card
@@ -66,9 +66,7 @@ export default function CardComponent({ card, showButtons = true, buttonSet }) {
             <Button onClick={() => console.log("Buy Now")} variant="contained" color="secondary">
               Buy Now
             </Button>
-            <Button onClick={() => console.log("Add to Cart")} variant="contained" color="primary">
-              Add to Cart
-            </Button>
+            <AddToCartButton card={card} />
           </>
         )}
 
@@ -77,7 +75,7 @@ export default function CardComponent({ card, showButtons = true, buttonSet }) {
             <Button onClick={handleEdit} variant="outlined" color="primary">
               Edit
             </Button>
-            <Button onClick={handleDelete} variant="outlined" color="error">
+            <Button onClick={() => router.push("/market/item/[id]")} variant="outlined" color="error">
               Delete
             </Button>
           </>

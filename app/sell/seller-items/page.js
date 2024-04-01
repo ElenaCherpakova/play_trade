@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Box, Button, Typography, Container, Tab, Tabs } from "@mui/material";
 import { theme } from "@/styles/theme";
 import CardComponent from "@/components/CardComponent";
-import { DELETE } from "@/app/api/cards/[id]/route";
+// import { DELETE } from "@/app/api/cards/[id]/route";
 
 
 const SellerItemsPage = () => {
@@ -25,7 +25,7 @@ const SellerItemsPage = () => {
         { id: 2, name: "Item 2", imageURL: "/images/pokemon.jpg", price: "$20" },
         { id: 3, name: "Item 3", imageURL: "/images/pokemon.jpg", price: "$30" },
         { id: 4, name: "Item 4", imageURL: "/images/pokemon.jpg", price: "$60" }
-        // Add your available items here
+
     ];
 
     const handleTabChange = (event, newValue) => {
@@ -37,27 +37,26 @@ const SellerItemsPage = () => {
         router.push(`/sell/edit/${itemId}`);
     };
 
-    // Handler for deleting an item
-    const handleDeleteItemClick = async (itemId) => {
-        try {
-            const response = await DELETE(`/api/cards/${itemId}`); // Use DELETE function
-            if (response.success) {
-                // Item successfully deleted, perform any necessary UI updates
-                console.log("Item deleted successfully.");
-            } else {
-                // Handle error scenario
-                console.error(response.message);
-            }
-        } catch (error) {
-            // Handle network or other errors
-            console.error("An error occurred while deleting the item:", error);
-        }
-    };
+    // // Handler for deleting an item
+    // const handleDeleteItemClick = async (itemId) => {
+    //     try {
+    //         const response = await DELETE(`/api/cards/${itemId}`); // Use DELETE function
+    //         if (response.success) {
+    //             // Item successfully deleted, perform any necessary UI updates
+    //             console.log("Item deleted successfully.");
+    //         } else {
+    //             // Handle error scenario
+    //             console.error(response.message);
+    //         }
+    //     } catch (error) {
+    //         // Handle network or other errors
+    //         console.error("An error occurred while deleting the item:", error);
+    //     }
+    // };
 
     return (
         <Container maxWidth="lg">
             <Box display="flex" justifyContent="space-between" alignItems="center" mt={theme.spacing(2)}>
-                {/* Your seller profile info and rating */}
                 <Typography variant="h5" gutterBottom>
                     Create new card
                 </Typography>
@@ -79,7 +78,7 @@ const SellerItemsPage = () => {
                             card={item}
                             buttonSet="seller"
                             onEdit={() => handleEditItemClick(item.id)}
-                            onDelete={() => handleDeleteItemClick(item.id)}
+                            onDelete={() => router.push("/market/item/[id]")}
                         />
                     ))
                 )}
@@ -90,21 +89,15 @@ const SellerItemsPage = () => {
                             card={item}
                             buttonSet="seller"
                             onEdit={() => handleEditItemClick(item.id)}
-                            onDelete={() => handleDeleteItemClick(item.id)}
+                            onDelete={() => router.push("/market/item/[id]")}
                         />
                     ))
                 )}
-            </Box>
-
-            {/* Seller reviews section */}
-            <Box mt={theme.spacing(4)}>
-                <Typography variant="h5" gutterBottom>
-                    Seller Reviews
-                </Typography>
-                {/* Seller reviews content */}
             </Box>
         </Container>
     );
 };
 
 export default SellerItemsPage;
+
+

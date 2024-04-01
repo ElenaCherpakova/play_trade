@@ -1,65 +1,33 @@
 "use client";
-import * as React from "react";
-import { Box, Button, Typography, Card, CardActionArea, CardMedia, Breadcrumbs, Link, ThemeProvider } from "@mui/material";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { Box, Button, Typography, Card, CardActionArea, CardMedia, Breadcrumbs, Link, ThemeProvider } from "@mui/material";
+import { theme } from "@/styles/theme";
 import { fetchCardData } from "@/utils/fetchData";
-import { Alert, Box, Button, Snackbar } from "@mui/material";
-import CardComponent from "@/components/CardComponent";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
-/**
- * @param {params} Object
- 
-*/
 export default function Page({ params }) {
   const [openError, setOpenError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [data, setData] = useState(null);
+  const [cardDetails, setCardDetails] = useState(null);
   const router = useRouter();
   const id = params.id;
 
-  //get card data
   useEffect(() => {
     if (id) {
       const fetchData = async () => {
         try {
           const cardData = await fetchCardData(id);
-          setData(cardData);
+          setCardDetails(cardData);
         } catch (error) {
-          console.error;
+          console.error(error);
           setOpenError(true);
           setErrorMessage(error.toString() || "unknown error");
         }
       };
       fetchData();
     }
-  const { id } = params;
-
-  React.useEffect(() => {
-    const fetchCardDetails = async () => {
-      try {
-        const response = await fetch(`/api/cards/${id}`);
-        if (!response.ok) {
-          throw new Error('Failed to fetch card details');
-        }
-        const data = await response.json();
-        setCardDetails(data.data); // Update to set the entire data object
-      } catch (error) {
-        console.error('Error fetching card details:', error);
-        setCardDetails(null);
-      }
-    };
-
-    if (id) {
-      fetchCardDetails();
-    }
   }, [id]);
-
-  const handleClose = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setOpenError(false);
-  };
 
   const handleEditButtonClick = () => {
     router.push(`/sell/edit/${id}`);
@@ -85,7 +53,7 @@ export default function Page({ params }) {
         </Breadcrumbs>
 
         {/* Image and Details Section */}
-        <div style={{ display: 'flex', marginTop: theme.spacing(2)}}>
+        <div style={{ display: 'flex', marginTop: theme.spacing(2) }}>
           {/* Image Section */}
           {cardDetails && (
             <Card style={{ boxShadow: 'none', marginRight: theme.spacing(2) }}>
@@ -99,6 +67,7 @@ export default function Page({ params }) {
               </CardActionArea>
             </Card>
           )}
+
 
           {/* Details Section */}
           {cardDetails && (
@@ -153,5 +122,3 @@ export default function Page({ params }) {
     </ThemeProvider>
   );
 };
-
-export default IndividualCardPage;
