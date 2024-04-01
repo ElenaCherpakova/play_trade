@@ -30,7 +30,7 @@ const Navbar = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [isSeller, setIsSeller] = useState(false);
-  const [searchInput, setSearchInput] = useState('');
+  const [searchInput, setSearchInput] = useState("");
   const router = useRouter();
   const { logout } = useAuthUser();
   const { data: session } = useSession();
@@ -63,8 +63,8 @@ const Navbar = () => {
   ];
   const categories = ["Magic", "Pokemon", "Digimon", "Yu-Gi-Oh!", "Sport Card"];
 
-  const handleKeyDown = (event) => {
-    if (event.key === 'Enter' && searchInput.trim()) {
+  const handleKeyDown = event => {
+    if (event.key === "Enter" && searchInput.trim()) {
       router.push(`/market?search=${encodeURIComponent(searchInput)}`);
     }
   };
@@ -152,7 +152,7 @@ const Navbar = () => {
               <InputBase
                 type="text"
                 placeholder="Search cards..."
-                onChange={ (event)=>setSearchInput(event.target.value) } 
+                onChange={event => setSearchInput(event.target.value)}
                 onKeyDown={handleKeyDown}
                 startAdornment={
                   <InputAdornment position="start" sx={{ color: "inherit" }}>
