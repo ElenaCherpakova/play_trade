@@ -13,7 +13,11 @@ import Card from "@/models/Card";
 //all can watch all cards
 export async function GET(req, res) {
   await dbConnect();
+  console.log(req.nextUrl.searchParams)
   const name = req.nextUrl.searchParams.get('name');
+  const condition = req.nextUrl.searchParams.get('conditions');
+  const priceString = req.nextUrl.searchParams.get('price');
+  const category = req.nextUrl.searchParams.get('category');
   const searchQuery = {};
   
   if (name) {
@@ -24,6 +28,22 @@ export async function GET(req, res) {
       name: new RegExp(term, 'i')  //case-insensitive match
     }));
   }
+
+    //adding filters to the search query if they are provided
+    if (condition) {
+      searchQuery.condition = condition;
+    }
+    if (priceString) {
+      //price is stored as a number in the database
+      const price = Number(priceString);
+      //checking if `price` is a valid number before including it in the search query
+      if (!isNaN(price)) { 
+        searchQuery.price = price;
+      }
+    }
+    if (category) {
+      searchQuery.category = category;
+    }
 
   try {
     // Fetch all cards or searched cards from the database
