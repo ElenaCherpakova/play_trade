@@ -1,205 +1,231 @@
 // components/Navbar.js
-'use client';
+"use client";
 import React, { useState } from "react";
+import { alpha } from "@mui/material/styles";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useTheme } from "@mui/material/styles";
-import { Box, Typography, InputBase } from "@mui/material";
-import AuthControl from "./AuthControl"; // Importing AuthControl component
+import { useSession, signOut } from "next-auth/react";
+import useAuthUser from "../store/useAuthUser";
+import {
+  Box,
+  Button,
+  Typography,
+  InputBase,
+  AppBar,
+  Toolbar,
+  InputAdornment,
+  IconButton,
+  Menu,
+  MenuItem,
+  Divider,
+  Tooltip,
+  Avatar
+} from "@mui/material";
+import { Search } from "@mui/icons-material";
 
-const Navbar = ({ isLoggedIn }) => {
+const Navbar = () => {
   const theme = useTheme();
-  const [showCardDropdown, setShowCardDropdown] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorElUser, setAnchorElUser] = useState(null);
+  const [isSeller, setIsSeller] = useState(false);
+  const router = useRouter();
+  const { logout } = useAuthUser();
+  const { data: session } = useSession();
 
-  const handleSearch = (event) => {
+  if (session?.user?.isSeller) {
+    setIsSeller(true);
+  }
+
+  const profileItems = [
+    {
+      displayName: "Profile",
+      onClick: () => router.push("/profile"),
+      show: true
+    },
+    {
+      displayName: "Orders",
+      onClick: () => router.push("/orders"),
+      show: true
+    },
+    {
+      displayName: "Sell",
+      onClick: () => router.push("/sell"),
+      show: isSeller
+    },
+    {
+      displayName: "Wishlist",
+      onClick: () => router.push("/watch"),
+      show: true
+    }
+  ];
+  const categories = ["Magic", "Pokemon", "Digimon", "Yu-Gi-Oh!", "Sport Card"];
+
+  const handleSearch = event => {
     console.log("Searching for:", event.target.value);
   };
 
-  const toggleCardDropdown = () => {
-    setShowCardDropdown(!showCardDropdown);
+  const handleOpenUserMenu = event => {
+    setAnchorElUser(event.currentTarget);
   };
 
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
+
+  const open = Boolean(anchorEl);
+
+  const handleClick = event => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
   return (
     <Box
-      component="header"
       sx={{
         display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        backgroundColor: theme.palette.primary.main,
-        padding: theme.spacing(2),
-      }}
-    >
-      <Box className="logo" sx={{ cursor: "pointer" }}>
-        <Link href="/" legacyBehavior>
-          <Image src="/logo.png" alt="Play Trade" width={50} height={50} />
-        </Link>
-      </Box>
-      <Box className="search" sx={{ maxWidth: theme.spacing(48), width: "100%" }}>
-        <InputBase
-          type="text"
-          placeholder="Search cards..."
-          onChange={handleSearch}
-          sx={{
-            width: "100%",
-            padding: theme.spacing(1),
-            borderRadius: theme.shape.borderRadius,
-            backgroundColor: theme.palette.background.paper,
-            color: theme.palette.text.primary,
-          }}
-        />
-      </Box>
-
-      <nav className="nav">
-        <ul style={{ display: "flex", listStyleType: "none", gap: theme.spacing(2) }}>
-          <li
-            onMouseEnter={toggleCardDropdown}
-            onMouseLeave={toggleCardDropdown}
-            style={{ position: "relative" }}
-          >
-            <Typography
-              variant="body1"
-              component="span"
-              sx={{
-                cursor: "pointer",
-
-
-
-                color: theme.palette.background.paper,
-                "&:hover": {
-                  color: theme.palette.accent.main,
-
-                },
-              }}
-            >
-              <Link href="/cards" passHref style={{ textDecoration: "none", color: "inherit" }}>
-                Cards
+        flexDirection: "column",
+        p: 4,
+        flexGrow: 1
+      }}>
+      <AppBar component="nav" display="flex" sx={{ flexGrow: 1 }}>
+        <Toolbar>
+          <Box
+            width="100%"
+            gap={2}
+            sx={{
+              display: "flex",
+              // justifyContent: "space-between",
+              alignItems: "center",
+              backgroundColor: theme.palette.primary.main
+            }}>
+            <Box className="logo" sx={{ cursor: "pointer" }}>
+              <Link href="/" legacyBehavior>
+                <Image src="/logo.png" alt="Play Trade" width={50} height={50} priority={true} />
               </Link>
-            </Typography>
-            {showCardDropdown && (
-              <ul
-                className="dropdown-content"
-                style={{
-                  position: "absolute",
-                  left: 0,
-                  top: 36,
-                  backgroundColor: theme.palette.background.paper,
-                  color: theme.palette.text.primary,
-                  paddingRight: theme.spacing(6),
-                  listStyleType: "none",
-                  borderRadius: theme.shape.borderRadius,
-                  boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
-                }}
-              >
-                <Typography variant="h6" sx={{ marginBottom: theme.spacing(1), textAlign: "center" }}>
-                  Categories
-                </Typography>
-                <li style={{ marginBottom: theme.spacing(1) }}>
-                  <Link href="/cards/category1" passHref legacyBehavior>
-                    <Typography
-                      variant="body1"
-                      sx={{
-                        color: theme.palette.primary.main,
-                        textDecoration: "none",
-                        "&:hover": {
-                          color: theme.palette.accent.main,
-                        },
-                      }}
-                    >
-                      Star Wars
-                    </Typography>
-                  </Link>
-                </li>
-                <li style={{ marginBottom: theme.spacing(1) }}>
-                  <Link href="/cards/category2" passHref legacyBehavior>
-                    <Typography
-                      variant="body1"
-                      sx={{
-                        color: theme.palette.primary.main,
-                        textDecoration: "none",
-                        "&:hover": {
-                          color: theme.palette.accent.main,
-                        },
-                      }}
-                    >
-                      Hockey
-                    </Typography>
-                  </Link>
-                </li>
-                <li style={{ marginBottom: theme.spacing(1) }}>
-                  <Link href="/cards/category3" passHref legacyBehavior>
-                    <Typography
-                      variant="body1"
-                      sx={{
-                        color: theme.palette.primary.main,
-                        textDecoration: "none",
-                        "&:hover": {
-                          color: theme.palette.accent.main,
-                        },
-                      }}
-                    >
-                      Soccer
-                    </Typography>
-                  </Link>
-                </li>
-                <li style={{ marginBottom: theme.spacing(1) }}>
-                  <Link href="/cards/category4" passHref legacyBehavior>
-                    <Typography
-                      variant="body1"
-                      sx={{
-                        color: theme.palette.primary.main,
-                        textDecoration: "none",
-                        "&:hover": {
-                          color: theme.palette.accent.main,
-                        },
-                      }}
-                    >
-                      Baseball
-                    </Typography>
-                  </Link>
-                </li>
-                <li style={{ marginBottom: theme.spacing(1) }}>
-                  <Link href="/cards/category5" passHref legacyBehavior>
-                    <Typography
-                      variant="body1"
-                      sx={{
-                        color: theme.palette.primary.main,
-                        textDecoration: "none",
-                        "&:hover": {
-                          color: theme.palette.accent.main,
-                        },
-                      }}
-                    >
-                      Basketball
-                    </Typography>
-                  </Link>
-                </li>
-              </ul>
-            )}
-          </li>
-          <li>
-            <Link href="/team" passHref style={{ textDecoration: "none", color: "inherit" }}>
-              <Typography
-                variant="body1"
-                component="span"
+            </Box>
+            <nav className="nav">
+              <Button
+                id="cards-button"
+                color="inherit"
+                aria-controls={open ? "cards-menu" : undefined}
+                aria-haspopup="true"
+                aria-expanded={open ? "true" : undefined}
+                onClick={handleClick}
+                variant="outlined">
+                Cards
+              </Button>
+              <Menu
+                id="cards-menu"
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+                MenuListProps={{
+                  "aria-labelledby": "cards-button"
+                }}>
+                <MenuItem
+                  onClick={() => {
+                    router.push("/market"), handleClose();
+                  }}>
+                  All cards
+                </MenuItem>
+                <Divider />
+                {categories.map(category => (
+                  <MenuItem
+                    key={category}
+                    onClick={() => {
+                      router.push(`/market/?type=${category}`), handleClose();
+                    }}>
+                    {category}
+                  </MenuItem>
+                ))}
+              </Menu>
+            </nav>
+            <Box flexGrow={1} />
+            <Box className="search" sx={{ width: "50%" }}>
+              <InputBase
+                type="text"
+                placeholder="Search cards..."
+                onChange={handleSearch}
+                startAdornment={
+                  <InputAdornment position="start" sx={{ color: "inherit" }}>
+                    <Search />
+                  </InputAdornment>
+                }
                 sx={{
-                  cursor: "pointer",
-                  textDecoration: "none",
-                  color: theme.palette.background.paper,
+                  "width": "100%",
+                  "px": theme.spacing(1),
+                  "borderRadius": 1,
+                  "backgroundColor": alpha(theme.palette.background.paper, 0.15),
                   "&:hover": {
-                    color: theme.palette.accent.main,
+                    backgroundColor: alpha(theme.palette.background.paper, 0.25)
                   },
+                  "color": "inherit"
                 }}
-              >
-                About
-              </Typography>
-            </Link>
-          </li>
-
-          {/* AuthControl component for authentication controls */}
-          <AuthControl isLoggedIn={isLoggedIn} />
-        </ul>
-      </nav>
+              />
+            </Box>
+            <Box flexGrow={1} />
+            {session ? (
+              <Box sx={{ flexGrow: 0 }}>
+                <Tooltip title="Open settings">
+                  <IconButton
+                    onClick={handleOpenUserMenu}
+                    sx={{ p: 0 }}
+                    aria-haspopup="true"
+                    size="large"
+                    color="inherit">
+                    <Avatar alt="user image" src={session?.user?.avatarImgURL} />
+                  </IconButton>
+                </Tooltip>
+                <Menu
+                  sx={{ mt: "45px" }}
+                  id="menu-appbar"
+                  anchorEl={anchorElUser}
+                  anchorOrigin={{
+                    vertical: "top",
+                    horizontal: "right"
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: "top",
+                    horizontal: "right"
+                  }}
+                  open={Boolean(anchorElUser)}
+                  onClose={handleCloseUserMenu}>
+                  {profileItems.map(item => {
+                    return (
+                      item.show && (
+                        <MenuItem
+                          key={item.displayName}
+                          onClick={() => {
+                            item.onClick(), handleCloseUserMenu();
+                          }}>
+                          <Typography textAlign="center">{item.displayName}</Typography>
+                        </MenuItem>
+                      )
+                    );
+                  })}
+                  <Divider />
+                  <MenuItem
+                    onClick={() => {
+                      logout(), handleCloseUserMenu();
+                    }}>
+                    <Typography textAlign="center">Logout</Typography>
+                  </MenuItem>
+                </Menu>
+              </Box>
+            ) : (
+              <>
+                <Button id="cards-button" color="inherit" onClick={() => router.push("/signin")} variant="outlined">
+                  Login
+                </Button>
+              </>
+            )}
+          </Box>
+        </Toolbar>
+      </AppBar>
     </Box>
   );
 };
