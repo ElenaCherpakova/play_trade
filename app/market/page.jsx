@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { Grid, Box } from "@mui/material";
+import { Grid, Box, Snackbar, Alert } from "@mui/material";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import { fetchAllCardsData } from "@/utils/fetchData";
@@ -10,6 +10,8 @@ import SelectComponent from "../../components/SelectComponent";
 
 export default function Market() {
   const [cards, setCards] = useState([]);
+  const [openError, setOpenError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const searchParams = useSearchParams();
   const search = searchParams.get("search") || "";
 
@@ -19,7 +21,9 @@ export default function Market() {
         const data = await fetchAllCardsData(search);
         setCards(data);
       } catch (error) {
-        console.log("Error fetching cards", error);
+        console.error;
+        setOpenError(true);
+        setErrorMessage(error.toString() || "unknown error");
       }
     };
 
@@ -30,6 +34,13 @@ export default function Market() {
 
   const conditions = [" ", "near mint", "excellent", "very good", "poor"]; //Sport Card
   // const conditions1 = ["near mint", "lightly played", "moderately played", "heavily played", "damaged"]; //Other cards
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenError(false);
+  };
 
   return (
     <>
@@ -59,6 +70,15 @@ export default function Market() {
         <Stack spacing={2} alignItems="center">
           <Pagination count={10} shape="rounded" />
         </Stack>
+        <Snackbar
+          open={openError}
+          autoHideDuration={5000}
+          onClose={handleClose}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}>
+          <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
+            {errorMessage}
+          </Alert>
+        </Snackbar>
       </Box>
     </>
   );
