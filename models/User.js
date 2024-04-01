@@ -26,7 +26,10 @@ const UserSchema = new Schema({
   },
   imageProfileURL: {
     type: String,
-    match: [/(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|jpeg|gif|png|webp|svg|JPG|JPEG|GIF|PNG|WEBP|SVG)/, "Invalid image URL format"]
+    match: [
+      /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|jpeg|gif|png|webp|svg|JPG|JPEG|GIF|PNG|WEBP|SVG)/,
+      "Invalid image URL format"
+    ]
   },
   authProvider: {
     type: Boolean,
@@ -35,11 +38,11 @@ const UserSchema = new Schema({
   },
   passwordResetToken: {
     type: String,
-    required: false,
+    required: false
   },
   passwordResetExpiry: {
     type: Date,
-    required: false,
+    required: false
   },
   role: {
     type: String,
@@ -60,12 +63,11 @@ const UserSchema = new Schema({
 
 // Encrypt password before saving
 UserSchema.pre("save", async function () {
-  if (this.isModified('password')) {
+  if (this.isModified("password")) {
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
   }
 });
-
 
 UserSchema.methods.createJWT = function () {
   return jwt.sign({ userId: this._id, email: this.email }, process.env.JWT_SECRET, {
@@ -81,6 +83,9 @@ UserSchema.methods.comparePassword = async function (userPassword) {
 // edit user
 UserSchema.methods.editUser = async function (updatedUserInfo) {
   try {
+    if (updatedUserInfo.imageProfileURL) {
+      this.imageProfileURL = updatedUserInfo;
+    }
     Object.assign(this, updatedUserInfo);
     await this.save();
     console.log("User was successfully updated");

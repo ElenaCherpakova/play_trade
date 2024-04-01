@@ -1,7 +1,7 @@
 "use client";
 import { React, useState, useEffect, useRef } from "react";
 import useImageUpload from "../hooks/useImageUpload";
-import { Box, TextField, Button, Typography, Paper, Grid, Avatar } from "@mui/material";
+import { Box, TextField, Button, Typography, Paper, Grid, Avatar, Backdrop, CircularProgress } from "@mui/material";
 import { ThemeProvider, useTheme } from "@mui/material/styles";
 import { useSession } from "next-auth/react";
 import { theme as importedTheme } from "/styles/theme.js";
@@ -12,18 +12,19 @@ export default function UserProfileEditPage(props) {
   const updateProfile = useAuthUser(state => state.updateProfile);
   const { handleImageUpload, error } = useImageUpload();
   const [selectedFile, setSelectedFile] = useState(null);
-
   const [avatarPreview, setAvatarPreview] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isEditAvatar, setIsEditAvatar] = useState(false);
   const [err, setErr] = useState(null);
+  const [loading, setLoading] = useState(false);
   const fileInputRef = useRef(null);
-  console.log("setAvatar", avatarPreview);
   const { data: session, update: updateSession } = useSession();
+  const defaultImage = `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_NAME}/image/upload/v1711381226/vr2hc3udhtc8z9u1hrp4.png`;
+
   const [userData, setUserData] = useState({
     name: session?.user?.name || "",
     email: session?.user?.email || "",
-    avatar: ""
+    avatar: defaultImage || ""
   });
 
   useEffect(() => {
@@ -48,17 +49,38 @@ export default function UserProfileEditPage(props) {
 
   const submitAvatar = async () => {
     try {
-      await handleImageUpload(selectedFile, imageURL => {
-        setUserData(prevUserData => ({
-          ...prevUserData,
-          avatar: imageURL
-        }));
-        setIsEditAvatar(false);
-      });
+      setLoading(true);
+      if (selectedFile) {
+        await handleImageUpload(selectedFile, async imageURL => {
+          setUserData(prevUserData => ({
+            ...prevUserData,
+            avatar: imageURL
+          }));
+          setIsEditAvatar(false);
+        });
+      } else {
+        if (!userData.avatar) {
+          setUserData(prevUserData => ({
+            ...prevUserData,
+            avatar: defaultImage
+          }));
+          setIsEditAvatar(false);
+        } else {
+          setIsEditAvatar(false);
+        }
+      }
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (userData.avatar) {
+      updateProfile({ ...userData, avatar: userData.avatar });
+    }
+  }, [userData.avatar, updateProfile, userData]);
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -127,10 +149,10 @@ export default function UserProfileEditPage(props) {
         </Typography>
         {/* left and right side of screen */}
         {err && (
-          <Typography color="error" style={{ marginBottom: "10px" }}>
-            {err}
-          </Typography>
-        )}
+                  <Typography color="error" style={{ marginBottom: "10px" }}>
+                    {err}
+                  </Typography>
+                )}
         <Box
           display="flex"
           justifyContent="space-between"
@@ -155,7 +177,6 @@ export default function UserProfileEditPage(props) {
                   type="file"
                   ref={fileInputRef}
                   onChange={handleAvatarChange}
-                  id="upload-photo"
                   name="image"
                   style={{ display: "none" }}
                   accept="image/png, image/jpeg, image/jpg"
@@ -170,7 +191,7 @@ export default function UserProfileEditPage(props) {
                     sx={{
                       "letterSpacing": "0.1em",
                       "mt": 2,
-                      "width": "100%",
+                      "width": "50%",
                       "&:hover": {
                         backgroundColor: theme.palette.accent.main
                       }
@@ -183,13 +204,10 @@ export default function UserProfileEditPage(props) {
                     variant="contained"
                     color="secondary"
                     component="span"
-                    sx={{ mt: 2, width: "100%" }}>
+                    sx={{ mt: 2, width: "50%" }}>
                     Edit Photo
                   </Button>
                 )}
-              </Box>
-
-              <Box>
                 <Button
                   variant="contained"
                   color="secondary"
@@ -277,6 +295,11 @@ export default function UserProfileEditPage(props) {
           </Grid>
         </Box>
       </Box>
+      <Backdrop
+        sx={{ color: "#fff", zIndex: theme => theme.zIndex.drawer + 1, backdropFilter: "blur(2px)" }}
+        open={loading}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </ThemeProvider>
   );
 }

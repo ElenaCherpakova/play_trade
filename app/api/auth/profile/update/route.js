@@ -25,17 +25,21 @@ export const PUT = async req => {
     const userId = session.user._id;
     console.log("userId", userId);
     const body = await req.json();
-    const { name, email } = body;
-   
+
+    const { name, email, avatar } = body;
+    console.log("Avatar", avatar);
     console.log("NAME", name);
     console.log("EMAIL", email);
     if (!name || !email) {
       return new NextResponse.json({ message: error.message });
     }
-    // console.log("NAME", name);
-    // console.log("Email", email);
-    // console.log("location", location);
-    // console.log("userId", userId);
+    if (avatar !== undefined) {
+      body.imageProfileURL = avatar;
+    } else {
+      if (body.imageProfileURL === null || body.imageProfileURL === "") {
+        delete body.imageProfileURL;
+      }
+    }
     const updateUser = await User.findByIdAndUpdate(userId, body, {
       new: true,
       runValidators: true
