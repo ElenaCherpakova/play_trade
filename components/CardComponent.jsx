@@ -10,7 +10,7 @@ import Typography from "@mui/material/Typography";
 import { useRouter } from "next/navigation";
 import AddToCartButton from "./AddToCartButton";
 
-export default function CardComponent({ card, showButtons = true }) {
+export default function CardComponent({ card, showButtons = true, buttonSet }) {
   const router = useRouter();
   // const addToCart = () => {
   //   console.log("add to cart");
@@ -18,6 +18,17 @@ export default function CardComponent({ card, showButtons = true }) {
   const buyNow = () => {
     console.log("buy now");
   };
+
+  const handleEdit = (event) => {
+    event.stopPropagation(); // Prevents click event from bubbling up to CardActionArea
+    onEdit(card.id);
+  };
+
+  const handleDelete = (event) => {
+    event.stopPropagation(); // Prevents click event from bubbling up to CardActionArea
+    onDelete(card.id);
+  };
+
   return (
     <Card variant="outlined" style={{ border: "none", maxWidth: 220 }}>
       <CardActionArea type="button" onClick={() => router.push(`/market/item/${card.id}`)}>
@@ -40,14 +51,38 @@ export default function CardComponent({ card, showButtons = true }) {
         </CardContent>
       </CardActionArea>
 
-      {showButtons && ( // Conditionally render buttons based on showButtons prop
+      {/* {showButtons && ( // Conditionally render buttons based on showButtons prop
         <CardActions sx={{ p: 0.5 }}>
           <Button onClick={buyNow} variant="contained" color="secondary">
             Buy Now
           </Button>
           <AddToCartButton card={card} />
-        </CardActions>
-      )}
+        </CardActions>  )}*/}
+      
+      <CardActions sx={{ p: 0.5 }}>
+        {buttonSet === "default" && (
+          <>
+            <Button onClick={() => console.log("Buy Now")} variant="contained" color="secondary">
+              Buy Now
+            </Button>
+            <Button onClick={() => console.log("Add to Cart")} variant="contained" color="primary">
+              Add to Cart
+            </Button>
+          </>
+        )}
+
+        {buttonSet === "seller" && (
+          <>
+            <Button onClick={handleEdit} variant="outlined" color="primary">
+              Edit
+            </Button>
+            <Button onClick={handleDelete} variant="outlined" color="error">
+              Delete
+            </Button>
+          </>
+        )}
+      </CardActions>
+     
       
     </Card>
   );
