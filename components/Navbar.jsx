@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTheme } from "@mui/material/styles";
-import { useSession, signOut } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import useAuthUser from "../store/useAuthUser";
 import {
   Box,
@@ -30,6 +30,7 @@ const Navbar = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [isSeller, setIsSeller] = useState(false);
+  const [searchInput, setSearchInput] = useState('');
   const router = useRouter();
   const { logout } = useAuthUser();
   const { data: session } = useSession();
@@ -62,8 +63,10 @@ const Navbar = () => {
   ];
   const categories = ["Magic", "Pokemon", "Digimon", "Yu-Gi-Oh!", "Sport Card"];
 
-  const handleSearch = event => {
-    console.log("Searching for:", event.target.value);
+  const handleKeyDown = (event) => {
+    if (event.key === 'Enter' && searchInput.trim()) {
+      router.push(`/market?search=${encodeURIComponent(searchInput)}`);
+    }
   };
 
   const handleOpenUserMenu = event => {
@@ -79,6 +82,7 @@ const Navbar = () => {
   const handleClick = event => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -148,7 +152,8 @@ const Navbar = () => {
               <InputBase
                 type="text"
                 placeholder="Search cards..."
-                onChange={handleSearch}
+                onChange={ (event)=>setSearchInput(event.target.value) } 
+                onKeyDown={handleKeyDown}
                 startAdornment={
                   <InputAdornment position="start" sx={{ color: "inherit" }}>
                     <Search />
