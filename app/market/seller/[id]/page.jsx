@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { fetchSellerCards } from "@/utils/fetchData";
 import CardComponent from "@/components/CardComponent";
-import { Alert, Avatar, Box, Container, Grid, Paper, Snackbar, Typography } from "@mui/material";
+import { Alert, Avatar, Box, Container, Grid, Paper, Snackbar, Tab, Tabs, Typography } from "@mui/material";
 import { set } from "mongoose";
 
 const user = {
@@ -25,7 +25,8 @@ const seller = {
 export default function Seller({ params }) {
   const [openError, setOpenError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [data, setData] = useState(null);
+  const [activeTab, setActiveTab] = useState("cards"); //for tabs
+  const [cards, setCards] = useState([]); //for cards
   const router = useRouter();
   const theme = useTheme();
   const { data: session, status } = useSession();
@@ -41,7 +42,7 @@ export default function Seller({ params }) {
       const fetchData = async () => {
         try {
           const sellerData = await fetchSellerCards(userId);
-          setData(sellerData);
+          setCards(sellerData);
         } catch (error) {
           console.error;
           setOpenError(true);
@@ -51,7 +52,9 @@ export default function Seller({ params }) {
       fetchData();
     }
   }, [userId]);
-
+  const handleChangeActiveTab = (event, newValue) => {
+    setActiveTab(newValue);
+  };
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
@@ -67,31 +70,40 @@ export default function Seller({ params }) {
             flexDirection: { xs: "column", sm: "row" },
             gap: { xs: 1, sm: 5 },
             justifyContent: { xs: "center", sm: "flex-start" },
-            backgroundColor: "secondary.main",
+            backgroundColor: "background.default",
             // justifyContent: "center",
             alignItems: "center",
             height: 150,
-            px: 2
+            px: 2,
+            borderRadius: 1
           }}>
           <Box>
             <Avatar alt="seller image" src={session?.user?.avatarImgURL} sx={{ width: 100, height: 100 }} />
           </Box>
           <Typography variant="h2">{user.name}</Typography>
         </Box>
+        <Box sx={{ width: "100%", bgcolor: "background.paper" }}>
+          <Tabs value={activeTab} onChange={handleChangeActiveTab} centered aria-label="handle seller info">
+            <Tab label="Cards" value="cards" />
+            <Tab label="About" value="2" />
+            <Tab label="Reviews" value="3" />
+          </Tabs>
+        </Box>
         {/* <Box p={5}> */}
-        <Grid container spacing={2}>
-          <Grid item xs={2}></Grid>
-          <Grid item xs>
-            <Grid container spacing={2}>
-              {data &&
-                data.map(card => (
+        {activeTab === "cards" && (
+          <Grid container spacing={2}>
+            <Grid item xs={2}></Grid>
+            <Grid item xs>
+              <Grid container spacing={2}>
+                {cards.map(card => (
                   <Grid item key={card._id} xs={12} sm={6} md={4} lg={3}>
                     <CardComponent key={card._id} card={card} showButtons={showButtons} />
                   </Grid>
                 ))}
+              </Grid>
             </Grid>
           </Grid>
-        </Grid>
+        )}
       </Box>
       <Snackbar
         open={openError}
