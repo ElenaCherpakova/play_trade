@@ -50,9 +50,9 @@ const IndividualCardPage = ({ params }) => {
     }
   }, [id]);
 
-  const handleEditButtonClick = () => {
-    router.push(`/sell/edit/${id}`);
-  };
+  const handleWishlistButtonClick = () => {
+    router.push(`/sell/wishlist/${id}`);
+  }; // will add this route later
 
   // const handleSellerInfoButtonClick = sellerId => {
   //   router.push(`/market/seller/${sellerId}`);
@@ -210,8 +210,8 @@ const IndividualCardPage = ({ params }) => {
                   Add to cart
                 </Button>
 
-                <Button variant="contained" color="primary" onClick={handleEditButtonClick}>
-                  Edit card
+                <Button variant="contained" color="primary" onClick={handleWishlistButtonClick}>
+                  Add to Wishlist
                 </Button>
               </Box>
             </Box>
