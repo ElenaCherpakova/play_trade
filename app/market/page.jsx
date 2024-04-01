@@ -12,13 +12,19 @@ export default function Market() {
   const [cards, setCards] = useState([]);
   const [openError, setOpenError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+
   const searchParams = useSearchParams();
-  const search = searchParams.get("search") || "";
+  const filters = {
+    conditions: searchParams.get("conditions") || "",
+    price: searchParams.get("price") || "",
+    category: searchParams.get("category") || ""
+  };
+  const searchTerm = searchParams.get("search") || "";
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await fetchAllCardsData(search);
+        const data = await fetchAllCardsData({ searchTerm, filters });
         setCards(data);
       } catch (error) {
         console.error;
@@ -28,7 +34,7 @@ export default function Market() {
     };
 
     fetchData();
-  }, [search]);
+  }, [searchTerm, filters.conditions, filters.category, filters.price]);
 
   const category = [" ", "Magic", "Pokemon", "Digimon", "Yu-Gi-Oh!", "Sport Card"];
 
