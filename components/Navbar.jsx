@@ -140,7 +140,7 @@ const Navbar = () => {
                   <MenuItem
                     key={category}
                     onClick={() => {
-                      router.push(`/market/?type=${category}`), handleClose();
+                      router.push(`/market/?category=${encodeURIComponent(category)}`), handleClose();
                     }}>
                     {category}
                   </MenuItem>
