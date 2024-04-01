@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { Box, Button, Alert, Snackbar } from "@mui/material";
 import { useRouter } from "next/navigation";
+import { createCardData } from "@/utils/fetchData";
 import CardForm from "@/components/CardForm";
 
 export default function Sell() {
@@ -33,25 +34,10 @@ export default function Sell() {
   };
 
   //fetch data need to move to file in utils
-  const addCard = async (formData) => {
-    const body = JSON.stringify(formData);
+  const addCard = async formData => {
     try {
-      const response = await fetch("/api/cards", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body,       
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        console.log(data.errors )
-        const detailedErrorMessage = data.errors ? data.errors.join(", ") : data.message;
-        throw new Error(detailedErrorMessage || "Unknown error occurred.");      }
-
-      setId(data.data._id);
+      const data = await createCardData(formData);
+      setId(data._id);
     } catch (error) {
       console.log(error);
       setOpenError(true);

@@ -2,22 +2,36 @@
 import * as React from "react";
 import { Box, Button, Typography, Card, CardActionArea, CardMedia, Breadcrumbs, Link, ThemeProvider } from "@mui/material";
 import { useRouter } from "next/navigation";
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import { theme } from "@/styles/theme";
+import { fetchCardData } from "@/utils/fetchData";
+import { Alert, Box, Button, Snackbar } from "@mui/material";
+import CardComponent from "@/components/CardComponent";
 
-// Function to convert currency code to symbol
-const getCurrencySymbol = (currencyCode) => {
-  const currencySymbols = {
-    USD: "$",
-    EUR: "€",
-    GBP: "£",
-  };
-  return currencySymbols[currencyCode] || currencyCode;
-};
-
-const IndividualCardPage = ({ params }) => {
-  const [cardDetails, setCardDetails] = React.useState(null);
+/**
+ * @param {params} Object
+ 
+*/
+export default function Page({ params }) {
+  const [openError, setOpenError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [data, setData] = useState(null);
   const router = useRouter();
+  const id = params.id;
+
+  //get card data
+  useEffect(() => {
+    if (id) {
+      const fetchData = async () => {
+        try {
+          const cardData = await fetchCardData(id);
+          setData(cardData);
+        } catch (error) {
+          console.error;
+          setOpenError(true);
+          setErrorMessage(error.toString() || "unknown error");
+        }
+      };
+      fetchData();
+    }
   const { id } = params;
 
   React.useEffect(() => {
@@ -39,6 +53,13 @@ const IndividualCardPage = ({ params }) => {
       fetchCardDetails();
     }
   }, [id]);
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenError(false);
+  };
 
   const handleEditButtonClick = () => {
     router.push(`/sell/edit/${id}`);
