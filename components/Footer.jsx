@@ -13,13 +13,13 @@ const Footer = () => {
         <Typography variant="body2" color="background.paper">{` © ${getCurrentYear()}  PLAYTRADE`}</Typography>
         {/* Spacer */}
         <Box sx={{ flexGrow: 1 }} />
-        <Link href="/team" style={{ textDecoration: "none", color: "background.paper" }}>
+        <Link href="/team" style={{ textDecoration: "none", color: "#FFFFFF" }}>
           Our Team
         </Link>
-        <Link href="/policies" style={{ textDecoration: "none", color: "background.paper" }}>
+        <Link href="/policies" style={{ textDecoration: "none", color: "#FFFFFF" }}>
           Policies
         </Link>
-        <Link href="/messages" style={{ textDecoration: "none", color: "background.paper" }}>
+        <Link href="/messages" style={{ textDecoration: "none", color: "#FFFFFF" }}>
           Contact Us
         </Link>
       </Box>
