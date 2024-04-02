@@ -16,22 +16,18 @@ export const PUT = async req => {
   await dbConnect();
   const session = await getServerSession(authOptions);
 
-  console.log("PUT IS HERE", session.user._id);
   if (!session || !session.user) {
     return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
   }
 
   try {
     const userId = session.user._id;
-    console.log("userId", userId);
     const body = await req.json();
 
     const { name, email, avatar } = body;
-    console.log("Avatar", avatar);
-    console.log("NAME", name);
-    console.log("EMAIL", email);
+
     if (!name || !email) {
-      return new NextResponse.json({ message: error.message });
+      return NextResponse.json({ success: false, message: "Name and email are required" }, { status: 400 });
     }
     if (avatar !== undefined) {
       body.imageProfileURL = avatar;

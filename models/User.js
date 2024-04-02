@@ -13,7 +13,7 @@ const UserSchema = new Schema({
     required: [true, "Please enter your email"],
     match: [
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-      "Please enter a valid email address in this format: name@example.com"
+      "Please enter a valid email address"
     ]
   },
   password: {

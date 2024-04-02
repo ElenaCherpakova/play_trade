@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { signOut, signIn } from "next-auth/react";
+import { emailRegexValidate, trimAndValidate } from "@/utils/helpers";
 
 const useAuthUser = create(set => ({
   email: "",
@@ -7,6 +8,8 @@ const useAuthUser = create(set => ({
   isLoading: false,
   error: null,
   passwordResetSuccess: false,
+  emailError: null,
+  nameError: null,
 
   login: async userData => {
     const { email, password } = userData;
@@ -132,8 +135,18 @@ const useAuthUser = create(set => ({
     }
   },
   updateProfile: async userData => {
-    console.log("received Data", {...userData});
-    set({ isLoading: true, error: null });
+    set({ isLoading: true, error: null, emailError: null, nameError: null });
+    
+    const email = trimAndValidate(set, userData.email, "emailError", "Email is required");
+    const name = trimAndValidate(set, userData.name, "nameError", "Name is required");
+
+    if (!name || !email) return;
+
+    if (!emailRegexValidate(email)) {
+      set({ isLoading: false, emailError: "Invalid email address" });
+      return;
+    }
+
     try {
       const response = await fetch("/api/auth/profile/update", {
         method: "PUT",
@@ -144,17 +157,15 @@ const useAuthUser = create(set => ({
       });
       if (response.ok) {
         const data = await response.json();
-        console.log("Data", data);
         set({ isLoading: false, data, error: null });
       } else {
         const errorData = await response.json();
-        console.log("errorData", errorData);
-        const errorMsg = errorData?.message ? "Invalid email format" : "Failed to update profile";
+        const errorMsg = errorData.message || "Failed to update profile";
+        console.log(errorMsg);
         set({ isLoading: false, error: errorMsg });
-        throw new Error(errorMsg);
       }
     } catch (error) {
-      set({ isLoading: false, error });
+      set({ isLoading: false, error: error.message });
       throw error;
     }
   }

@@ -10,12 +10,15 @@ import useAuthUser from "../store/useAuthUser";
 export default function UserProfileEditPage(props) {
   const theme = useTheme();
   const updateProfile = useAuthUser(state => state.updateProfile);
-  const { handleImageUpload, error } = useImageUpload();
+  const emailError = useAuthUser(state => state.emailError);
+  const nameError = useAuthUser(state => state.nameError);
+  const { handleImageUpload, error: errorAvatarUpload } = useImageUpload();
   const [selectedFile, setSelectedFile] = useState(null);
   const [avatarPreview, setAvatarPreview] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isEditAvatar, setIsEditAvatar] = useState(false);
-  const [err, setErr] = useState(null);
+ 
+
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef(null);
   const { data: session, update: updateSession } = useSession();
@@ -70,7 +73,7 @@ export default function UserProfileEditPage(props) {
         }
       }
     } catch (error) {
-      console.log(error);
+      console.error('Error uploading avatar:', error);
     } finally {
       setLoading(false);
     }
@@ -88,18 +91,10 @@ export default function UserProfileEditPage(props) {
       ...prevState,
       [name]: value
     }));
-  };
+  }
 
   const handleSubmit = async () => {
     if (isEditing) {
-      if (!userData.email || !userData.email.includes("@")) {
-        setErr("Please enter an email");
-        return;
-      }
-      if (!userData.name) {
-        setErr("Please enter a name");
-        return;
-      }
       try {
         await updateSession({
           ...session,
@@ -108,9 +103,7 @@ export default function UserProfileEditPage(props) {
 
         await updateProfile(userData);
         setIsEditing(false);
-        setErr(null);
       } catch (error) {
-        setErr(error.message);
         setIsEditing(true);
       }
     } else {
@@ -121,7 +114,6 @@ export default function UserProfileEditPage(props) {
   if (!session) {
     return null;
   }
-  console.log("USERDATA", userData);
   return (
     //entire screen
     <ThemeProvider theme={importedTheme}>
@@ -148,11 +140,11 @@ export default function UserProfileEditPage(props) {
           Welcome {session?.user?.name}!
         </Typography>
         {/* left and right side of screen */}
-        {err && (
-                  <Typography color="error" style={{ marginBottom: "10px" }}>
-                    {err}
-                  </Typography>
-                )}
+        {errorAvatarUpload && (
+          <Typography color="error" style={{ marginBottom: "10px" }}>
+            {errorAvatarUpload}
+          </Typography>
+        )}
         <Box
           display="flex"
           justifyContent="space-between"
@@ -249,6 +241,8 @@ export default function UserProfileEditPage(props) {
                     sx={{ mb: 2 }} //margin bottom
                     disabled={!isEditing}
                     required
+                    error={Boolean(nameError)}
+                    helperText={nameError}
                   />
                   <TextField
                     label="Email"
@@ -258,6 +252,8 @@ export default function UserProfileEditPage(props) {
                     disabled={!isEditing}
                     onChange={handleChange}
                     required
+                    error={Boolean(emailError)}
+                    helperText={emailError}
                   />
 
                   <Box display="flex" justifyContent="space-between" width="100%" mt={2}>
@@ -265,6 +261,7 @@ export default function UserProfileEditPage(props) {
                       variant="contained"
                       color="secondary"
                       onClick={handleSubmit}
+                      disabled={Boolean(emailError) || Boolean(nameError)}
                       sx={{
                         "mt": 2,
                         "width": "40%",
