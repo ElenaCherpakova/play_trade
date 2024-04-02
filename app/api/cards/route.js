@@ -51,8 +51,7 @@ export async function GET(req, res) {
   }
 
   try {
-    //fetch all cards or searched cards from the database
-    //adjust to fetch with limit and skip for pagination
+    //fetch filtered cards from the database with pagination
     const cards = await Card.find(searchQuery).skip(skip).limit(limit);
     const total = await Card.countDocuments(searchQuery);
 

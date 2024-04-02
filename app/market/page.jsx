@@ -31,7 +31,7 @@ export default function Market() {
         const limit = 6;
         const page = searchTerm && currentPage !== 1 ? 1 : currentPage;
         const data = await fetchAllCardsData(searchTerm, filters, page, limit);
-        //if no matches found for search/filter criteria, show snackbar
+        //if no matches are found for search/filter criteria, show snackbar
         if (data.cards.length === 0 && (searchTerm || Object.values(filters).some(filter => filter))) {
           setErrorMessage("No matches found.");
           setOpenError(true);
@@ -51,25 +51,20 @@ export default function Market() {
   }, [searchTerm, filters.conditions, filters.category, filters.price, currentPage]);
 
   useEffect(() => {
-    //initializing an array to hold parts of the notification text.
     let textParts = [];
 
     if (searchTerm) {
       textParts = [...textParts, `Searching for "${searchTerm}"`];
     }
 
-    //creating filter descriptions
     //using Object.entries to iterate over key-value pairs of the filters object
     const filterDescriptions = Object.entries(filters).reduce((acc, [key, value]) => {
-      //filtering to the description if it has a value.
       if (value) {
-        //capitalizing the first letter of the filter key for better readability and formatting it
         acc = [...acc, `${key.charAt(0).toUpperCase() + key.slice(1)}: ${value}`];
       }
       return acc;
     }, []);
 
-    //if there are any filter descriptions, we add them to the notification text.
     if (filterDescriptions.length) {
       textParts = [...textParts, filterDescriptions.join(", ")];
     }
