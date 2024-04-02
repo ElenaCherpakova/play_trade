@@ -1,5 +1,5 @@
 "use client";
-import { React, useState, useEffect, useRef } from "react";
+import { React, useState, useEffect, useRef, useCallback } from "react";
 import useImageUpload from "../hooks/useImageUpload";
 import { Box, TextField, Button, Typography, Paper, Grid, Avatar, Backdrop, CircularProgress } from "@mui/material";
 import { ThemeProvider, useTheme } from "@mui/material/styles";
@@ -20,13 +20,14 @@ export default function UserProfileEditPage(props) {
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef(null);
   const { data: session, update: updateSession } = useSession();
-  const defaultImage = `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_NAME}/image/upload/v1711381226/vr2hc3udhtc8z9u1hrp4.png`;
 
   const [userData, setUserData] = useState({
     name: session?.user?.name || "",
     email: session?.user?.email || "",
-    avatar: defaultImage || ""
+    avatar: avatarPreview || ""
   });
+
+  console.log(userData);
 
   useEffect(() => {
     if (!selectedFile) {
@@ -59,16 +60,6 @@ export default function UserProfileEditPage(props) {
           }));
           setIsEditAvatar(false);
         });
-      } else {
-        if (!userData.avatar) {
-          setUserData(prevUserData => ({
-            ...prevUserData,
-            avatar: defaultImage
-          }));
-          setIsEditAvatar(false);
-        } else {
-          setIsEditAvatar(false);
-        }
       }
     } catch (error) {
       console.error("Error uploading avatar:", error);
@@ -81,15 +72,17 @@ export default function UserProfileEditPage(props) {
     if (userData.avatar) {
       updateProfile({ ...userData, avatar: userData.avatar });
     }
-  }, [userData.avatar, updateProfile, userData]);
 
-  const handleChange = e => {
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userData.avatar, updateProfile]);
+
+  const handleChange = useCallback(e => {
     const { name, value } = e.target;
     setUserData(prevState => ({
       ...prevState,
       [name]: value
     }));
-  }
+  }, []);
 
   const handleSubmit = async () => {
     if (isEditing) {
