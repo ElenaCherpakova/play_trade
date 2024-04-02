@@ -162,7 +162,7 @@ export default function UserProfileEditPage(props) {
                 sx={{
                   p: 2
                 }}>
-                <Avatar src={avatarPreview} sx={{ width: "50%", height: "30vh" }} />
+                <Avatar src={avatarPreview} sx={{ width: 180, height: 180 }} />
                 <input
                   type="file"
                   ref={fileInputRef}
