@@ -13,45 +13,54 @@ import Card from "@/models/Card";
 //all can watch all cards
 export async function GET(req, res) {
   await dbConnect();
-  console.log(req.nextUrl.searchParams)
-  const name = req.nextUrl.searchParams.get('name');
-  const condition = req.nextUrl.searchParams.get('conditions');
-  const priceString = req.nextUrl.searchParams.get('price');
-  const category = req.nextUrl.searchParams.get('category');
+  const name = req.nextUrl.searchParams.get("search");
+  const condition = req.nextUrl.searchParams.get("conditions");
+  const priceString = req.nextUrl.searchParams.get("price");
+  const category = req.nextUrl.searchParams.get("category");
+
+  const page = parseInt(req.nextUrl.searchParams.get("page") || "1", 10);
+  const limit = parseInt(req.nextUrl.searchParams.get("limit") || "6", 10); //default limit
+  const skip = (page - 1) * limit;
+
   const searchQuery = {};
-  
+
   if (name) {
+    const decodedName = decodeURIComponent(name);
     //the regex matches on spaces, commas, and semicolons as separators
-    const searchTerms = name.split(/[\s,;]+/);  
+    const searchTerms = decodedName.split(/[\s,;]+/);
     //using $or to match documents with any listed names
     searchQuery.$or = searchTerms.map(term => ({
-      name: new RegExp(term, 'i')  //case-insensitive match
+      name: new RegExp(term, "i") //case-insensitive match
     }));
   }
 
-    //adding filters to the search query if they are provided
-    if (condition) {
-      searchQuery.condition = condition;
+  //adding filters to the search query if they are provided
+  if (condition) {
+    searchQuery.condition = condition;
+  }
+  if (priceString) {
+    //price is stored as a number in the database
+    const price = Number(priceString);
+    //checking if `price` is a valid number before including it in the search query
+    if (!isNaN(price)) {
+      searchQuery.price = price;
     }
-    if (priceString) {
-      //price is stored as a number in the database
-      const price = Number(priceString);
-      //checking if `price` is a valid number before including it in the search query
-      if (!isNaN(price)) { 
-        searchQuery.price = price;
-      }
-    }
-    if (category) {
-      searchQuery.category = category;
-    }
+  }
+  if (category) {
+    searchQuery.category = category;
+  }
 
   try {
-    // Fetch all cards or searched cards from the database
-    const cards = await Card.find(searchQuery);
+    //fetch all cards or searched cards from the database
+    //adjust to fetch with limit and skip for pagination
+    const cards = await Card.find(searchQuery).skip(skip).limit(limit);
+    const total = await Card.countDocuments(searchQuery);
+
     if (!cards) {
       return NextResponse.json({ success: false, message: error.message || "No cards found" }, { status: 400 });
     }
-    return NextResponse.json({ success: true, data: cards }, { status: 200 });
+
+    return NextResponse.json({ success: true, data: { cards, total, page, limit } }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ success: false, message: error }, { status: 400 });
   }

@@ -1,21 +1,25 @@
-//export async function fetchAllCardsData(searchTerm = "") {
-export async function fetchAllCardsData({ searchTerm, filters = {} }) {
+export async function fetchAllCardsData(searchTerm, filters, page, limit) {
   let url = `/api/cards`;
 
-  // Convert searchParams object to URLSearchParams to handle encoding and query string construction
+  //converting searchParams object to URLSearchParams to handle encoding and query string construction
   const params = new URLSearchParams();
+  
+  //appending pagination parameters
+  params.append("page", page);
+  params.append("limit", limit);
+
   //if a search term is provided, encode and append it to the query parameters
-  if (searchTerm.trim()) {
-    params.append("name", encodeURIComponent(searchTerm.trim()));
+  if (searchTerm && searchTerm.trim()) {
+    params.append("search", encodeURIComponent(searchTerm.trim()));
   }
-  //append filter parameters (condition, price, category) if provided
+  //appending filter parameters (condition, price, category) if provided
   ["conditions", "price", "category"].forEach(filterKey => {
     if (filters[filterKey]) {
       params.append(filterKey, filters[filterKey]);
     }
   });
 
-  //construct the final URL with query parameters
+  //constructing the final URL with the query parameters
   const queryString = params.toString();
   if (queryString) {
     url += `?${queryString}`;

@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { Grid, Box, Snackbar, Alert } from "@mui/material";
+import { Grid, Box, Snackbar, Alert, Typography } from "@mui/material";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import { fetchAllCardsData } from "@/utils/fetchData";
@@ -10,10 +10,14 @@ import SelectComponent from "../../components/SelectComponent";
 
 export default function Market() {
   const [cards, setCards] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalCards, setTotalCards] = useState(0);
   const [openError, setOpenError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [notificationText, setNotificationText] = useState("");
 
   const searchParams = useSearchParams();
+
   const filters = {
     conditions: searchParams.get("conditions") || "",
     price: searchParams.get("price") || "",
@@ -24,8 +28,18 @@ export default function Market() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await fetchAllCardsData({ searchTerm, filters });
-        setCards(data);
+        const limit = 6;
+        const page = searchTerm && currentPage !== 1 ? 1 : currentPage;
+        const data = await fetchAllCardsData(searchTerm, filters, page, limit);
+        //if no matches found for search/filter criteria, show snackbar
+        if (data.cards.length === 0 && (searchTerm || Object.values(filters).some(filter => filter))) {
+          setErrorMessage("No matches found.");
+          setOpenError(true);
+        } else {
+          setCards(data.cards);
+          setTotalCards(data.total);
+          setOpenError(false);
+        }
       } catch (error) {
         console.error;
         setOpenError(true);
@@ -34,7 +48,35 @@ export default function Market() {
     };
 
     fetchData();
-  }, [searchTerm, filters.conditions, filters.category, filters.price]);
+  }, [searchTerm, filters.conditions, filters.category, filters.price, currentPage]);
+
+  useEffect(() => {
+    //initializing an array to hold parts of the notification text.
+    let textParts = [];
+
+    if (searchTerm) {
+      textParts = [...textParts, `Searching for "${searchTerm}"`];
+    }
+
+    //creating filter descriptions
+    //using Object.entries to iterate over key-value pairs of the filters object
+    const filterDescriptions = Object.entries(filters).reduce((acc, [key, value]) => {
+      //filtering to the description if it has a value.
+      if (value) {
+        //capitalizing the first letter of the filter key for better readability and formatting it
+        acc = [...acc, `${key.charAt(0).toUpperCase() + key.slice(1)}: ${value}`];
+      }
+      return acc;
+    }, []);
+
+    //if there are any filter descriptions, we add them to the notification text.
+    if (filterDescriptions.length) {
+      textParts = [...textParts, filterDescriptions.join(", ")];
+    }
+
+    const newText = textParts.length ? textParts.join(" with ") : "Showing all cards";
+    setNotificationText(newText);
+  }, [searchTerm, filters]);
 
   const category = [" ", "Magic", "Pokemon", "Digimon", "Yu-Gi-Oh!", "Sport Card"];
 
@@ -51,6 +93,9 @@ export default function Market() {
   return (
     <>
       <Box display="flex" flexDirection="column" sx={{ m: 5 }}>
+        <Box mb={2}>
+          <Typography variant="subtitle1">{notificationText}</Typography>
+        </Box>
         <Box display="flex" sx={{ gap: 2, flexDirection: { xs: "column", sm: "row" } }}>
           <Box>
             <SelectComponent selectId="category" label="category" options={category} />
@@ -74,7 +119,12 @@ export default function Market() {
           </Grid>
         </Box>
         <Stack spacing={2} alignItems="center">
-          <Pagination count={10} shape="rounded" />
+          <Pagination
+            count={Math.ceil(totalCards / 6)}
+            page={currentPage}
+            onChange={(event, page) => setCurrentPage(page)}
+            shape="rounded"
+          />
         </Stack>
         <Snackbar
           open={openError}

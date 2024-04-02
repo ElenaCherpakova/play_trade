@@ -74,6 +74,7 @@ const Navbar = () => {
         //otherwise navigate to the market page without any search parameter
         router.push(`/market`);
       }
+      setSearchInput("");
     }
   };
 
