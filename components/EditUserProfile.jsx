@@ -17,8 +17,6 @@ export default function UserProfileEditPage(props) {
   const [avatarPreview, setAvatarPreview] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isEditAvatar, setIsEditAvatar] = useState(false);
- 
-
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef(null);
   const { data: session, update: updateSession } = useSession();
@@ -73,7 +71,7 @@ export default function UserProfileEditPage(props) {
         }
       }
     } catch (error) {
-      console.error('Error uploading avatar:', error);
+      console.error("Error uploading avatar:", error);
     } finally {
       setLoading(false);
     }
@@ -91,7 +89,7 @@ export default function UserProfileEditPage(props) {
       ...prevState,
       [name]: value
     }));
-  }
+  };
 
   const handleSubmit = async () => {
     if (isEditing) {
