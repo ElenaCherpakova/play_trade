@@ -1,15 +1,22 @@
 "use client";
 import { useEffect, useState } from "react";
 import { fetchAllCardsData } from "@/utils/fetchData";
+import { useParams } from "next/navigation";
 import { Grid, Box } from "@mui/material";
 import CardComponent from "../../components/CardComponent";
 import SelectComponent from "../../components/SelectComponent";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
+import { useSearchParams } from "next/navigation";
 
 export default function Market({ id }) {
   const [cards, setCards] = useState([]);
+  const params = useSearchParams();
 
+  // Route -> /shop/[tag]/[item]
+  // URL -> /shop/shoes/nike-air-max-97
+  // `params` -> { tag: 'shoes', item: 'nike-air-max-97' }
+  console.log(params);
   // useEffect getAllCards
   useEffect(() => {
     const fetchData = async () => {
@@ -25,7 +32,7 @@ export default function Market({ id }) {
     fetchData();
   }, []);
 
-  const category = [" ", "Magic", "Pokemon", "Digimon", "Yu-Gi-Oh!", "Sport Card"];
+  const category = ["Magic", "Pokemon", "Digimon", "Yu-Gi-Oh!", "Sport Card"];
 
   const conditions = [" ", "near mint", "excellent", "very good", "poor"]; //Sport Card
   // const conditions1 = ["near mint", "lightly played", "moderately played", "heavily played", "damaged"]; //Other cards

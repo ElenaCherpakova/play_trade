@@ -65,22 +65,48 @@ export default function Seller({ params }) {
     <Container maxWidth="lg">
       <Box display="flex" flexDirection="column" mt={5} mb={5} gap={2}>
         <Box
-          display="flex"
           sx={{
-            flexDirection: { xs: "column", sm: "row" },
-            gap: { xs: 1, sm: 5 },
-            justifyContent: { xs: "center", sm: "flex-start" },
+            display: "flex",
+            flexDirection: "column",
+            gap: 1,
+            // justifyContent: { xs: "center", sm: "flex-start" },
             backgroundColor: "background.default",
-            // justifyContent: "center",
-            alignItems: "center",
+            justifyContent: "center",
+            alignItems: { xs: "center", sm: "flex-start" },
             height: 150,
             px: 2,
             borderRadius: 1
           }}>
-          <Box>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: { xs: "column", sm: "row" },
+              gap: { xs: 1, sm: 5 },
+              justifyContent: "center",
+              alignItems: "center"
+            }}>
             <Avatar alt="seller image" src={session?.user?.avatarImgURL} sx={{ width: 100, height: 100 }} />
+            <Typography variant="h2">{user.name}</Typography>
           </Box>
-          <Typography variant="h2">{user.name}</Typography>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              gap: 5,
+              width: "100%"
+              // justifyContent: "center",
+              // alignItems: "center"
+            }}>
+            <Grid container spacing={2}>
+              <Grid item xs></Grid>
+              <Grid item sm={1}>
+                <Typography variant="body2">Rating: {seller.rating}</Typography>
+              </Grid>
+              <Grid item sm={1}>
+                <Typography variant="body2">Sales: {seller.numberOfSales}</Typography>
+              </Grid>
+            </Grid>
+          </Box>
         </Box>
         <Box sx={{ width: "100%", bgcolor: "background.paper" }}>
           <Tabs value={activeTab} onChange={handleChangeActiveTab} centered aria-label="handle seller info">
