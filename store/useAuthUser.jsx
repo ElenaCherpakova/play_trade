@@ -166,7 +166,7 @@ const useAuthUser = create(set => ({
         set({ isLoading: false, error: errorMsg });
       }
     } catch (error) {
-      set({ isLoading: false, error });
+      set({ isLoading: false, error: error.message });
       throw error;
     }
   }

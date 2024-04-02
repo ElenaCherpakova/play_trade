@@ -89,7 +89,7 @@ export default function UserProfileEditPage(props) {
       ...prevState,
       [name]: value
     }));
-  };
+  }
 
   const handleSubmit = async () => {
     if (isEditing) {
