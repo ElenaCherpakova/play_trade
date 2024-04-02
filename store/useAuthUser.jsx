@@ -136,11 +136,14 @@ const useAuthUser = create(set => ({
   },
   updateProfile: async userData => {
     set({ isLoading: true, error: null, emailError: null, nameError: null });
-    
+
     const email = trimAndValidate(set, userData.email, "emailError", "Email is required");
     const name = trimAndValidate(set, userData.name, "nameError", "Name is required");
 
-    if (!name || !email) return;
+    if (!name || !email) {
+      set({ isLoading: false });
+      return;
+    }
 
     if (!emailRegexValidate(email)) {
       set({ isLoading: false, emailError: "Invalid email address" });
@@ -157,7 +160,7 @@ const useAuthUser = create(set => ({
       });
       if (response.ok) {
         const data = await response.json();
-        console.log("Data", data)
+        console.log("Data", data);
         set({ isLoading: false, data, error: null });
       } else {
         const errorData = await response.json();

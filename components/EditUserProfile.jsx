@@ -19,16 +19,28 @@ export default function UserProfileEditPage(props) {
   const [isEditAvatar, setIsEditAvatar] = useState(false);
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef(null);
-  const { data: session, update: updateSession } = useSession();
+  const { data: session, update: updateSession, status } = useSession();
 
   const [userData, setUserData] = useState({
     name: session?.user?.name || "",
     email: session?.user?.email || "",
-    avatar: ""
+    avatar: session?.user?.avatar || ""
   });
 
+  useEffect(() => {
+    if (session?.user && status === "authenticated") {
+      setUserData({
+        name: session?.user?.name || "",
+        email: session?.user?.email || ""
+        // avatar: ""
+      });
+    }
+    if (!session) {
+      return null;
+    }
+  }, [session, status]);
   console.log(userData);
-
+  console.log("erro", emailError);
   useEffect(() => {
     if (!selectedFile) {
       setAvatarPreview("");
@@ -86,6 +98,9 @@ export default function UserProfileEditPage(props) {
 
   const handleSubmit = async () => {
     if (isEditing) {
+      if (!userData.name || !userData.email || emailError || nameError) {
+        return;
+      }
       try {
         await updateSession({
           ...session,
@@ -102,9 +117,6 @@ export default function UserProfileEditPage(props) {
     }
   };
 
-  if (!session) {
-    return null;
-  }
   return (
     //entire screen
     <ThemeProvider theme={importedTheme}>
@@ -252,7 +264,10 @@ export default function UserProfileEditPage(props) {
                       variant="contained"
                       color="secondary"
                       onClick={handleSubmit}
-                      disabled={Boolean(emailError) || Boolean(nameError)}
+                      disabled={
+                        Boolean(emailError) || // Check if there is an email validation error from Zustand
+                        Boolean(nameError)
+                      }
                       sx={{
                         "mt": 2,
                         "width": "40%",
