@@ -24,7 +24,7 @@ export default function UserProfileEditPage(props) {
   const [userData, setUserData] = useState({
     name: session?.user?.name || "",
     email: session?.user?.email || "",
-    avatar: avatarPreview || ""
+    avatar: ""
   });
 
   console.log(userData);
