@@ -131,7 +131,6 @@ export const authOptions = {
       return session;
     }
   },
-
   session: {
     strategy: "jwt"
   },

@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Box, Button } from "@mui/material";
+import { fetchCardData } from "@/utils/fetchData";
+import { Alert, Box, Button, Snackbar } from "@mui/material";
 import CardComponent from "@/components/CardComponent";
 
 /**
@@ -10,21 +11,35 @@ import CardComponent from "@/components/CardComponent";
  
 */
 export default function Page({ params }) {
+  const [openError, setOpenError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [data, setData] = useState(null);
   const router = useRouter();
   const id = params.id;
+
+  //get card data
   useEffect(() => {
-    //fetch data need to move to file in utils
-    const fetchCard = async () => {
-      const response = await fetch(`/api/cards/${id}`);
-      if (!response.ok) {
-        throw new Error(response.statusText);
-      }
-      const data = await response.json();
-      setData(data.data);
-    };
-    fetchCard();
+    if (id) {
+      const fetchData = async () => {
+        try {
+          const cardData = await fetchCardData(id);
+          setData(cardData);
+        } catch (error) {
+          console.error;
+          setOpenError(true);
+          setErrorMessage(error.toString() || "unknown error");
+        }
+      };
+      fetchData();
+    }
   }, [id]);
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenError(false);
+  };
 
   return (
     <Box>
@@ -38,6 +53,15 @@ export default function Page({ params }) {
       <Button variant="contained" color="primary" onClick={() => router.push("/cart")}>
         Add card to cart
       </Button>
+      <Snackbar
+        open={openError}
+        autoHideDuration={5000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}>
+        <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
+          {errorMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }
