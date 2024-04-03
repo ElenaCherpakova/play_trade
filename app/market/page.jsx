@@ -1,36 +1,46 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Grid, Box } from "@mui/material";
-import CardComponent from "../../components/CardComponent";
-import SelectComponent from "../../components/SelectComponent";
+import { useSearchParams } from "next/navigation";
+import { Grid, Box, Snackbar, Alert } from "@mui/material";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
+import { fetchAllCardsData } from "@/utils/fetchData";
+import CardComponent from "../../components/CardComponent";
+import SelectComponent from "../../components/SelectComponent";
 
-export default function Market({ id }) {
+export default function Market() {
   const [cards, setCards] = useState([]);
+  const [openError, setOpenError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const searchParams = useSearchParams();
+  const search = searchParams.get("search") || "";
 
-  // useEffect getAllCards
   useEffect(() => {
-    async function fetchCards() {
+    const fetchData = async () => {
       try {
-        const response = await fetch("/api/cards");
-        if (!response.ok) {
-          throw new Error("Failed to fetch cards");
-        }
-        const data = await response.json();
-        setCards(data.data);
+        const data = await fetchAllCardsData(search);
+        setCards(data);
       } catch (error) {
-        console.error("Error fetching cards:", error);
+        console.error;
+        setOpenError(true);
+        setErrorMessage(error.toString() || "unknown error");
       }
-    }
+    };
 
-    fetchCards();
-  }, []);
+    fetchData();
+  }, [search]);
 
   const category = [" ", "Magic", "Pokemon", "Digimon", "Yu-Gi-Oh!", "Sport Card"];
 
   const conditions = [" ", "near mint", "excellent", "very good", "poor"]; //Sport Card
   // const conditions1 = ["near mint", "lightly played", "moderately played", "heavily played", "damaged"]; //Other cards
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenError(false);
+  };
 
   return (
     <>
@@ -44,15 +54,15 @@ export default function Market({ id }) {
             {cards.map(card => (
               <Grid
                 item
-                key={id}
                 xs={12}
+                key={card._id}
                 md={4}
                 lg={3}
                 align="center"
                 alignItems="center"
                 justifyContent="center"
                 sx={{ p: 0, m: 1 }}>
-                <CardComponent card={card} key={id} />
+                <CardComponent card={card} />
               </Grid>
             ))}
           </Grid>
@@ -60,6 +70,15 @@ export default function Market({ id }) {
         <Stack spacing={2} alignItems="center">
           <Pagination count={10} shape="rounded" />
         </Stack>
+        <Snackbar
+          open={openError}
+          autoHideDuration={5000}
+          onClose={handleClose}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}>
+          <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
+            {errorMessage}
+          </Alert>
+        </Snackbar>
       </Box>
     </>
   );

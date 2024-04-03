@@ -54,7 +54,7 @@ export default function CardComponent({ card, showButtons = true, buttonSet }) {
 
       {/* {showButtons && ( // Conditionally render buttons based on showButtons prop
         <CardActions sx={{ p: 0.5 }}>
-          <Button onClick={buyNow} variant="contained" color="secondary">
+          <Button disabled onClick={buyNow} variant="contained" color="secondary">
             Buy Now
           </Button>
           <AddToCartButton card={card} />
@@ -63,7 +63,7 @@ export default function CardComponent({ card, showButtons = true, buttonSet }) {
       <CardActions sx={{ p: 0.5 }}>
         {buttonSet === "default" && (
           <>
-            <Button onClick={() => console.log("Buy Now")} variant="contained" color="secondary">
+            <Button disabled onClick={() => console.log("Buy Now")} variant="contained" color="secondary">
               Buy Now
             </Button>
             <AddToCartButton card={card} />
