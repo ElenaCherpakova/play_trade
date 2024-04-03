@@ -35,7 +35,7 @@ export default function Sell() {
 
   useEffect(() => {
     if (id) {
-      router.push(`/market/item/${id}`);
+      router.push(`/market/item/${id}`); //user should probably be redirected to /sell/carddetails or /sell page
     }
   }, [id, router]);
 
@@ -67,7 +67,7 @@ export default function Sell() {
   };
 
   const handleDeleteButtonClick = () => {
-    router.push("/market/item/[id]");
+    router.push("/market/item/[id]"); // will update later
   };
 
   const [sellerItemsSold, setSellerItemsSold] = useState([]);
@@ -118,8 +118,8 @@ export default function Sell() {
                 key={item.id}
                 card={item}
                 buttonSet="seller"
-                onEdit={() => handleEditButtonClick(item.id)}
-                onDelete={() => handleDeleteButtonClick(item.id)}
+                onEdit={() => handleEditButtonClick(item.id)} // add more functionality later
+                onDelete={() => handleDeleteButtonClick(item.id)}  // add more functionality later
               />
             ))}
           {selectedTab === 1 &&
@@ -128,8 +128,8 @@ export default function Sell() {
                 key={item.id}
                 card={item}
                 buttonSet="seller"
-                onEdit={() => handleEditItemClick(item.id)}
-                onDelete={() => router.push("/market/item/[id]")}
+                onEdit={() => handleEditButtonClick(item.id)} // add more functionality later
+                onDelete={() => handleDeleteButtonClick(item.id)}  // add more functionality later
               />
             ))}
         </Box>
