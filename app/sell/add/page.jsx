@@ -6,7 +6,7 @@ import CardForm from "@/components/CardForm";
 import { createCardData } from "@/utils/fetchData";
 
 const SellAddPage = () => {
-  const router = useRouter(); // Initialize the useRouter hook
+  const router = useRouter();
 
   const [card, setCard] = useState({
     name: "",
