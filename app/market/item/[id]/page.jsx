@@ -13,6 +13,16 @@ export default function Page({ params }) {
   const router = useRouter();
   const id = params.id;
 
+  // Function to convert currency code to symbol
+  const getCurrencySymbol = (currencyCode) => {
+    const currencySymbols = {
+      USD: "$",
+      CAD: "CA$",
+    };
+    return currencySymbols[currencyCode] || currencyCode;
+  };
+
+
   useEffect(() => {
     if (id) {
       const fetchData = async () => {
