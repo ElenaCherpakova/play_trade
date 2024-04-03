@@ -3,44 +3,45 @@ import { React, useState, useEffect, useRef, useCallback } from "react";
 import useImageUpload from "../hooks/useImageUpload";
 import { Box, TextField, Button, Typography, Paper, Grid, Avatar, Backdrop, CircularProgress } from "@mui/material";
 import { ThemeProvider, useTheme } from "@mui/material/styles";
-import { useSession } from "next-auth/react";
+import { useSession, getSession } from "next-auth/react";
 import { theme as importedTheme } from "/styles/theme.js";
 import useAuthUser from "../store/useAuthUser";
-
+import { emailRegexValidate, trimAndValidate } from "@/utils/helpers";
 export default function UserProfileEditPage(props) {
   const theme = useTheme();
   const updateProfile = useAuthUser(state => state.updateProfile);
-  const emailError = useAuthUser(state => state.emailError);
-  const nameError = useAuthUser(state => state.nameError);
+  // const emailError = useAuthUser(state => state.emailError);
+  // const nameError = useAuthUser(state => state.nameError);
   const { handleImageUpload, error: errorAvatarUpload } = useImageUpload();
   const [selectedFile, setSelectedFile] = useState(null);
   const [avatarPreview, setAvatarPreview] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isEditAvatar, setIsEditAvatar] = useState(false);
+  const [error, setError] = useState({});
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef(null);
   const { data: session, update: updateSession, status } = useSession();
-
+  console.log("ERROR", error);
   const [userData, setUserData] = useState({
-    name: session?.user?.name || "",
-    email: session?.user?.email || "",
-    avatar: session?.user?.avatar || ""
+    name: "",
+    email: ""
   });
 
   useEffect(() => {
-    if (session?.user && status === "authenticated") {
-      setUserData({
-        name: session?.user?.name || "",
-        email: session?.user?.email || ""
-        // avatar: ""
-      });
-    }
-    if (!session) {
-      return null;
-    }
-  }, [session, status]);
+    const fetchData = async () => {
+      const session = await getSession();
+      if (session && status === "authenticated") {
+        setUserData({
+          name: session?.user?.name,
+          email: session?.user?.email
+        });
+      }
+    };
+    fetchData();
+  }, [status, session]);
+
   console.log(userData);
-  console.log("erro", emailError);
+  // console.log("erro", emailError);
   useEffect(() => {
     if (!selectedFile) {
       setAvatarPreview("");
@@ -72,6 +73,8 @@ export default function UserProfileEditPage(props) {
           }));
           setIsEditAvatar(false);
         });
+      } else {
+        setIsEditAvatar(false);
       }
     } catch (error) {
       console.error("Error uploading avatar:", error);
@@ -84,39 +87,69 @@ export default function UserProfileEditPage(props) {
     if (userData.avatar) {
       updateProfile({ ...userData, avatar: userData.avatar });
     }
+  }, [updateProfile, userData]);
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userData.avatar, updateProfile]);
-
-  const handleChange = useCallback(e => {
+  const handleChange = e => {
     const { name, value } = e.target;
-    setUserData(prevState => ({
-      ...prevState,
-      [name]: value
-    }));
-  }, []);
 
-  const handleSubmit = async () => {
-    if (isEditing) {
-      if (!userData.name || !userData.email || emailError || nameError) {
-        return;
-      }
-      try {
-        await updateSession({
-          ...session,
-          user: { ...session.user, ...userData }
-        });
+    setUserData(prevUserData => ({ ...prevUserData, [name]: value }));
 
-        await updateProfile(userData);
-        setIsEditing(false);
-      } catch (error) {
-        setIsEditing(true);
-      }
-    } else {
-      setIsEditing(true);
+    let newError = "";
+    if (name === "email") {
+      if (!value.trim()) newError = "Email is required";
+      else if (!emailRegexValidate(value)) newError = "Please enter a valid email address";
+    } else if (name === "name" && !value.trim()) {
+      newError = "Name is required";
+    }
+
+    setError(prevError => ({ ...prevError, [`${name}Error`]: newError }));
+  };
+
+  const handleValidation = () => {
+    let isValid = true;
+    const formErrors = {};
+
+    if (!userData.name.trim()) {
+      formErrors.nameError = "Name is required";
+      isValid = false;
+    }
+
+    // Check for email presence and format
+    if (!userData.email.trim()) {
+      formErrors.emailError = "Email is required";
+      isValid = false;
+    } else if (!emailRegexValidate(userData.email)) {
+      formErrors.emailError = "Please enter a valid email address";
+      isValid = false;
+    }
+
+    // Update the state with any found errors
+    setError(formErrors);
+
+    return isValid;
+  };
+
+  const handleSubmit = async e => {
+    e.preventDefault();
+
+    const isValid = handleValidation();
+    if (!isValid) return;
+    try {
+      await updateSession({
+        ...session,
+        user: { ...session.user, ...userData }
+      });
+
+      await updateProfile(userData);
+      setIsEditing(prevState => !prevState);
+    } catch (error) {
+      setIsEditing(false);
     }
   };
 
+  if (!session) {
+    return null;
+  }
   return (
     //entire screen
     <ThemeProvider theme={importedTheme}>
@@ -195,6 +228,7 @@ export default function UserProfileEditPage(props) {
                   </Button>
                 ) : (
                   <Button
+                    type="button"
                     onClick={() => fileInputRef.current.click()}
                     variant="contained"
                     color="secondary"
@@ -244,8 +278,8 @@ export default function UserProfileEditPage(props) {
                     sx={{ mb: 2 }} //margin bottom
                     disabled={!isEditing}
                     required
-                    error={Boolean(nameError)}
-                    helperText={nameError}
+                    error={Boolean(error.nameError)}
+                    helperText={error.nameError}
                   />
                   <TextField
                     label="Email"
@@ -255,18 +289,21 @@ export default function UserProfileEditPage(props) {
                     disabled={!isEditing}
                     onChange={handleChange}
                     required
-                    error={Boolean(emailError)}
-                    helperText={emailError}
+                    error={Boolean(error.emailError)}
+                    helperText={error.emailError}
                   />
 
                   <Box display="flex" justifyContent="space-between" width="100%" mt={2}>
                     <Button
+                      type="submit"
                       variant="contained"
                       color="secondary"
                       onClick={handleSubmit}
                       disabled={
-                        Boolean(emailError) || // Check if there is an email validation error from Zustand
-                        Boolean(nameError)
+                        isEditing && (
+                          Boolean(error.nameError) || Boolean(error.emailError) || // Any validation errors
+                          !userData.name.trim() || !userData.email.trim() // Any required field is empty
+                        )
                       }
                       sx={{
                         "mt": 2,

@@ -1,7 +1,7 @@
-export const trimAndValidate = (set, value, errorSetter, errorMessage) => {
+export const trimAndValidate = (value, errorMessage) => {
   const trimValue = value.trim();
   if (!trimValue) {
-    set({ isLoading: false, [errorSetter]: errorMessage });
+    return { value: trimValue, error: errorMessage };
   }
-  return trimValue;
+  return { value: trimValue, error: null };
 };
