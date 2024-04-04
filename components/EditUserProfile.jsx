@@ -6,8 +6,8 @@ import { ThemeProvider, useTheme } from "@mui/material/styles";
 import { useSession, getSession } from "next-auth/react";
 import { theme as importedTheme } from "/styles/theme.js";
 import useAuthUser from "../store/useAuthUser";
-import { emailRegexValidate, trimAndValidate } from "@/utils/helpers";
-export default function UserProfileEditPage(props) {
+import { trimAndValidate, emailRegexValidate } from "@/utils/helpers";
+export default function UserProfileEditPage() {
   const theme = useTheme();
   const updateProfile = useAuthUser(state => state.updateProfile);
   // const emailError = useAuthUser(state => state.emailError);
@@ -92,15 +92,8 @@ export default function UserProfileEditPage(props) {
   const handleChange = e => {
     const { name, value } = e.target;
 
-    setUserData(prevUserData => ({ ...prevUserData, [name]: value }));
-
-    let newError = "";
-    if (name === "email") {
-      if (!value.trim()) newError = "Email is required";
-      else if (!emailRegexValidate(value)) newError = "Please enter a valid email address";
-    } else if (name === "name" && !value.trim()) {
-      newError = "Name is required";
-    }
+    const { value: trimmedValue, error: newError } = trimAndValidate(name, value);
+    setUserData(prevUserData => ({ ...prevUserData, [name]: trimmedValue }));
 
     setError(prevError => ({ ...prevError, [`${name}Error`]: newError }));
   };
@@ -109,23 +102,18 @@ export default function UserProfileEditPage(props) {
     let isValid = true;
     const formErrors = {};
 
-    if (!userData.name.trim()) {
-      formErrors.nameError = "Name is required";
+    const { value: trimmedName, error: nameError } = trimAndValidate("name", userData.name);
+    if (nameError) {
+      formErrors.nameError = nameError;
       isValid = false;
     }
 
-    // Check for email presence and format
-    if (!userData.email.trim()) {
-      formErrors.emailError = "Email is required";
-      isValid = false;
-    } else if (!emailRegexValidate(userData.email)) {
-      formErrors.emailError = "Please enter a valid email address";
+    const { value: trimmedEmail, error: emailError } = trimAndValidate("email", userData.email);
+    if (emailError) {
+      formErrors.emailError = emailError;
       isValid = false;
     }
-
-    // Update the state with any found errors
     setError(formErrors);
-
     return isValid;
   };
 

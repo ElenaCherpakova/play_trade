@@ -23,13 +23,13 @@ export const PUT = async req => {
   try {
     const userId = session.user._id;
     const body = await req.json();
-console.log("userId", body)
+    console.log("userId", body);
     const { name, email, avatar } = body;
 
     if (!name || !email) {
       return NextResponse.json({ success: false, message: "Name and email are required" }, { status: 400 });
     }
-    
+
     if (avatar !== undefined) {
       body.imageProfileURL = avatar;
     } else {
