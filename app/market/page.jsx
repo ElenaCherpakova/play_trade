@@ -14,7 +14,6 @@ export default function Market() {
   const [totalCards, setTotalCards] = useState(0);
   const [openError, setOpenError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [notificationText, setNotificationText] = useState("");
   const searchParams = useSearchParams();
   const filters = {
     conditions: searchParams.get("conditions") || "",
@@ -51,34 +50,7 @@ export default function Market() {
     filters.availability
   ]);
   console.log(cards);
-  useEffect(() => {
-    let textParts = [];
 
-    if (searchTerm) {
-      textParts = [...textParts, `Searching for "${searchTerm}"`];
-    }
-    if (filters.priceFrom || filters.priceTo) {
-      textParts.push(`Price: ${filters.priceFrom} to ${filters.priceTo}`);
-    }
-    if (filters.availability) {
-      textParts.push(`Availability: ${filters.availability}`);
-    }
-
-    //using Object.entries to iterate over key-value pairs of the filters object
-    const filterDescriptions = Object.entries(filters).reduce((acc, [key, value]) => {
-      if (value) {
-        acc = [...acc, `${key.charAt(0).toUpperCase() + key.slice(1)}: ${value}`];
-      }
-      return acc;
-    }, []);
-
-    if (filterDescriptions.length) {
-      textParts = [...textParts, filterDescriptions.join(", ")];
-    }
-
-    const newText = textParts.length ? textParts.join(" with ") : "Showing all cards";
-    setNotificationText(newText);
-  }, [searchTerm, filters]);
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -90,9 +62,6 @@ export default function Market() {
   return (
     <>
       <Box display="flex" flexDirection="column" sx={{ m: 5 }}>
-        <Box mb={2}>
-          <Typography variant="subtitle1">{notificationText}</Typography>
-        </Box>
         <Box display="flex" sx={{ flexDirection: { xs: "column", sm: "row" } }}>
           <Box
             sx={{
@@ -130,7 +99,6 @@ export default function Market() {
             )}
           </Box>
         </Box>
-        {cards.length > 0 && (
           <Stack spacing={2} alignItems="center">
             <Pagination
               count={Math.ceil(totalCards / 6)}
@@ -139,7 +107,6 @@ export default function Market() {
               shape="rounded"
             />
           </Stack>
-        )}
         <Snackbar
           open={openError}
           autoHideDuration={5000}

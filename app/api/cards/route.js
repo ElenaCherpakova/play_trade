@@ -25,7 +25,6 @@ export async function GET(req, res) {
   const skip = (page - 1) * limit;
 
   const searchQuery = {};
-  console.log("Received params:", { condition, category, priceFrom, priceTo, name });
 
   if (name) {
     const decodedName = decodeURIComponent(name);
@@ -55,7 +54,6 @@ export async function GET(req, res) {
   }
 
   try {
-    console.log("Search query:", searchQuery);
     //fetch filtered cards from the database with pagination
     const cards = await Card.find(searchQuery).skip(skip).limit(limit);
     const total = await Card.countDocuments(searchQuery);
