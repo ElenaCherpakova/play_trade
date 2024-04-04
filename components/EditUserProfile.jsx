@@ -14,7 +14,7 @@ export default function UserProfileEditPage(props) {
   // const nameError = useAuthUser(state => state.nameError);
   const { handleImageUpload, error: errorAvatarUpload } = useImageUpload();
   const [selectedFile, setSelectedFile] = useState(null);
-  const [avatarPreview, setAvatarPreview] = useState(null);
+  const [avatarPreview, setAvatarPreview] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [isEditAvatar, setIsEditAvatar] = useState(false);
   const [error, setError] = useState({});
@@ -35,6 +35,7 @@ export default function UserProfileEditPage(props) {
           name: session?.user?.name,
           email: session?.user?.email
         });
+        setAvatarPreview(session?.user?.avatar);
       }
     };
     fetchData();
@@ -67,10 +68,15 @@ export default function UserProfileEditPage(props) {
       setLoading(true);
       if (selectedFile) {
         await handleImageUpload(selectedFile, async imageURL => {
-          setUserData(prevUserData => ({
-            ...prevUserData,
-            avatar: imageURL
-          }));
+          setAvatarPreview(imageURL);
+
+          await updateSession({
+            ...session,
+            user: { ...session.user, avatar: imageURL }
+          });
+
+          await updateProfile({ ...session.user, avatar: imageURL });
+
           setIsEditAvatar(false);
         });
       } else {
@@ -82,12 +88,6 @@ export default function UserProfileEditPage(props) {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    if (userData.avatar) {
-      updateProfile({ ...userData, avatar: userData.avatar });
-    }
-  }, [updateProfile, userData]);
 
   const handleChange = e => {
     const { name, value } = e.target;
@@ -300,10 +300,11 @@ export default function UserProfileEditPage(props) {
                       color="secondary"
                       onClick={handleSubmit}
                       disabled={
-                        isEditing && (
-                          Boolean(error.nameError) || Boolean(error.emailError) || // Any validation errors
-                          !userData.name.trim() || !userData.email.trim() // Any required field is empty
-                        )
+                        isEditing &&
+                        (Boolean(error.nameError) ||
+                          Boolean(error.emailError) || // Any validation errors
+                          !userData.name.trim() ||
+                          !userData.email.trim()) // Any required field is empty
                       }
                       sx={{
                         "mt": 2,
