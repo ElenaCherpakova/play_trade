@@ -3,13 +3,10 @@ import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import {
   Box,
-  Button,
   Slider,
   Typography,
   Stack,
-  Switch,
   FormControl,
-  FormLabel,
   FormControlLabel,
   Chip,
   Link,
@@ -29,45 +26,31 @@ const conditionsByCardCategory = {
 
 const Filter = () => {
   const [priceRange, setPriceRange] = useState([0, 5000]);
-  const [availability, setAvailability] = useState("");
   const [conditionsOptions, setConditionsOptions] = useState([]);
+  const [filters, setFilters] = useState({ category: "", conditions: "", availability: "", search: "" });
   const router = useRouter();
   const searchParams = useSearchParams();
-  const searchTerm = searchParams.get("search") || "";
-  const receivedCategory = searchParams.get("category") || "";
-  const [filters, setFilters] = useState({ category: "", conditions: "", availability: "", search: "" });
+
+  const searchTermFromUrl = searchParams.get("search") || "";
+  const categoryFromUrl = searchParams.get("category") || "";
+  const availabilityFromUrl = searchParams.get("availability");
+  const conditionsFromUrl = searchParams.get("conditions");
   const areFiltersApplied = Object.values(filters).some(value => value);
 
   useEffect(() => {
-    setFilters(prevFilters => ({
-      ...prevFilters,
-      category: receivedCategory
-    }));
-    setConditionsOptions(receivedCategory ? conditionsByCardCategory[receivedCategory] || [] : []);
-  }, [receivedCategory]);
-
-  useEffect(() => {
-    // Set availability based on URL search params
-    const availabilityFromUrl = searchParams.get("availability");
-    if (availabilityFromUrl === "available" || availabilityFromUrl === "sold") {
-      setAvailability(availabilityFromUrl);
-    } else {
-      setAvailability(""); // Reset to no selection
-    }
+    setFilters({
+      search: searchTermFromUrl || "",
+      category: categoryFromUrl || "",
+      conditions: conditionsFromUrl || "",
+      availability: availabilityFromUrl || ""
+    });
+    //rendering correct conditions after redirection from other page with category in the params
+    setConditionsOptions(categoryFromUrl ? conditionsByCardCategory[categoryFromUrl] || [] : []);
   }, [searchParams]);
 
   useEffect(() => {
-    if (searchTerm) {
-      setFilters(prevFilters => ({
-        ...prevFilters,
-        search: searchTerm //set the search term into filters state
-      }));
-    }
-  }, [searchTerm]);
-
-  useEffect(() => {
     updateQueryStringAndNavigate();
-  }, [filters, priceRange, receivedCategory]);
+  }, [filters, priceRange, categoryFromUrl, searchTermFromUrl]);
 
   const updateQueryStringAndNavigate = () => {
     const queryStringComponents = Object.entries({
@@ -79,15 +62,15 @@ const Filter = () => {
       .map(([key, value]) => `${key}=${encodeURIComponent(value)}`);
 
     const queryString = queryStringComponents.join("&");
-
     router.push(`/market/?${queryString}`);
   };
 
   const handleFilterChange = (filterId, value) => {
-    // For category selections, also update conditionsOptions directly here
+    //rendering correct conditions' options based on the selected category in the select form
+    //and resetting the conditions filter to ensure consistency. Else, just updating the filter with the new value.
     if (filterId === "category") {
       setConditionsOptions(value ? conditionsByCardCategory[value] || [] : []);
-      setFilters(prevFilters => ({ ...prevFilters, category: value, conditions: "", availability: "" }));
+      setFilters(prevFilters => ({ ...prevFilters, category: value, conditions: "" }));
     } else {
       setFilters(prevFilters => ({ ...prevFilters, [filterId]: value }));
     }
@@ -98,25 +81,20 @@ const Filter = () => {
   };
 
   const handleAvailabilityChange = event => {
-    setAvailability(event.target.value);
-    setFilters(prevFilters => ({ ...prevFilters, availability: event.target.value }));
+    const newAvailability = event.target.value;
+    setFilters(prevFilters => ({
+      ...prevFilters,
+      availability: newAvailability
+    }));
   };
 
   const clearFilters = () => {
-    if (searchTerm) {
-      router.push("/market");
-    } else {
-      setPriceRange([0, 5000]);
-      setAvailability("");
-      setFilters({ category: "", conditions: "", availability: "" });
-      router.push("/market");
-    }
+    setPriceRange([0, 5000]);
+    setFilters({ category: "", conditions: "", availability: "", search: "" });
+    router.push("/market");
   };
 
   const handleRemoveFilter = filterType => {
-    if (filterType === "availability") {
-      setAvailability(""); // reset radio button selection
-    }
     setFilters(currentFilters => ({
       ...currentFilters,
       [filterType]: ""
@@ -131,12 +109,17 @@ const Filter = () => {
             Reset Filters
           </Link>
         </Box>
-        {areFiltersApplied && (
+        {areFiltersApplied ? (
           <>
-            <Typography gutterBottom sx={{ mb: 2 }}>
+            <Typography gutterBottom sx={{ mb: 1 }}>
               Applied filters
             </Typography>
-            <Stack direction="row" alignItems="center" flexWrap="wrap" spacing={2} sx={{ mb: 3 }}>
+            <Stack
+              direction="row"
+              alignItems="flex-start"
+              flexWrap="wrap"
+              spacing={1}
+              sx={{ minHeight: "80px", mb: 1 }}>
               {Object.entries(filters).map(([key, value]) => {
                 if (value) {
                   return <Chip label={value.toLocaleLowerCase()} onDelete={() => handleRemoveFilter(key)} key={key} />;
@@ -145,13 +128,15 @@ const Filter = () => {
               })}
             </Stack>
           </>
+        ) : (
+          <Box sx={{ height: "1rem" }} />
         )}
         <FormControl component="fieldset" sx={{ mb: 3 }}>
           <RadioGroup
             row
             aria-label="availability"
             name="availability"
-            value={availability}
+            value={filters.availability}
             onChange={handleAvailabilityChange}>
             <FormControlLabel value="available" control={<Radio />} label="Available" />
             <FormControlLabel value="sold" control={<Radio />} label="Sold" />

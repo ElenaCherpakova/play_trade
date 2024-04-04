@@ -1,7 +1,8 @@
 export async function fetchAllCardsData(searchTerm, filters, page, limit) {
   let url = `/api/cards`;
 
-  //converting searchParams object to URLSearchParams to handle encoding and query string construction
+  //converting searchParams object to URLSearchParams
+  //to handle encoding and query string construction
   const params = new URLSearchParams();
 
   params.append("page", page);
@@ -15,6 +16,9 @@ export async function fetchAllCardsData(searchTerm, filters, page, limit) {
       params.append(filterKey, filters[filterKey]);
     }
   });
+
+  //checking for `undefined` to ensure these parameters are appended even when their value is `0`
+  //unlike other values that are appended if they have a truthy value.
   if (filters.priceFrom !== undefined) {
     params.append("priceFrom", filters.priceFrom);
   }

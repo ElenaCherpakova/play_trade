@@ -13,6 +13,7 @@ import Card from "@/models/Card";
 //all can watch all cards
 export async function GET(req, res) {
   await dbConnect();
+  //extracting query parameters from the request URL
   const name = req.nextUrl.searchParams.get("search");
   const condition = req.nextUrl.searchParams.get("conditions");
   const priceFrom = req.nextUrl.searchParams.get("priceFrom");
@@ -20,8 +21,9 @@ export async function GET(req, res) {
   const category = req.nextUrl.searchParams.get("category");
   const availability = req.nextUrl.searchParams.get("availability");
 
+  //pagination setup with default values if not specified
   const page = parseInt(req.nextUrl.searchParams.get("page") || "1", 10);
-  const limit = parseInt(req.nextUrl.searchParams.get("limit") || "6", 10); //default limit
+  const limit = parseInt(req.nextUrl.searchParams.get("limit") || "6", 10);
   const skip = (page - 1) * limit;
 
   const searchQuery = {};
@@ -40,8 +42,11 @@ export async function GET(req, res) {
     searchQuery.conditions = new RegExp(`^${decodedCondition}$`, "i");
   }
   if (priceFrom && priceTo) {
+    //converting the string values to numbers for comparison + in db the price is stored as number
     const priceFromNumber = Number(priceFrom);
     const priceToNumber = Number(priceTo);
+    //ensuring priceFrom is less than or equal to priceTo and both are valid numbers
+    //to prevent invalid queries where price values are non-numeric
     if (!isNaN(priceFromNumber) && !isNaN(priceToNumber) && priceFromNumber <= priceToNumber) {
       searchQuery.price = { $gte: priceFromNumber, $lte: priceToNumber };
     }

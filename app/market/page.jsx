@@ -49,8 +49,6 @@ export default function Market() {
     currentPage,
     filters.availability
   ]);
-  console.log(cards);
-
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -74,7 +72,16 @@ export default function Market() {
             }}>
             <Filter />
           </Box>
-          <Box sx={{ flex: 8, width: "100%" }}>
+          <Box
+            sx={{
+              flex: 8,
+              width: "100%",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              minHeight: "70vh"
+            }}>
             {cards.length > 0 ? (
               <Grid container alignItems="center" sx={{ alignItems: "center", gap: 5, justifyContent: "center" }}>
                 {cards.map(card => (
@@ -93,20 +100,20 @@ export default function Market() {
                 ))}
               </Grid>
             ) : (
-              <Typography variant="h6" align="center">
+              <Typography variant="h6" align="center" sx={{ width: "100%" }}>
                 No matches found.
               </Typography>
             )}
           </Box>
         </Box>
-          <Stack spacing={2} alignItems="center">
-            <Pagination
-              count={Math.ceil(totalCards / 6)}
-              page={currentPage}
-              onChange={(event, page) => setCurrentPage(page)}
-              shape="rounded"
-            />
-          </Stack>
+        <Stack spacing={2} alignItems="center">
+          <Pagination
+            count={Math.ceil(totalCards / 6)}
+            page={currentPage}
+            onChange={(event, page) => setCurrentPage(page)}
+            shape="rounded"
+          />
+        </Stack>
         <Snackbar
           open={openError}
           autoHideDuration={5000}
