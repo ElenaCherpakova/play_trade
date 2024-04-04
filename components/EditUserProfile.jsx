@@ -159,7 +159,7 @@ export default function UserProfileEditPage() {
           sx={{
             flexGrow: 0,
             p: 0,
-            mt: 0
+            mt: 5
           }}>
           Welcome {session?.user?.name}!
         </Typography>
@@ -250,11 +250,14 @@ export default function UserProfileEditPage() {
                   alignItems: "center"
                 }}>
                 <Box
+                  component="form"
+                  noValidate
+                  autoComplete="off"
                   display="flex"
                   flexDirection="column"
                   justifyContent="space-between"
                   sx={{
-                    mt: 2,
+                    mt: 5,
                     p: 2,
                     width: "80%"
                   }}>
@@ -262,7 +265,7 @@ export default function UserProfileEditPage() {
                     onChange={handleChange}
                     name="name"
                     label="Nickname"
-                    defaultValue={userData.name}
+                    value={userData.name}
                     sx={{ mb: 2 }} //margin bottom
                     disabled={!isEditing}
                     required
@@ -272,7 +275,7 @@ export default function UserProfileEditPage() {
                   <TextField
                     label="Email"
                     name="email"
-                    defaultValue={userData.email}
+                    value={userData.email}
                     sx={{ mb: 2 }}
                     disabled={!isEditing}
                     onChange={handleChange}
@@ -290,9 +293,9 @@ export default function UserProfileEditPage() {
                       disabled={
                         isEditing &&
                         (Boolean(error.nameError) ||
-                          Boolean(error.emailError) || // Any validation errors
+                          Boolean(error.emailError) || 
                           !userData.name.trim() ||
-                          !userData.email.trim()) // Any required field is empty
+                          !userData.email.trim()) 
                       }
                       sx={{
                         "mt": 2,
