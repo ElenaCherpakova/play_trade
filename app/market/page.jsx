@@ -6,7 +6,7 @@ import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import { fetchAllCardsData } from "@/utils/fetchData";
 import CardComponent from "../../components/CardComponent";
-import SelectComponent from "../../components/SelectComponent";
+import Filter from "../../components/Filter";
 
 export default function Market() {
   const [cards, setCards] = useState([]);
@@ -15,13 +15,13 @@ export default function Market() {
   const [openError, setOpenError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [notificationText, setNotificationText] = useState("");
-
   const searchParams = useSearchParams();
-
   const filters = {
     conditions: searchParams.get("conditions") || "",
-    price: searchParams.get("price") || "",
-    category: searchParams.get("category") || ""
+    priceFrom: searchParams.get("priceFrom") || "",
+    priceTo: searchParams.get("priceTo") || "",
+    category: searchParams.get("category") || "",
+    availability: searchParams.get("availability") || ""
   };
   const searchTerm = searchParams.get("search") || "";
 
@@ -31,15 +31,8 @@ export default function Market() {
         const limit = 6;
         const page = searchTerm && currentPage !== 1 ? 1 : currentPage;
         const data = await fetchAllCardsData(searchTerm, filters, page, limit);
-        //if no matches are found for search/filter criteria, show snackbar
-        if (data.cards.length === 0 && (searchTerm || Object.values(filters).some(filter => filter))) {
-          setErrorMessage("No matches found.");
-          setOpenError(true);
-        } else {
-          setCards(data.cards);
-          setTotalCards(data.total);
-          setOpenError(false);
-        }
+        setCards(data.cards);
+        setTotalCards(data.total);
       } catch (error) {
         console.error;
         setOpenError(true);
@@ -48,13 +41,27 @@ export default function Market() {
     };
 
     fetchData();
-  }, [searchTerm, filters.conditions, filters.category, filters.price, currentPage]);
-
+  }, [
+    searchTerm,
+    filters.conditions,
+    filters.category,
+    filters.priceFrom,
+    filters.priceTo,
+    currentPage,
+    filters.availability
+  ]);
+  console.log(cards);
   useEffect(() => {
     let textParts = [];
 
     if (searchTerm) {
       textParts = [...textParts, `Searching for "${searchTerm}"`];
+    }
+    if (filters.priceFrom || filters.priceTo) {
+      textParts.push(`Price: ${filters.priceFrom} to ${filters.priceTo}`);
+    }
+    if (filters.availability) {
+      textParts.push(`Availability: ${filters.availability}`);
     }
 
     //using Object.entries to iterate over key-value pairs of the filters object
@@ -73,11 +80,6 @@ export default function Market() {
     setNotificationText(newText);
   }, [searchTerm, filters]);
 
-  const category = [" ", "Magic", "Pokemon", "Digimon", "Yu-Gi-Oh!", "Sport Card"];
-
-  const conditions = [" ", "near mint", "excellent", "very good", "poor"]; //Sport Card
-  // const conditions1 = ["near mint", "lightly played", "moderately played", "heavily played", "damaged"]; //Other cards
-
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
@@ -91,36 +93,53 @@ export default function Market() {
         <Box mb={2}>
           <Typography variant="subtitle1">{notificationText}</Typography>
         </Box>
-        <Box display="flex" sx={{ gap: 2, flexDirection: { xs: "column", sm: "row" } }}>
-          <Box>
-            <SelectComponent selectId="category" label="category" options={category} />
-            <SelectComponent selectId="conditions" label="conditions" options={conditions} />
+        <Box display="flex" sx={{ flexDirection: { xs: "column", sm: "row" } }}>
+          <Box
+            sx={{
+              flex: 2,
+              border: 1,
+              borderColor: "grey.300",
+              borderRadius: 2,
+              p: 1,
+              boxShadow: 3
+            }}>
+            <Filter />
           </Box>
-          <Grid container alignItems="center" sx={{ alignItems: "center", gap: 1, justifyContent: "center" }}>
-            {cards.map(card => (
-              <Grid
-                item
-                xs={12}
-                key={card._id}
-                md={4}
-                lg={3}
-                align="center"
-                alignItems="center"
-                justifyContent="center"
-                sx={{ p: 0, m: 1 }}>
-                <CardComponent card={card} />
+          <Box sx={{ flex: 8, width: "100%" }}>
+            {cards.length > 0 ? (
+              <Grid container alignItems="center" sx={{ alignItems: "center", gap: 5, justifyContent: "center" }}>
+                {cards.map(card => (
+                  <Grid
+                    item
+                    xs={12}
+                    key={card._id}
+                    md={4}
+                    lg={3}
+                    align="center"
+                    alignItems="center"
+                    justifyContent="center"
+                    sx={{ p: 0, m: 1 }}>
+                    <CardComponent card={card} />
+                  </Grid>
+                ))}
               </Grid>
-            ))}
-          </Grid>
+            ) : (
+              <Typography variant="h6" align="center">
+                No matches found.
+              </Typography>
+            )}
+          </Box>
         </Box>
-        <Stack spacing={2} alignItems="center">
-          <Pagination
-            count={Math.ceil(totalCards / 6)}
-            page={currentPage}
-            onChange={(event, page) => setCurrentPage(page)}
-            shape="rounded"
-          />
-        </Stack>
+        {cards.length > 0 && (
+          <Stack spacing={2} alignItems="center">
+            <Pagination
+              count={Math.ceil(totalCards / 6)}
+              page={currentPage}
+              onChange={(event, page) => setCurrentPage(page)}
+              shape="rounded"
+            />
+          </Stack>
+        )}
         <Snackbar
           open={openError}
           autoHideDuration={5000}

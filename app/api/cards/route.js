@@ -15,14 +15,17 @@ export async function GET(req, res) {
   await dbConnect();
   const name = req.nextUrl.searchParams.get("search");
   const condition = req.nextUrl.searchParams.get("conditions");
-  const priceString = req.nextUrl.searchParams.get("price");
+  const priceFrom = req.nextUrl.searchParams.get("priceFrom");
+  const priceTo = req.nextUrl.searchParams.get("priceTo");
   const category = req.nextUrl.searchParams.get("category");
+  const availability = req.nextUrl.searchParams.get("availability");
 
   const page = parseInt(req.nextUrl.searchParams.get("page") || "1", 10);
   const limit = parseInt(req.nextUrl.searchParams.get("limit") || "6", 10); //default limit
   const skip = (page - 1) * limit;
 
   const searchQuery = {};
+  console.log("Received params:", { condition, category, priceFrom, priceTo, name });
 
   if (name) {
     const decodedName = decodeURIComponent(name);
@@ -33,24 +36,26 @@ export async function GET(req, res) {
       name: new RegExp(term, "i") //case-insensitive match
     }));
   }
-
-  //adding filters to the search query if they are provided
   if (condition) {
-    searchQuery.condition = condition;
+    const decodedCondition = decodeURIComponent(condition);
+    searchQuery.conditions = new RegExp(`^${decodedCondition}$`, "i");
   }
-  if (priceString) {
-    //price is stored as a number in the database
-    const price = Number(priceString);
-    //checking if `price` is a valid number before including it in the search query
-    if (!isNaN(price)) {
-      searchQuery.price = price;
+  if (priceFrom && priceTo) {
+    const priceFromNumber = Number(priceFrom);
+    const priceToNumber = Number(priceTo);
+    if (!isNaN(priceFromNumber) && !isNaN(priceToNumber) && priceFromNumber <= priceToNumber) {
+      searchQuery.price = { $gte: priceFromNumber, $lte: priceToNumber };
     }
+  }
+  if (availability) {
+    searchQuery.available = availability;
   }
   if (category) {
     searchQuery.category = category;
   }
 
   try {
+    console.log("Search query:", searchQuery);
     //fetch filtered cards from the database with pagination
     const cards = await Card.find(searchQuery).skip(skip).limit(limit);
     const total = await Card.countDocuments(searchQuery);

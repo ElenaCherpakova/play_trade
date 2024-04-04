@@ -1,10 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
 
-const SelectComponent = ({ selectId, label, options }) => {
+const SelectComponent = ({ selectId, label, options, onSelectionChange, selectedValue }) => {
   const [selectedOption, setSelectedOption] = useState("");
+
+  useEffect(() => {
+    setSelectedOption(selectedValue || "");
+  }, [options, selectedValue]);
+
   const handleSelectChange = event => {
-    setSelectedOption(event.target.value);
+    const newValue = event.target.value;
+    setSelectedOption(newValue);
+    onSelectionChange(selectId, newValue);
   };
 
   return (

@@ -3,23 +3,25 @@ export async function fetchAllCardsData(searchTerm, filters, page, limit) {
 
   //converting searchParams object to URLSearchParams to handle encoding and query string construction
   const params = new URLSearchParams();
-  
-  //appending pagination parameters
+
   params.append("page", page);
   params.append("limit", limit);
 
-  //if a search term is provided, encode and append it to the query parameters
   if (searchTerm && searchTerm.trim()) {
     params.append("search", encodeURIComponent(searchTerm.trim()));
   }
-  //appending filter parameters (condition, price, category) if provided
-  ["conditions", "price", "category"].forEach(filterKey => {
+  ["conditions", "category", "availability"].forEach(filterKey => {
     if (filters[filterKey]) {
       params.append(filterKey, filters[filterKey]);
     }
   });
+  if (filters.priceFrom !== undefined) {
+    params.append("priceFrom", filters.priceFrom);
+  }
+  if (filters.priceTo !== undefined) {
+    params.append("priceTo", filters.priceTo);
+  }
 
-  //constructing the final URL with the query parameters
   const queryString = params.toString();
   if (queryString) {
     url += `?${queryString}`;
