@@ -13,9 +13,21 @@ import Card from "@/models/Card";
 //all can watch all cards
 export async function GET(req, res) {
   await dbConnect();
+  const name = req.nextUrl.searchParams.get('name');
+  const searchQuery = {};
+  
+  if (name) {
+    //the regex matches on spaces, commas, and semicolons as separators
+    const searchTerms = name.split(/[\s,;]+/);  
+    //using $or to match documents with any listed names
+    searchQuery.$or = searchTerms.map(term => ({
+      name: new RegExp(term, 'i')  //case-insensitive match
+    }));
+  }
+
   try {
-    // Fetch all cards from the database
-    const cards = await Card.find({});
+    // Fetch all cards or searched cards from the database
+    const cards = await Card.find(searchQuery);
     if (!cards) {
       return NextResponse.json({ success: false, message: error.message || "No cards found" }, { status: 400 });
     }

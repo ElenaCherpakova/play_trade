@@ -1,5 +1,9 @@
-export async function fetchAllCardsData() {
-  const response = await fetch(`/api/cards`);
+export async function fetchAllCardsData(searchTerm = "") {
+  const url = searchTerm.trim()
+    ? `/api/cards?name=${encodeURIComponent(searchTerm)}`
+    : `/api/cards`;
+
+  const response = await fetch(url);
   if (!response.ok) {
     console.log(data.errors);
     const detailedErrorMessage = data.errors ? data.errors.join(", ") : data.message;
@@ -64,3 +68,6 @@ export async function fetchSellerCards(sellerId) {
   const data = await response.json();
   return data.data;
 }
+
+
+
