@@ -43,9 +43,7 @@ export default function Seller({ params }) {
       fetchData();
     }
   }, [userId]);
-  const handleChangeActiveTab = (event, newValue) => {
-    setActiveTab(newValue);
-  };
+
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
@@ -89,58 +87,65 @@ export default function Seller({ params }) {
             </Box>
           </Box>
         </Box>
-        <Box sx={{ width: "100%", bgcolor: "background.paper" }}>
-          <Tabs value={activeTab} onChange={handleChangeActiveTab} centered aria-label="handle seller info">
-            <Tab label="Cards" value="cards" />
-            <Tab label="About" value="about" />
-            <Tab label="Reviews" value="reviews" />
-          </Tabs>
-        </Box>
-        {activeTab === "cards" && (
-          <Grid container spacing={2}>
-            <Grid item xs={2}></Grid>
-            <Grid item xs>
-              <Grid container spacing={2}>
-                {cards.map(card => (
-                  <Grid item key={card._id} xs={12} sm={6} md={4} lg={3}>
-                    <CardComponent key={card._id} card={card} showButtons={showButtons} />
-                  </Grid>
-                ))}
-              </Grid>
-            </Grid>
-          </Grid>
-        )}
-        {activeTab === "about" && (
-          <Grid container spacing={2}>
-            <Grid item xs></Grid>
-            <Grid item xs={8}>
-              <Paper elevation={3} sx={{ px: 2, py: 5 }}>
-                <Box display="flex" gap={1} my={2}>
-                  <Typography variant="h4">Location:</Typography>
-                  <Typography variant="body1">here will be information about seller location</Typography>
-                </Box>
-                <Box display="flex" gap={1} my={2}>
-                  <Typography variant="h4">Seller since:</Typography>
-                  <Typography variant="body1">
-                    here will be information since than the seller is seeling cards
-                  </Typography>
-                </Box>
-                <Box display="flex" gap={1} my={2}>
-                  <Typography variant="h4">Other:</Typography>
-                  <Typography variant="body1">here will be other information about the seller</Typography>
-                </Box>
-              </Paper>
-            </Grid>
-            <Grid item xs></Grid>
-          </Grid>
-        )}
-        {activeTab === "reviews" &&
-          seller.feedback.map((feedback, index) => (
-            <Paper key={index} sx={{ p: 2, my: 1 }}>
-              <Typography variant="body1">{feedback}</Typography>
-            </Paper>
-          ))}
       </Box>
+      <Box width="100%" my={5}>
+        <Tabs
+          value={activeTab}
+          onChange={(event, newValue) => {
+            setActiveTab(newValue);
+          }}
+          aria-label="handle seller info">
+          <Tab label="Cards" value="cards" />
+          <Tab label="About" value="about" />
+          <Tab label="Reviews" value="reviews" />
+        </Tabs>
+      </Box>
+      {activeTab === "cards" && (
+        <Grid container spacing={2}>
+          <Grid item xs={2}>
+            <Paper sx={{ p: 2 }}>
+              <Typography variant="h4">Filters</Typography>
+            </Paper>
+          </Grid>
+          <Grid item xs>
+            <Grid container spacing={2}>
+              {cards.map(card => (
+                <Grid item key={card._id} xs={12} sm={6} md={4} lg={3}>
+                  <CardComponent key={card._id} card={card} showButtons={showButtons} />
+                </Grid>
+              ))}
+            </Grid>
+          </Grid>
+        </Grid>
+      )}
+      {activeTab === "about" && (
+        <Grid container spacing={2}>
+          <Grid item xs></Grid>
+          <Grid item xs={8}>
+            <Paper elevation={3} sx={{ px: 2, py: 5 }}>
+              <Box display="flex" gap={1} my={2}>
+                <Typography variant="h4">Location:</Typography>
+                <Typography variant="body1">here will be information about seller location</Typography>
+              </Box>
+              <Box display="flex" gap={1} my={2}>
+                <Typography variant="h4">Seller since:</Typography>
+                <Typography variant="body1">here will be information since than the seller is seeling cards</Typography>
+              </Box>
+              <Box display="flex" gap={1} my={2}>
+                <Typography variant="h4">Other:</Typography>
+                <Typography variant="body1">here will be other information about the seller</Typography>
+              </Box>
+            </Paper>
+          </Grid>
+          <Grid item xs></Grid>
+        </Grid>
+      )}
+      {activeTab === "reviews" &&
+        seller.feedback.map((feedback, index) => (
+          <Paper key={index} sx={{ p: 2, my: 1 }}>
+            <Typography variant="body1">{feedback}</Typography>
+          </Paper>
+        ))}
       <Snackbar
         open={openError}
         autoHideDuration={5000}
