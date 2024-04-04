@@ -111,8 +111,8 @@ export default function Seller({ params }) {
         <Box sx={{ width: "100%", bgcolor: "background.paper" }}>
           <Tabs value={activeTab} onChange={handleChangeActiveTab} centered aria-label="handle seller info">
             <Tab label="Cards" value="cards" />
-            <Tab label="About" value="2" />
-            <Tab label="Reviews" value="3" />
+            <Tab label="About" value="about" />
+            <Tab label="Reviews" value="reviews" />
           </Tabs>
         </Box>
         {/* <Box p={5}> */}
@@ -129,6 +129,12 @@ export default function Seller({ params }) {
               </Grid>
             </Grid>
           </Grid>
+        )}
+        {activeTab === "about" && (
+          <Paper elevation={3} sx={{ p: 2 }}>
+            <Typography variant="body1">{user.address}</Typography>
+            <Typography variant="body1">{user.email}</Typography>
+          </Paper>
         )}
       </Box>
       <Snackbar
