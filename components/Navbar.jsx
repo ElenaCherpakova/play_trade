@@ -69,23 +69,16 @@ const Navbar = () => {
     }
   };
 
-  const handleOpenUserMenu = event => {
-    setAnchorElUser(event.currentTarget);
-  };
-
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
 
   const open = Boolean(anchorEl);
 
-  const handleClick = event => {
-    setAnchorEl(event.currentTarget);
-  };
-
   const handleClose = () => {
     setAnchorEl(null);
   };
+
   return (
     <Box
       sx={{
@@ -117,7 +110,9 @@ const Navbar = () => {
                 aria-controls={open ? "cards-menu" : undefined}
                 aria-haspopup="true"
                 aria-expanded={open ? "true" : undefined}
-                onClick={handleClick}
+                onClick={event => {
+                  setAnchorEl(event.currentTarget);
+                }}
                 variant="outlined">
                 Cards
               </Button>
@@ -176,7 +171,7 @@ const Navbar = () => {
               <Box sx={{ flexGrow: 0 }}>
                 <Tooltip title="Open settings">
                   <IconButton
-                    onClick={handleOpenUserMenu}
+                    onClick={event => setAnchorElUser(event.currentTarget)}
                     sx={{ p: 0 }}
                     aria-haspopup="true"
                     size="large"
