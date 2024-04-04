@@ -1,5 +1,5 @@
 "use client";
-import { React, useState, useEffect, useRef, useCallback } from "react";
+import { React, useState, useEffect, useRef } from "react";
 import useImageUpload from "../hooks/useImageUpload";
 import { Box, TextField, Button, Typography, Paper, Grid, Avatar, Backdrop, CircularProgress } from "@mui/material";
 import { ThemeProvider, useTheme } from "@mui/material/styles";
@@ -10,8 +10,6 @@ import { trimAndValidate } from "@/utils/helpers";
 export default function UserProfileEditPage() {
   const theme = useTheme();
   const updateProfile = useAuthUser(state => state.updateProfile);
-  // const emailError = useAuthUser(state => state.emailError);
-  // const nameError = useAuthUser(state => state.nameError);
   const { handleImageUpload, error: errorAvatarUpload } = useImageUpload();
   const [selectedFile, setSelectedFile] = useState(null);
   const [avatarPreview, setAvatarPreview] = useState("");
@@ -21,7 +19,6 @@ export default function UserProfileEditPage() {
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef(null);
   const { data: session, update: updateSession, status } = useSession();
-  console.log("ERROR", error);
   const [userData, setUserData] = useState({
     name: "",
     email: ""
