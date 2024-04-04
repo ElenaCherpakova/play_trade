@@ -6,7 +6,7 @@ import { ThemeProvider, useTheme } from "@mui/material/styles";
 import { useSession, getSession } from "next-auth/react";
 import { theme as importedTheme } from "/styles/theme.js";
 import useAuthUser from "../store/useAuthUser";
-import { trimAndValidate, emailRegexValidate } from "@/utils/helpers";
+import { trimAndValidate } from "@/utils/helpers";
 export default function UserProfileEditPage() {
   const theme = useTheme();
   const updateProfile = useAuthUser(state => state.updateProfile);
