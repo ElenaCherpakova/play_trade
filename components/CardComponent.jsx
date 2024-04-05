@@ -42,6 +42,12 @@ export default function CardComponent({ card, showButtons = true }) {
               {card.name}
             </Typography>
             <Typography gutterBottom variant="body2" component="div">
+              {card.category}
+            </Typography>
+            <Typography gutterBottom variant="body2" component="div">
+              {card.conditions}
+            </Typography>
+            <Typography gutterBottom variant="body2" component="div">
               {card.price} {card.currency}
             </Typography>
           </Box>

@@ -1,10 +1,39 @@
-export async function fetchAllCardsData(searchTerm = "") {
-  const url = searchTerm.trim()
-    ? `/api/cards?name=${encodeURIComponent(searchTerm)}`
-    : `/api/cards`;
+export async function fetchAllCardsData(searchTerm, filters, page, limit) {
+  let url = `/api/cards`;
+
+  //converting searchParams object to URLSearchParams
+  //to handle encoding and query string construction
+  const params = new URLSearchParams();
+
+  params.append("page", page);
+  params.append("limit", limit);
+
+  if (searchTerm && searchTerm.trim()) {
+    params.append("search", encodeURIComponent(searchTerm.trim()));
+  }
+  ["conditions", "category", "availability"].forEach(filterKey => {
+    if (filters[filterKey]) {
+      params.append(filterKey, filters[filterKey]);
+    }
+  });
+
+  //checking for `undefined` to ensure these parameters are appended even when their value is `0`
+  //unlike other values that are appended if they have a truthy value.
+  if (filters.priceFrom !== undefined) {
+    params.append("priceFrom", filters.priceFrom);
+  }
+  if (filters.priceTo !== undefined) {
+    params.append("priceTo", filters.priceTo);
+  }
+
+  const queryString = params.toString();
+  if (queryString) {
+    url += `?${queryString}`;
+  }
 
   const response = await fetch(url);
   if (!response.ok) {
+    const data = await response.json();
     console.log(data.errors);
     const detailedErrorMessage = data.errors ? data.errors.join(", ") : data.message;
     throw new Error(detailedErrorMessage || "Unknown error occurred.");
@@ -68,6 +97,3 @@ export async function fetchSellerCards(sellerId) {
   const data = await response.json();
   return data.data;
 }
-
-
-
