@@ -56,7 +56,7 @@ export default function Market() {
     }
     setOpenError(false);
   };
-
+console.log(cards)
   return (
     <>
       <Box display="flex" flexDirection="column" sx={{ m: 5 }}>

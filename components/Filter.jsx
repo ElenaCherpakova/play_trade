@@ -14,6 +14,7 @@ import {
   Radio
 } from "@mui/material";
 import SelectComponent from "./SelectComponent";
+import useDebounce from "@/hooks/useDebounce";
 
 const categories = ["Magic", "Pokemon", "Digimon", "Yu-Gi-Oh!", "Sport Card"];
 const conditionsByCardCategory = {
@@ -28,6 +29,7 @@ const Filter = () => {
   const [priceRange, setPriceRange] = useState([0, 5000]);
   const [conditionsOptions, setConditionsOptions] = useState([]);
   const [filters, setFilters] = useState({ category: "", conditions: "", availability: "", search: "" });
+  const debouncedPriceRange = useDebounce(priceRange, 500); 
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -50,7 +52,7 @@ const Filter = () => {
 
   useEffect(() => {
     updateQueryStringAndNavigate();
-  }, [filters, priceRange, categoryFromUrl, searchTermFromUrl]);
+  }, [filters, debouncedPriceRange, categoryFromUrl, searchTermFromUrl]);
 
   const updateQueryStringAndNavigate = () => {
     const queryStringComponents = Object.entries({
@@ -152,6 +154,7 @@ const Filter = () => {
           aria-labelledby="range-slider"
           min={0}
           max={5000}
+          step={50}
           sx={{ width: "100%", mb: 3 }}
         />
         <SelectComponent
