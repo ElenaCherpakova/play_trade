@@ -64,8 +64,17 @@ const Navbar = () => {
   const categories = ["Magic", "Pokemon", "Digimon", "Yu-Gi-Oh!", "Sport Card"];
 
   const handleKeyDown = event => {
-    if (event.key === "Enter" && searchInput.trim()) {
-      router.push(`/market?search=${encodeURIComponent(searchInput)}`);
+    if (event.key === "Enter") {
+      const trimmedSearchInput = searchInput.trim();
+      setSearchInput(trimmedSearchInput);
+      if (trimmedSearchInput) {
+        //if the search input is not empty navigate to the market with the search parameter
+        router.push(`/market?search=${encodeURIComponent(searchInput)}`);
+      } else {
+        //otherwise navigate to the market page without any search parameter
+        router.push(`/market`);
+      }
+      setSearchInput("");
     }
   };
 
@@ -140,7 +149,7 @@ const Navbar = () => {
                   <MenuItem
                     key={category}
                     onClick={() => {
-                      router.push(`/market/?type=${category}`), handleClose();
+                      router.push(`/market/?category=${encodeURIComponent(category)}`), handleClose();
                     }}>
                     {category}
                   </MenuItem>
@@ -152,6 +161,7 @@ const Navbar = () => {
               <InputBase
                 type="text"
                 placeholder="Search cards..."
+                value={searchInput}
                 onChange={event => setSearchInput(event.target.value)}
                 onKeyDown={handleKeyDown}
                 startAdornment={
