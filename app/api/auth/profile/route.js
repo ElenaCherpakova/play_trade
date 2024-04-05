@@ -22,6 +22,7 @@ export const GET = async () => {
 
   try {
     const user = await User.findOne({ email });
+    console.log("USER", user)
     if (!user) {
       return NextResponse.json({ success: false, message: "No such user found." }, { status: 404 });
     }

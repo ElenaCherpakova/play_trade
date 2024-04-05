@@ -181,7 +181,7 @@ const Navbar = () => {
                     aria-haspopup="true"
                     size="large"
                     color="inherit">
-                    <Avatar alt="user image" src={session?.user?.avatarImgURL} />
+                    <Avatar alt="user image" src={session?.user?.avatar} />
                   </IconButton>
                 </Tooltip>
                 <Menu

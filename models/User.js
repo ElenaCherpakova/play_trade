@@ -13,7 +13,7 @@ const UserSchema = new Schema({
     required: [true, "Please enter your email"],
     match: [
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-      "Please enter a valid email address in this format: name@example.com"
+      "Please enter a valid email address"
     ]
   },
   password: {
@@ -24,6 +24,13 @@ const UserSchema = new Schema({
       "Password should be at least 8 characters long and contain at least one special character"
     ]
   },
+  imageProfileURL: {
+    type: String,
+    match: [
+      /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|jpeg|gif|png|webp|svg|JPG|JPEG|GIF|PNG|WEBP|SVG)/,
+      "Invalid image URL format"
+    ]
+  },
   authProvider: {
     type: Boolean,
     default: false,
@@ -31,11 +38,11 @@ const UserSchema = new Schema({
   },
   passwordResetToken: {
     type: String,
-    required: false
+    required: false,
   },
   passwordResetExpiry: {
     type: Date,
-    required: false
+    required: false,
   },
   role: {
     type: String,
@@ -56,11 +63,12 @@ const UserSchema = new Schema({
 
 // Encrypt password before saving
 UserSchema.pre("save", async function () {
-  if (this.isModified("password")) {
+  if (this.isModified('password')) {
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
   }
 });
+
 
 UserSchema.methods.createJWT = function () {
   return jwt.sign({ userId: this._id, email: this.email }, process.env.JWT_SECRET, {
@@ -76,6 +84,9 @@ UserSchema.methods.comparePassword = async function (userPassword) {
 // edit user
 UserSchema.methods.editUser = async function (updatedUserInfo) {
   try {
+    if (updatedUserInfo.imageProfileURL) {
+      this.imageProfileURL = updatedUserInfo;
+    }
     Object.assign(this, updatedUserInfo);
     await this.save();
     console.log("User was successfully updated");

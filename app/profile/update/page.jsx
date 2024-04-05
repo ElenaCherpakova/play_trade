@@ -1,4 +1,4 @@
-import EditUserProfile from "@/components/EditUserProfile";
+import EditUserProfile from "@/components/userProfile/EditUserProfile";
 
 export default function Edit() {
   return (
