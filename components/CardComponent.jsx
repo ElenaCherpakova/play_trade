@@ -4,7 +4,13 @@ import { CardActionArea, Box, Button, Typography, CardActions, CardContent, Card
 import { useRouter } from "next/navigation";
 import AddToCartButton from "./AddToCartButton";
 
-export default function CardComponent({ card, showButtons = true, buttonSet }) {
+/**
+ *
+ * @param {card} Object
+ * @param {showButtons} Boolean
+ */
+
+export default function CardComponent({ card, showButtons = true, showButtons = true, buttonSet }) {
   const router = useRouter();
 
   // const buyNow = () => {
@@ -46,43 +52,25 @@ export default function CardComponent({ card, showButtons = true, buttonSet }) {
               {card.name}
             </Typography>
             <Typography gutterBottom variant="body2" component="div">
+              {card.category}
+            </Typography>
+            <Typography gutterBottom variant="body2" component="div">
+              {card.conditions}
+            </Typography>
+            <Typography gutterBottom variant="body2" component="div">
               {card.price} {card.currency}
             </Typography>
           </Box>
         </CardContent>
       </CardActionArea>
-
-      {/* {showButtons && ( // Conditionally render buttons based on showButtons prop
+      {showButtons && (
         <CardActions sx={{ p: 0.5 }}>
           <Button disabled onClick={buyNow} variant="contained" color="secondary">
             Buy Now
           </Button>
           <AddToCartButton card={card} />
-        </CardActions>  )}*/}
-      
-      <CardActions sx={{ p: 0.5 }}>
-        {buttonSet === "default" && (
-          <>
-            <Button disabled onClick={() => console.log("Buy Now")} variant="contained" color="secondary">
-              Buy Now
-            </Button>
-            <AddToCartButton card={card} />
-          </>
-        )}
-
-        {buttonSet === "seller" && (
-          <>
-            <Button onClick={handleEdit} variant="outlined" color="primary">
-              Edit
-            </Button>
-            <Button onClick={() => router.push("/market/item/[id]")} variant="outlined" color="error">
-              Delete
-            </Button>
-          </>
-        )}
-      </CardActions>
-     
-      
+        </CardActions>
+      )}
     </Card>
   );
 }

@@ -1,7 +1,160 @@
-export default function Page({ params }) {
+"use client";
+
+import { useEffect, useState } from "react";
+import { useSession } from "next-auth/react";
+import { fetchSellerCards } from "@/utils/fetchData";
+import CardComponent from "@/components/CardComponent";
+import { Alert, Avatar, Box, Container, Grid, Paper, Snackbar, Tab, Tabs, Typography } from "@mui/material";
+
+const user = {
+  name: "Our new seller",
+  email: "123456@gmail.com",
+  address: "123 Fake St., Springfield, IL 62701",
+  isSeller: true
+};
+const seller = {
+  rating: 4.5,
+  feedback: ["Great seller", "Fast shipping", "Good communication", "Highly recommended"],
+  numberOfSales: 2,
+  location: 100
+};
+export default function Seller({ params }) {
+  const [openError, setOpenError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [activeTab, setActiveTab] = useState("cards"); //for tabs
+  const [cards, setCards] = useState([]); //for cards
+  const { data: session, status } = useSession();
+  const showButtons = false;
+  //for now fot testing, later it will be a seller id
+  const userId = session?.user?._id;
+
+  useEffect(() => {
+    if (userId) {
+      const fetchData = async () => {
+        try {
+          const sellerData = await fetchSellerCards(userId);
+          setCards(sellerData);
+        } catch (error) {
+          console.error;
+          setOpenError(true);
+          setErrorMessage(error.toString() || "unknown error");
+        }
+      };
+      fetchData();
+    }
+  }, [userId]);
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenError(false);
+  };
   return (
-    <div>
-      <h2>Seller id: {params.id}</h2>
-    </div>
+    <Container maxWidth="lg">
+      <Box display="flex" flexDirection="column" mt={5} mb={5} gap={2}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 1,
+            backgroundColor: "background.default",
+            justifyContent: "center",
+            alignItems: { xs: "center", sm: "flex-start" },
+            height: 150,
+            px: 2,
+            borderRadius: 1
+          }}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: { xs: "column", sm: "row" },
+              gap: { xs: 1, sm: 5 },
+              justifyContent: "center",
+              alignItems: "center"
+            }}>
+            <Box>
+              <Avatar alt="seller image" src={session?.user?.avatarImgURL} sx={{ width: 100, height: 100 }} />
+            </Box>
+            <Box gap={2} display="flex" flexDirection="column">
+              <Box flexGrow={1}>
+                <Typography variant="h2">{user.name}</Typography>
+              </Box>
+              <Box display="flex" gap={2}>
+                <Typography variant="body2">Rating: {seller.rating}</Typography>
+                <Typography variant="body2">Sales: {seller.numberOfSales}</Typography>
+              </Box>
+            </Box>
+          </Box>
+        </Box>
+      </Box>
+      <Box width="100%" my={5}>
+        <Tabs
+          value={activeTab}
+          onChange={(event, newValue) => {
+            setActiveTab(newValue);
+          }}
+          aria-label="handle seller info">
+          <Tab label="Cards" value="cards" />
+          <Tab label="About" value="about" />
+          <Tab label="Reviews" value="reviews" />
+        </Tabs>
+      </Box>
+      {activeTab === "cards" && (
+        <Grid container spacing={2}>
+          <Grid item xs={2}>
+            <Paper sx={{ p: 2 }}>
+              <Typography variant="h4">Filters</Typography>
+            </Paper>
+          </Grid>
+          <Grid item xs>
+            <Grid container spacing={2}>
+              {cards.map(card => (
+                <Grid item key={card._id} xs={12} sm={6} md={4} lg={3}>
+                  <CardComponent key={card._id} card={card} showButtons={showButtons} />
+                </Grid>
+              ))}
+            </Grid>
+          </Grid>
+        </Grid>
+      )}
+      {activeTab === "about" && (
+        <Grid container spacing={2}>
+          <Grid item xs></Grid>
+          <Grid item xs={8}>
+            <Paper elevation={3} sx={{ px: 2, py: 5 }}>
+              <Box display="flex" gap={1} my={2}>
+                <Typography variant="h4">Location:</Typography>
+                <Typography variant="body1">here will be information about seller location</Typography>
+              </Box>
+              <Box display="flex" gap={1} my={2}>
+                <Typography variant="h4">Seller since:</Typography>
+                <Typography variant="body1">here will be information since than the seller is seeling cards</Typography>
+              </Box>
+              <Box display="flex" gap={1} my={2}>
+                <Typography variant="h4">Other:</Typography>
+                <Typography variant="body1">here will be other information about the seller</Typography>
+              </Box>
+            </Paper>
+          </Grid>
+          <Grid item xs></Grid>
+        </Grid>
+      )}
+      {activeTab === "reviews" &&
+        seller.feedback.map((feedback, index) => (
+          <Paper key={index} sx={{ p: 2, my: 1 }}>
+            <Typography variant="body1">{feedback}</Typography>
+          </Paper>
+        ))}
+      <Snackbar
+        open={openError}
+        autoHideDuration={5000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}>
+        <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
+          {errorMessage}
+        </Alert>
+      </Snackbar>
+    </Container>
   );
 }
