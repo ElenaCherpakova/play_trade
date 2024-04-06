@@ -17,13 +17,16 @@ export const theme = createTheme({
       fontWeight: "bold"
     },
     h2: {
-      fontSize: 24
+      fontSize: 26,
+      fontWeight: "bold"
     },
     h3: {
-      fontSize: 18
+      fontSize: 22,
+      fontWeight: "bold"
     },
     h4: {
-      fontSize: 12
+      fontSize: 18,
+      fontWeight: "bold"
     }
     // h5: {
     //   fontFamily: ""

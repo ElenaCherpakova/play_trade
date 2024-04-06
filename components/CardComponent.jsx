@@ -4,7 +4,13 @@ import { CardActionArea, Box, Button, Typography, CardActions, CardContent, Card
 import { useRouter } from "next/navigation";
 import AddToCartButton from "./AddToCartButton";
 
-export default function CardComponent({ card }) {
+/**
+ *
+ * @param {card} Object
+ * @param {showButtons} Boolean
+ */
+
+export default function CardComponent({ card, showButtons = true }) {
   const router = useRouter();
 
   const buyNow = () => {
@@ -47,13 +53,14 @@ export default function CardComponent({ card }) {
           </Box>
         </CardContent>
       </CardActionArea>
-
-      <CardActions sx={{ p: 0.5, justifyContent: "center" }}>
-        <Button disabled onClick={buyNow} variant="contained" color="secondary">
-          Buy Now
-        </Button>
-        <AddToCartButton card={card} />
-      </CardActions>
+      {showButtons && (
+        <CardActions sx={{ p: 0.5 }}>
+          <Button disabled onClick={buyNow} variant="contained" color="secondary">
+            Buy Now
+          </Button>
+          <AddToCartButton card={card} />
+        </CardActions>
+      )}
     </Card>
   );
 }
