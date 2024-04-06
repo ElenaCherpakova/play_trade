@@ -144,7 +144,7 @@ const Navbar = () => {
                   <MenuItem
                     key={category}
                     onClick={() => {
-                      router.push(`/market/?category=${encodeURIComponent(category)}`), handleClose();
+                      router.push(`/market?category=${encodeURIComponent(category)}`), handleClose();
                     }}>
                     {category}
                   </MenuItem>
