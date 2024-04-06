@@ -1,52 +1,41 @@
 "use client";
-import * as React from "react";
-import {
-  Box,
-  Button,
-  Typography,
-  Card,
-  CardActionArea,
-  CardMedia,
-  Breadcrumbs,
-  Link,
-  ThemeProvider,
-  Divider
-} from "@mui/material";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import { Box, Button, Typography, Card, CardActionArea, CardMedia, Breadcrumbs, Link, ThemeProvider } from "@mui/material";
 import { theme } from "@/styles/theme";
+import { fetchCardData } from "@/utils/fetchData";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
-// Function to convert currency code to symbol
-const getCurrencySymbol = currencyCode => {
-  const currencySymbols = {
-    USD: "$",
-    CAD: "CA$"
-  };
-  return currencySymbols[currencyCode] || currencyCode;
-};
-
-const IndividualCardPage = ({ params }) => {
-  const [cardDetails, setCardDetails] = React.useState(null);
+export default function Page({ params }) {
+  const [openError, setOpenError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [cardDetails, setCardDetails] = useState(null);
   const router = useRouter();
-  const { id } = params;
+  const id = params.id;
 
-  React.useEffect(() => {
-    const fetchCardDetails = async () => {
-      try {
-        const response = await fetch(`/api/cards/${id}`);
-        if (!response.ok) {
-          throw new Error("Failed to fetch card details");
-        }
-        const data = await response.json();
-        setCardDetails(data.data); // Update to set the entire data object
-      } catch (error) {
-        console.error("Error fetching card details:", error);
-        setCardDetails(null);
-      }
+  // Function to convert currency code to symbol
+  const getCurrencySymbol = (currencyCode) => {
+    const currencySymbols = {
+      USD: "$",
+      CAD: "CA$",
     };
+    return currencySymbols[currencyCode] || currencyCode;
+  };
 
+
+  useEffect(() => {
     if (id) {
-      fetchCardDetails();
+      const fetchData = async () => {
+        try {
+          const cardData = await fetchCardData(id);
+          setCardDetails(cardData);
+        } catch (error) {
+          console.error(error);
+          setOpenError(true);
+          setErrorMessage(error.toString() || "unknown error");
+        }
+      };
+      fetchData();
     }
   }, [id]);
 
@@ -88,6 +77,7 @@ const IndividualCardPage = ({ params }) => {
               </CardActionArea>
             </Card>
           )}
+
 
           {/* Details Section */}
 
@@ -221,5 +211,3 @@ const IndividualCardPage = ({ params }) => {
     </ThemeProvider>
   );
 };
-
-export default IndividualCardPage;

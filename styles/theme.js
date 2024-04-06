@@ -11,19 +11,23 @@ const ibm = IBM_Plex_Sans({
 
 export const theme = createTheme({
   typography: {
-    fontFamily: ibm.style.fontFamily
-    // h1: {
-    //   fontFamily: ""
-    // },
-    // h2: {
-    //   fontFamily: ""
-    // },
-    // h3: {
-    //   fontFamily: ""
-    // },
-    // h4: {
-    //   fontFamily: ""
-    // },
+    fontFamily: ibm.style.fontFamily,
+    h1: {
+      fontSize: 30,
+      fontWeight: "bold"
+    },
+    h2: {
+      fontSize: 26,
+      fontWeight: "bold"
+    },
+    h3: {
+      fontSize: 22,
+      fontWeight: "bold"
+    },
+    h4: {
+      fontSize: 18,
+      fontWeight: "bold"
+    }
     // h5: {
     //   fontFamily: ""
     // },
@@ -51,7 +55,7 @@ export const theme = createTheme({
     }
   },
   shape: {
-    borderRadius: 8
+    borderRadius: 12
   },
   components: {
     MuiPaper: {
@@ -62,7 +66,14 @@ export const theme = createTheme({
     MuiButton: {
       defaultProps: {
         variant: "contained",
-        color: "secondary"
+        color: "secondary",
+        sx: {
+          "fontWeight": "bold",
+          "transition": "all 0.3s",
+          "&:hover": {
+            opacity: 0.8
+          }
+        }
       },
       styleOverrides: {
         root: {

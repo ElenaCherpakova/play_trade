@@ -36,7 +36,7 @@ export async function PATCH(req, res) {
     if (!token) {
       return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
     }
-    const userId = token.sub;
+    const userId = token.user._id;
     // receive parameters from req
     const id = req.url.split("cards/")[1];
     const body = await req.json();
@@ -70,7 +70,7 @@ export async function DELETE(req, res) {
     if (!token) {
       return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
     }
-    const userId = token.sub;
+    const userId = token.user._id;
     //receive id from url
     const id = req.url.split("cards/")[1];
     const card = await Card.findOneAndDelete({

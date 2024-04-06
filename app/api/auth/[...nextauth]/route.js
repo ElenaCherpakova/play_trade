@@ -65,11 +65,11 @@ export const authOptions = {
           if (!user) {
             const hashPassword = await bcrypt.hash(sub, 10);
             const newUser = new User({
-              id: sub,
               name: name,
               email: email,
               password: hashPassword,
-              authProvider: true
+              authProvider: true,
+              googleSub: sub
             });
 
             const savedUser = await newUser.save();
@@ -90,20 +90,32 @@ export const authOptions = {
     },
     async jwt({ token, user, session, trigger }) {
       if (user) {
-        token.user = user;
+        if (!user.authProvider) {
+          token.user = {
+            ...token.user,
+            _id: user._id,
+            name: user.name,
+            email: user.email,
+            avatar: user.avatar,
+            isSeller: user.isSeller
+          };
+        }
       }
-
-      if (trigger === "update" && (session.user.name || session.user.email)) {
+      console.log("token user", token);
+      if (trigger === "update" && session.user) {
         return {
           ...token,
           user: {
             ...token.user,
-            _id: session.user._id || session.user.sub,
+            _id: session.user._id,
             name: session.user.name,
-            email: session.user.email
+            email: session.user.email,
+            avatar: session.user.avatar,
+            isSeller: session.user.isSeller
           }
         };
       }
+      console.log("token", token.user)
       return token;
     },
     async session({ session, token }) {
@@ -112,16 +124,18 @@ export const authOptions = {
           ...session,
           user: {
             ...session.user,
-            _id: token.user._id || token.user.sub,
+            _id: token.user._id,
             name: token.user.name,
-            email: token.user.email
+            email: token.user.email,
+            avatar: token.user.avatar,
+            isSeller: token.user.isSeller
           }
         };
       }
+      console.log("session", session)
       return session;
     }
   },
-
   session: {
     strategy: "jwt"
   },

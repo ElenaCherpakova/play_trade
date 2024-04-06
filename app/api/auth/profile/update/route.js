@@ -15,26 +15,28 @@ import User from "@/models/User";
 export const PUT = async req => {
   await dbConnect();
   const session = await getServerSession(authOptions);
-
-  console.log("PUT IS HERE", session);
+  console.log("session", session);
   if (!session || !session.user) {
     return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
   }
 
   try {
     const userId = session.user._id;
-    console.log("userId", userId);
     const body = await req.json();
-    const { name, email } = body;
-    console.log("NAME", name);
-    console.log("EMAIL", email);
+    console.log("userId", body);
+    const { name, email, avatar } = body;
+
     if (!name || !email) {
-      return new NextResponse.json({ message: error.message });
+      return NextResponse.json({ success: false, message: "Name and email are required" }, { status: 400 });
     }
-    // console.log("NAME", name);
-    // console.log("Email", email);
-    // console.log("location", location);
-    // console.log("userId", userId);
+
+    if (avatar !== undefined) {
+      body.imageProfileURL = avatar;
+    } else {
+      if (body.imageProfileURL === null || body.imageProfileURL === "") {
+        delete body.imageProfileURL;
+      }
+    }
     const updateUser = await User.findByIdAndUpdate(userId, body, {
       new: true,
       runValidators: true
