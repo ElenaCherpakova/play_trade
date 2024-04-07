@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { fetchSellerCards } from "@/utils/fetchData";
+import Filter from "@/components/Filter";
 import CardComponent from "@/components/CardComponent";
 import { Alert, Avatar, Box, Container, Grid, Paper, Snackbar, Tab, Tabs, Typography } from "@mui/material";
 
@@ -104,7 +105,7 @@ export default function Seller({ params }) {
         <Grid container spacing={2}>
           <Grid item xs={2}>
             <Paper sx={{ p: 2 }}>
-              <Typography variant="h4">Filters</Typography>
+              <Filter />
             </Paper>
           </Grid>
           <Grid item xs>
