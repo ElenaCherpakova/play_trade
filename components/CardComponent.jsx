@@ -17,7 +17,7 @@ export default function CardComponent({ card, showButtons = true, buttonSet }) {
   //   console.log("buy now");
   // };
 
-  const handleEdit = (event) => {
+  const handleEdit = event => {
     event.stopPropagation(); // Prevents click event from bubbling up to CardActionArea
     onEdit(card.id);
   };
