@@ -23,7 +23,7 @@ import {
   Tooltip,
   Avatar
 } from "@mui/material";
-import { Search } from "@mui/icons-material";
+import { Search, ShoppingCart } from "@mui/icons-material";
 
 const Navbar = () => {
   const theme = useTheme();
@@ -103,7 +103,6 @@ const Navbar = () => {
             gap={2}
             sx={{
               display: "flex",
-              // justifyContent: "space-between",
               alignItems: "center",
               backgroundColor: theme.palette.primary.main
             }}>
@@ -177,6 +176,13 @@ const Navbar = () => {
               />
             </Box>
             <Box flexGrow={1} />
+            <IconButton
+              color="inherit"
+              onClick={() => {
+                router.push("/cart");
+              }}>
+              <ShoppingCart />
+            </IconButton>
             {session ? (
               <Box sx={{ flexGrow: 0 }}>
                 <Tooltip title="Open settings">
@@ -227,11 +233,9 @@ const Navbar = () => {
                 </Menu>
               </Box>
             ) : (
-              <>
-                <Button id="cards-button" color="inherit" onClick={() => router.push("/signin")} variant="outlined">
-                  Login
-                </Button>
-              </>
+              <Button id="cards-button" color="inherit" onClick={() => router.push("/signin")} variant="outlined">
+                Login
+              </Button>
             )}
           </Box>
         </Toolbar>
