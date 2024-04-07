@@ -10,7 +10,7 @@ import AddToCartButton from "./AddToCartButton";
  * @param {showButtons} Boolean
  */
 
-export default function CardComponent({ card, showButtons = true, showButtons = true, buttonSet }) {
+export default function CardComponent({ card, showButtons = true, buttonSet }) {
   const router = useRouter();
 
   // const buyNow = () => {
