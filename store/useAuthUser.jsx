@@ -132,6 +132,7 @@ const useAuthUser = create(set => ({
     }
   },
   updateProfile: async userData => {
+    console.log("userData", userData);
     set({ isLoading: true, error: null });
     try {
       const response = await fetch("/api/auth/profile/update", {
@@ -147,9 +148,15 @@ const useAuthUser = create(set => ({
         console.log("Data", data);
         set({ isLoading: false, data, error: null });
       } else {
-        const errorData = await response.json();
+        let errorData;
+        try {
+          errorData = await response.json();
+        } catch (error) {
+          errorData = { message: "Failed to update profile" };
+        }
+
         const errorMsg = errorData.message || "Failed to update profile";
-        console.log(errorMsg);
+        console.log("errorData", errorMsg);
         set({ isLoading: false, error: errorMsg });
       }
     } catch (error) {
