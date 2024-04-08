@@ -26,10 +26,16 @@ const conditionsByCardCategory = {
 };
 
 const Filter = ({ filtersParams }) => {
-  const [priceRange, setPriceRange] = useState([0, 5000]);
   const [conditionsOptions, setConditionsOptions] = useState([]);
-  const [filters, setFilters] = useState({ category: "", conditions: "", availability: "", search: "" });
-  const debouncedPriceRange = useDebounce(priceRange, 500);
+  const [filters, setFilters] = useState({
+    category: "",
+    conditions: "",
+    availability: "",
+    search: "",
+    priceFrom: filtersParams.priceFrom || "0",
+    priceTo: filtersParams.priceTo || "5000"
+  });
+  const debouncedPriceRange = useDebounce([filters.priceFrom, filters.priceTo], 500);
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -40,28 +46,32 @@ const Filter = ({ filtersParams }) => {
       search: filtersParams.search || "",
       category: filtersParams.category || "",
       conditions: filtersParams.conditions || "",
-      availability: filtersParams.availability || ""
-      
+      availability: filtersParams.availability || "",
+      priceFrom: filtersParams.priceFrom || "",
+      priceTo: filtersParams.priceTo || ""
     });
     //rendering correct conditions after redirection from other page with category in the params
-    setConditionsOptions(filtersParams.category? conditionsByCardCategory[filtersParams.category] || [] : []);
+    setConditionsOptions(filtersParams.category ? conditionsByCardCategory[filtersParams.category] || [] : []);
   }, [searchParams]);
 
   useEffect(() => {
     updateQueryStringAndNavigate();
-  }, [filters, debouncedPriceRange, filtersParams.category, filtersParams.search ]);
+  }, [filters, debouncedPriceRange, filtersParams.category, filtersParams.search]);
 
   const updateQueryStringAndNavigate = () => {
-    const queryStringComponents = Object.entries({
-      ...filters,
-      priceFrom: priceRange[0],
-      priceTo: priceRange[1]
-    })
-      .filter(([_, value]) => value || value === 0)
-      .map(([key, value]) => `${key}=${encodeURIComponent(value)}`);
-
-    const queryString = queryStringComponents.join("&");
-    router.push(`/market/?${queryString}`);
+    //creating a new URLSearchParams object from the current search parameters.
+    const queryParams = new URLSearchParams();  
+    //checking if the current price range is default (0 to 5000)
+    const defaultPriceRange = filters.priceFrom === "0" && filters.priceTo === "5000";
+    //adding filter to queryParams if value is truthy and not part of default price range
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value && !(defaultPriceRange && (key === "priceFrom" || key === "priceTo"))) {
+        queryParams.set(key, value);
+      }
+    });
+    //constructing the new URL with the updated query parameters.
+    const newUrl = `/market/?${queryParams.toString()}`;
+    router.push(newUrl);
   };
 
   const handleFilterChange = (filterId, value) => {
@@ -76,7 +86,12 @@ const Filter = ({ filtersParams }) => {
   };
 
   const handlePriceRangeChange = (event, newValue) => {
-    setPriceRange(newValue);
+    const isDefaultRange = newValue[0] === 0 && newValue[1] === 5000;
+    setFilters(prevFilters => ({
+      ...prevFilters,
+      priceFrom: isDefaultRange ? "" : newValue[0].toString(),
+      priceTo: isDefaultRange ? "" : newValue[1].toString()
+    }));
   };
 
   const handleAvailabilityChange = event => {
@@ -88,16 +103,28 @@ const Filter = ({ filtersParams }) => {
   };
 
   const clearFilters = () => {
-    setPriceRange([0, 5000]);
-    setFilters({ category: "", conditions: "", availability: "", search: "" });
+    setFilters({
+      category: "",
+      conditions: "",
+      availability: "",
+      search: "",
+    });
     router.push("/market");
   };
 
-  const handleRemoveFilter = filterType => {
-    setFilters(currentFilters => ({
-      ...currentFilters,
-      [filterType]: ""
-    }));
+  const handleRemoveFilter = filterKey => {
+    if (filterKey === "priceRange") {
+      setFilters(currentFilters => ({
+        ...currentFilters,
+        priceFrom: "0",
+        priceTo: "5000"
+      }));
+    } else {
+      setFilters(currentFilters => ({
+        ...currentFilters,
+        [filterKey]: ""
+      }));
+    }
   };
 
   return (
@@ -133,11 +160,20 @@ const Filter = ({ filtersParams }) => {
               spacing={1}
               sx={{ minHeight: "80px", mb: 1 }}>
               {Object.entries(filters).map(([key, value]) => {
-                if (value) {
+                if (value && key !== "priceFrom" && key !== "priceTo") {
+                  //excluding price range filters
                   return <Chip label={value.toLocaleLowerCase()} onDelete={() => handleRemoveFilter(key)} key={key} />;
                 }
                 return null;
               })}
+              {(filters.priceFrom !== "0" || filters.priceTo !== "5000") &&
+                (filters.priceFrom !== "" || filters.priceTo !== "") && (
+                  <Chip
+                    label={`Price: ${filters.priceFrom}-${filters.priceTo}`}
+                    onDelete={() => handleRemoveFilter("priceRange")}
+                    key="priceRange"
+                  />
+                )}
             </Stack>
           </>
         ) : (
@@ -158,7 +194,7 @@ const Filter = ({ filtersParams }) => {
           Price range
         </Typography>
         <Slider
-          value={priceRange}
+          value={[Number(filters.priceFrom || 0), Number(filters.priceTo || 5000)]}
           onChange={handlePriceRangeChange}
           valueLabelDisplay="auto"
           aria-labelledby="range-slider"
