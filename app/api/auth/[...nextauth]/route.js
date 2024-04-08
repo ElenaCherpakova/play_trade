@@ -97,7 +97,7 @@ export const authOptions = {
             name: user.name,
             email: user.email,
             avatar: user.avatar,
-            isSeller: user.isSeller
+            // isSeller: user.isSeller
           };
         }
       }
@@ -111,7 +111,7 @@ export const authOptions = {
             name: session.user.name,
             email: session.user.email,
             avatar: session.user.avatar,
-            isSeller: session.user.isSeller
+            // isSeller: session.user.isSeller
           }
         };
       }
@@ -128,7 +128,7 @@ export const authOptions = {
             name: token.user.name,
             email: token.user.email,
             avatar: token.user.avatar,
-            isSeller: token.user.isSeller
+            // isSeller: token.user.isSeller
           }
         };
       }

@@ -7,14 +7,14 @@ import { theme as importedTheme } from "/styles/theme.js";
 import { ThemeProvider, useTheme } from "@mui/material/styles";
 export default function Profile() {
   const theme = useTheme();
-  const { data: session } = useSession();
-  const [isSeller, setIsSeller] = useState(session?.user?.isSeller || false);
+  // const { data: session } = useSession();
+  const [isSeller, setIsSeller] = useState(false);
   const [location, setLocation] = useState("");
-  const [showLocationFrom, setShowLocationFrom] = useState(false);
+  const [showLocationForm, setShowLocationForm] = useState(false);
 
-  useEffect(() => {
-    setIsSeller(session?.user?.isSeller || false);
-  }, [session]);
+  // useEffect(() => {
+  //   setIsSeller(session?.user?.isSeller || false);
+  // }, [session]);
 
   const handleBecomeSeller = async () => {
     try {
@@ -26,7 +26,7 @@ export default function Profile() {
       console.log("RESPONSE", response)
       if (response.ok) {
         setIsSeller(true);
-        showLocationFrom(false);
+        setShowLocationForm(false);
       } else {
         console.log("Failed to become a seller");
       }
@@ -40,9 +40,9 @@ export default function Profile() {
       <h2>Profile</h2>
       <Link href="/profile/update">Edit User Profile</Link>
 
-      {!isSeller && !showLocationFrom && (
+      {!isSeller && !showLocationForm && (
         <Button
-          onClick={() => setShowLocationFrom(true)}
+          onClick={() => setShowLocationForm(true)}
           variant="contained"
           color="secondary"
           sx={{
@@ -56,7 +56,7 @@ export default function Profile() {
           Become a Seller
         </Button>
       )}
-      {!isSeller && showLocationFrom && (
+      {!isSeller && showLocationForm && (
         <>
           <TextField
             onChange={e => setLocation(e.target.value)}

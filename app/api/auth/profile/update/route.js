@@ -53,7 +53,7 @@ export const PUT = async req => {
     } else if (type === "seller") {
       const { location } = body;
       if (!location) {
-        return NextResponse.json({ success: false, message: "Location is reqiured" }, { status: 400 });
+        return NextResponse.json({ success: false, message: "Location is required" }, { status: 400 });
       }
       const existingSeller = await Seller.findOne({ userId });
       console.log("existingSeller", existingSeller);
