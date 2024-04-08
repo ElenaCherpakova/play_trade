@@ -25,7 +25,7 @@ const conditionsByCardCategory = {
   "Sport Card": ["Near Mint", "Excellent", "Very good", "Poor"]
 };
 
-const Filter = () => {
+const Filter = ({ filtersParams }) => {
   const [priceRange, setPriceRange] = useState([0, 5000]);
   const [conditionsOptions, setConditionsOptions] = useState([]);
   const [filters, setFilters] = useState({ category: "", conditions: "", availability: "", search: "" });
@@ -33,26 +33,23 @@ const Filter = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const searchTermFromUrl = searchParams.get("search") || "";
-  const categoryFromUrl = searchParams.get("category") || "";
-  const availabilityFromUrl = searchParams.get("availability");
-  const conditionsFromUrl = searchParams.get("conditions");
   const areFiltersApplied = Object.values(filters).some(value => value);
 
   useEffect(() => {
     setFilters({
-      search: searchTermFromUrl || "",
-      category: categoryFromUrl || "",
-      conditions: conditionsFromUrl || "",
-      availability: availabilityFromUrl || ""
+      search: filtersParams.search || "",
+      category: filtersParams.category || "",
+      conditions: filtersParams.conditions || "",
+      availability: filtersParams.availability || ""
+      
     });
     //rendering correct conditions after redirection from other page with category in the params
-    setConditionsOptions(categoryFromUrl ? conditionsByCardCategory[categoryFromUrl] || [] : []);
+    setConditionsOptions(filtersParams.category? conditionsByCardCategory[filtersParams.category] || [] : []);
   }, [searchParams]);
 
   useEffect(() => {
     updateQueryStringAndNavigate();
-  }, [filters, debouncedPriceRange, categoryFromUrl, searchTermFromUrl]);
+  }, [filters, debouncedPriceRange, filtersParams.category, filtersParams.search ]);
 
   const updateQueryStringAndNavigate = () => {
     const queryStringComponents = Object.entries({

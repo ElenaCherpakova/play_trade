@@ -24,16 +24,16 @@ export default function Market() {
     priceFrom: searchParams.get("priceFrom") || "",
     priceTo: searchParams.get("priceTo") || "",
     category: searchParams.get("category") || "",
-    availability: searchParams.get("availability") || ""
+    availability: searchParams.get("availability") || "",
+    search: searchParams.get("search") || ""
   };
-  const searchTerm = searchParams.get("search") || "";
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const limit = 6;
-        const page = searchTerm && currentPage !== 1 ? 1 : currentPage;
-        const data = await fetchAllCardsData(searchTerm, filters, page, limit);
+        const page = filters.search && currentPage !== 1 ? 1 : currentPage;
+        const data = await fetchAllCardsData(filters.search, filters, page, limit);
         setCards(data.cards);
         setTotalCards(data.total);
       } catch (error) {
@@ -45,7 +45,7 @@ export default function Market() {
 
     fetchData();
   }, [
-    searchTerm,
+    filters.search,
     filters.conditions,
     filters.category,
     filters.priceFrom,
@@ -60,7 +60,7 @@ export default function Market() {
     }
     setOpenError(false);
   };
-  console.log(cards);
+
   return (
     <>
       <Box display="flex" flexDirection="column" sx={{ m: 5 }}>
@@ -97,7 +97,7 @@ export default function Market() {
                   <CloseIcon sx={{ fontSize: "40px" }} />
                 </IconButton>
               </Box>
-              <Filter />
+              <Filter filtersParams={filters}/>
             </Box>
             <Box sx={{ p: 2 }}>
               <Button
@@ -125,7 +125,7 @@ export default function Market() {
               p: 1,
               boxShadow: 3
             }}>
-            <Filter />
+            <Filter filtersParams={filters}/>
           </Box>
           <Box
             sx={{
