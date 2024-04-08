@@ -29,7 +29,7 @@ const Filter = () => {
   const [priceRange, setPriceRange] = useState([0, 5000]);
   const [conditionsOptions, setConditionsOptions] = useState([]);
   const [filters, setFilters] = useState({ category: "", conditions: "", availability: "", search: "" });
-  const debouncedPriceRange = useDebounce(priceRange, 500); 
+  const debouncedPriceRange = useDebounce(priceRange, 500);
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -105,8 +105,21 @@ const Filter = () => {
 
   return (
     <>
-      <Box display="flex" flexDirection="column" sx={{ m: 3 }}>
-        <Box display="flex" justifyContent="flex-end" sx={{ mb: 2 }}>
+      <Box
+        display="flex"
+        flexDirection="column"
+        sx={{
+          m: { sm: 3 },
+          mr: { xs: 3 },
+          ml: { xs: 3 }
+        }}>
+        <Box
+          display="flex"
+          justifyContent="flex-end"
+          sx={{
+            mb: { xs: 0, sm: 2 },
+            mr: { xs: 2, sm: 0 }
+          }}>
           <Link variant="body2" onClick={clearFilters} sx={{ cursor: "pointer" }}>
             Reset Filters
           </Link>
