@@ -1,53 +1,58 @@
 "use client";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { TextField, Button } from "@mui/material";
 import { theme as importedTheme } from "/styles/theme.js";
 import { ThemeProvider, useTheme } from "@mui/material/styles";
+import { Box, Backdrop, CircularProgress, Snackbar } from "@mui/material";
+import useAuthUser from "@/store/useAuthUser";
+
 export default function Profile() {
   const theme = useTheme();
-  // const { data: session } = useSession();
-  const [isSeller, setIsSeller] = useState(false);
+  const { data: session, update: updateSession } = useSession();
+  const updateProfile = useAuthUser(state => state.updateProfile);
+
   const [location, setLocation] = useState("");
   const [showLocationForm, setShowLocationForm] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
-  // useEffect(() => {
-  //   setIsSeller(session?.user?.isSeller || false);
-  // }, [session]);
-
-  const handleBecomeSeller = async () => {
+  const handleBecomeSeller = async e => {
+    e.preventDefault();
+    setLoading(true);
     try {
-      const response = await fetch("/api/auth/profile/update", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ location, type: 'seller' }) 
-      });
-      console.log("RESPONSE", response)
-      if (response.ok) {
-        setIsSeller(true);
+      const data = await updateProfile({ location, type: "seller" });
+
+      if (data && data.isSeller) {
+        updateSession({
+          ...session,
+          user: { ...session.user, isSeller: data.isSeller }
+        });
         setShowLocationForm(false);
+        setError("");
+        setSuccess(data.message);
       } else {
-        console.log("Failed to become a seller");
+        setError(data.message || "Failed to become a seller");
       }
     } catch (error) {
-      console.log(error);
+      setError(data.message || "An error occurred while updating");
     }
+    setLoading(false);
   };
-  
+
   return (
     <ThemeProvider theme={importedTheme}>
       <h2>Profile</h2>
-      <Link href="/profile/update">Edit User Profile</Link>
-
-      {!isSeller && !showLocationForm && (
+      {!session?.user?.isSeller && !showLocationForm && (
         <Button
           onClick={() => setShowLocationForm(true)}
           variant="contained"
           color="secondary"
           sx={{
-            "mt": 2, // Add a top margin
-            "width": "40%", // Make the button full width
+            "mt": 2,
+            "width": "40%",
             "letterSpacing": "0.1em",
             "&:hover": {
               backgroundColor: theme.palette.accent.main
@@ -56,19 +61,19 @@ export default function Profile() {
           Become a Seller
         </Button>
       )}
-      {!isSeller && showLocationForm && (
-        <>
+      {showLocationForm && (
+        <Box component="form" onSubmit={handleBecomeSeller}>
           <TextField
             onChange={e => setLocation(e.target.value)}
             name="location"
-            label="location"
-            placeholder="eg. Canada, Toronto"
+            label="Location"
+            placeholder="e.g., Canada, Toronto"
             value={location}
-            sx={{ mb: 2 }} //margin bottom
+            sx={{ mb: 2 }}
             required
           />
           <Button
-            onClick={handleBecomeSeller}
+            type="submit"
             variant="contained"
             color="secondary"
             sx={{
@@ -81,8 +86,14 @@ export default function Profile() {
             }}>
             Become a Seller
           </Button>
-        </>
+        </Box>
       )}
+      <Link href="/profile/update">Edit User Profile</Link>
+      <Backdrop
+        sx={{ color: "#fff", zIndex: theme => theme.zIndex.drawer + 1, backdropFilter: "blur(2px)" }}
+        open={loading}>
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </ThemeProvider>
   );
 }

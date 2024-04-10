@@ -63,8 +63,10 @@ export const PUT = async req => {
       const updateUser = await User.findByIdAndUpdate(
         userId,
         {
-          isSeller: true,
-          address: location
+          $set: {
+            isSeller: true,
+            address: location
+          }
         },
         {
           new: true,
@@ -73,7 +75,10 @@ export const PUT = async req => {
       );
       console.log("updateUser", updateUser);
       await Seller.create({ userId, isRequestedAt: new Date() });
-      return NextResponse.json({ success: true, message: "User became a seller" }, { status: 200 });
+      return NextResponse.json(
+        { success: true, message: "User became a seller", isSeller: updateUser.isSeller },
+        { status: 200 }
+      );
     } else {
       return NextResponse.json({ success: false, message: "Invalid update type" }, { status: 400 });
     }
