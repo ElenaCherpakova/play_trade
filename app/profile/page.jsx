@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 import { TextField, Button } from "@mui/material";
 import { theme as importedTheme } from "/styles/theme.js";
 import { ThemeProvider, useTheme } from "@mui/material/styles";
-import { Box, Backdrop, CircularProgress, Snackbar } from "@mui/material";
+import { Box, Backdrop, CircularProgress, Typography } from "@mui/material";
 import useAuthUser from "@/store/useAuthUser";
 
 export default function Profile() {
@@ -44,7 +44,18 @@ export default function Profile() {
 
   return (
     <ThemeProvider theme={importedTheme}>
-      <h2>Profile</h2>
+      <Typography
+        variant="h4"
+        align="center"
+        color="primary"
+        sx={{
+          flexGrow: 0,
+          p: 0,
+          mt: 5
+        }}>
+        Profile of {session?.user?.name}!
+      </Typography>
+
       {!session?.user?.isSeller && !showLocationForm && (
         <Button
           onClick={() => setShowLocationForm(true)}
