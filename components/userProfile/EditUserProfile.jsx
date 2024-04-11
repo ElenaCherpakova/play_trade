@@ -76,8 +76,8 @@ export default function UserProfileEditPage() {
             user: { ...session.user, avatar: imageURL }
           });
 
-          await updateProfile({ ...session.user, avatar: imageURL });
-
+          const userDataWithAvatar = { ...session.user, avatar: imageURL, type: "profile" };
+          await updateProfile(userDataWithAvatar);
           setIsEditAvatar(false);
         });
       } else {
@@ -128,7 +128,7 @@ export default function UserProfileEditPage() {
         ...session,
         user: { ...session.user, ...userData }
       });
-
+      userData.type = "profile";
       await updateProfile(userData);
       setIsEditing(prevState => !prevState);
     } catch (error) {
