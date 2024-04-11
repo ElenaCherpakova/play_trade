@@ -1,8 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { Grid, Box, Snackbar, Alert, Typography } from "@mui/material";
+import { Grid, Box, Snackbar, Alert, Typography, IconButton, Drawer, Button } from "@mui/material";
 import Pagination from "@mui/material/Pagination";
+import FilterListIcon from "@mui/icons-material/FilterList";
+import CloseIcon from "@mui/icons-material/Close";
 import Stack from "@mui/material/Stack";
 import { fetchAllCardsData } from "@/utils/fetchData";
 import CardComponent from "../../components/CardComponent";
@@ -14,22 +16,24 @@ export default function Market() {
   const [totalCards, setTotalCards] = useState(0);
   const [openError, setOpenError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [filterOpen, setFilterOpen] = useState(false);
+
   const searchParams = useSearchParams();
   const filters = {
     conditions: searchParams.get("conditions") || "",
     priceFrom: searchParams.get("priceFrom") || "",
     priceTo: searchParams.get("priceTo") || "",
     category: searchParams.get("category") || "",
-    availability: searchParams.get("availability") || ""
+    availability: searchParams.get("availability") || "",
+    search: searchParams.get("search") || ""
   };
-  const searchTerm = searchParams.get("search") || "";
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const limit = 6;
-        const page = searchTerm && currentPage !== 1 ? 1 : currentPage;
-        const data = await fetchAllCardsData(searchTerm, filters, page, limit);
+        const page = filters.search && currentPage !== 1 ? 1 : currentPage;
+        const data = await fetchAllCardsData(filters.search, filters, page, limit);
         setCards(data.cards);
         setTotalCards(data.total);
       } catch (error) {
@@ -41,7 +45,7 @@ export default function Market() {
 
     fetchData();
   }, [
-    searchTerm,
+    filters.search,
     filters.conditions,
     filters.category,
     filters.priceFrom,
@@ -56,13 +60,64 @@ export default function Market() {
     }
     setOpenError(false);
   };
-console.log(cards)
+
   return (
     <>
       <Box display="flex" flexDirection="column" sx={{ m: 5 }}>
         <Box display="flex" sx={{ flexDirection: { xs: "column", sm: "row" } }}>
           <Box
+            display={{ xs: "block", sm: "none" }}
             sx={{
+              m: 0.5,
+              position: "fixed",
+              top: 70,
+              left: 20
+            }}>
+            <FilterListIcon sx={{ fontSize: 40 }} onClick={() => setFilterOpen(true)} />
+          </Box>
+          {/* Filter Drawer shown on small screens */}
+          <Drawer
+            sx={{
+              "& .MuiDrawer-paper": {
+                width: "100%",
+                maxWidth: "100%"
+              }
+            }}
+            open={filterOpen}
+            onClose={() => setFilterOpen(false)}
+            ModalProps={{ keepMounted: true }}>
+            <Box role="presentation">
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  p: 1
+                }}>
+                <IconButton onClick={() => setFilterOpen(false)} aria-label="close">
+                  <CloseIcon sx={{ fontSize: "40px" }} />
+                </IconButton>
+              </Box>
+              <Filter filtersParams={filters}/>
+            </Box>
+            <Box sx={{ p: 2 }}>
+              <Button
+                variant="contained"
+                color="primary"
+                fullWidth
+                onClick={() => {
+                  setFilterOpen(false);
+                }}>
+                Apply Filters
+              </Button>
+              <Typography variant="subtitle1" align="center" sx={{ width: "100%", mt: 2 }}>
+                {`${totalCards} result${totalCards !== 1 ? "s" : ""} found`}
+              </Typography>
+            </Box>
+          </Drawer>
+          {/* Filter Box shown on larger screens */}
+          <Box
+            sx={{
+              display: { xs: "none", sm: "block" },
               flex: 2,
               border: 1,
               borderColor: "grey.300",
@@ -70,7 +125,7 @@ console.log(cards)
               p: 1,
               boxShadow: 3
             }}>
-            <Filter />
+            <Filter filtersParams={filters}/>
           </Box>
           <Box
             sx={{

@@ -1,6 +1,6 @@
 // components/Navbar.js
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { alpha } from "@mui/material/styles";
 import Image from "next/image";
 import Link from "next/link";
@@ -29,15 +29,11 @@ const Navbar = () => {
   const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
-  const [isSeller, setIsSeller] = useState(false);
   const [searchInput, setSearchInput] = useState("");
+  // const [isSeller, setIsSeller] = useState(false);
   const router = useRouter();
   const { logout } = useAuthUser();
   const { data: session } = useSession();
-
-  if (session?.user?.isSeller) {
-    setIsSeller(true);
-  }
 
   const profileItems = [
     {
@@ -53,7 +49,7 @@ const Navbar = () => {
     {
       displayName: "Sell",
       onClick: () => router.push("/sell"),
-      show: isSeller
+      show: session?.user?.isSeller
     },
     {
       displayName: "Wishlist",
@@ -103,7 +99,6 @@ const Navbar = () => {
             gap={2}
             sx={{
               display: "flex",
-              // justifyContent: "space-between",
               alignItems: "center",
               backgroundColor: theme.palette.primary.main
             }}>
