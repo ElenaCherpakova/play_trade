@@ -35,9 +35,9 @@ const Navbar = () => {
   const { logout } = useAuthUser();
   const { data: session } = useSession();
 
-  if (session?.user?.isSeller) {
-    setIsSeller(true);
-  }
+  // if (session?.user?.isSeller) {
+  //   setIsSeller(true);
+  // }
 
   const profileItems = [
     {

@@ -92,47 +92,41 @@ export const authOptions = {
       if (user) {
         if (!user.authProvider) {
           token.user = {
-            ...token.user,
             _id: user._id,
             name: user.name,
             email: user.email,
-            avatar: user.avatar,
+            avatar: user.imageProfileURL,
             isSeller: user.isSeller
           };
         }
       }
+
       console.log("token user", token);
-      if (trigger === "update" && session.user) {
-        return {
-          ...token,
-          user: {
-            ...token.user,
-            _id: session.user._id,
-            name: session.user.name,
-            email: session.user.email,
-            avatar: session.user.avatar,
-            isSeller: session.user.isSeller
-          }
+      if (trigger === "update" && session?.user) {
+        token.user = {
+          ...token.user,
+          _id: session.user._id,
+          name: session.user.name,
+          email: session.user.email,
+          avatar: session.user.avatar,
+          isSeller: session.user.isSeller
         };
       }
-      console.log("token", token.user)
+      console.log("token", token.user);
       return token;
     },
     async session({ session, token }) {
-      if (token) {
-        return {
-          ...session,
-          user: {
-            ...session.user,
-            _id: token.user._id,
-            name: token.user.name,
-            email: token.user.email,
-            avatar: token.user.avatar,
-            isSeller: token.user.isSeller
-          }
+      if (token?.user) {
+        session.user = {
+          ...session.user,
+          _id: token.user._id,
+          name: token.user.name,
+          email: token.user.email,
+          avatar: token.user.avatar,
+          isSeller: token.user.isSeller
         };
       }
-      console.log("session", session)
+      console.log("session", session);
       return session;
     }
   },
