@@ -30,14 +30,10 @@ const Navbar = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [searchInput, setSearchInput] = useState("");
-  const [isSeller, setIsSeller] = useState(false);
+  // const [isSeller, setIsSeller] = useState(false);
   const router = useRouter();
   const { logout } = useAuthUser();
   const { data: session } = useSession();
-
-  useEffect(() => {
-    setIsSeller(session?.user?.isSeller);
-  }, []);
 
   const profileItems = [
     {
@@ -53,7 +49,7 @@ const Navbar = () => {
     {
       displayName: "Sell",
       onClick: () => router.push("/sell"),
-      show: isSeller
+      show: session?.user?.isSeller
     },
     {
       displayName: "Wishlist",
