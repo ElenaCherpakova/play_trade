@@ -1,7 +1,8 @@
+
 "use client";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Box, Button, Typography, Card, CardActionArea, CardMedia, Breadcrumbs, Link, ThemeProvider } from "@mui/material";
+import { Box, Button, Typography, Card, CardActionArea, CardMedia, Breadcrumbs, Divider, Link, ThemeProvider } from "@mui/material";
 import { theme } from "@/styles/theme";
 import { fetchCardData } from "@/utils/fetchData";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
