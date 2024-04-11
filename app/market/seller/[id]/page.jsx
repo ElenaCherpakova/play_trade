@@ -74,11 +74,11 @@ export default function Seller({ params }) {
               alignItems: "center"
             }}>
             <Box>
-              <Avatar alt="seller image" src={session?.user?.avatarImgURL} sx={{ width: 100, height: 100 }} />
+              <Avatar alt="seller image" src={session?.user?.avatar} sx={{ width: 100, height: 100 }} />
             </Box>
             <Box gap={2} display="flex" flexDirection="column">
               <Box flexGrow={1}>
-                <Typography variant="h2">{user.name}</Typography>
+                <Typography variant="h2">{session?.user?.name}</Typography>
               </Box>
               <Box display="flex" gap={2}>
                 <Typography variant="body2">Rating: {seller.rating}</Typography>

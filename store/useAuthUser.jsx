@@ -145,16 +145,22 @@ const useAuthUser = create(set => ({
       if (response.ok) {
         const data = await response.json();
         console.log("Data", data);
-        set({ isLoading: false, data, error: null });
+        set({ data, isLoading: false, error: null });
+        return data;
       } else {
-        const errorData = await response.json();
+        let errorData;
+        try {
+          errorData = await response.json();
+        } catch (error) {
+          console.log(error);
+          errorData = { message: "Failed to update profile" };
+        }
         const errorMsg = errorData.message || "Failed to update profile";
-        console.log(errorMsg);
+        console.log("errorData", errorMsg);
         set({ isLoading: false, error: errorMsg });
       }
     } catch (error) {
       set({ isLoading: false, error: error.message });
-      throw error;
     }
   }
 }));
