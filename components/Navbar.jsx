@@ -1,6 +1,6 @@
 // components/Navbar.js
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { alpha } from "@mui/material/styles";
 import Image from "next/image";
 import Link from "next/link";
@@ -29,15 +29,10 @@ const Navbar = () => {
   const theme = useTheme();
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
-  const [isSeller, setIsSeller] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const router = useRouter();
   const { logout } = useAuthUser();
   const { data: session } = useSession();
-
-  // if (session?.user?.isSeller) {
-  //   setIsSeller(true);
-  // }
 
   const profileItems = [
     {
@@ -53,7 +48,7 @@ const Navbar = () => {
     {
       displayName: "Sell",
       onClick: () => router.push("/sell"),
-      show: isSeller
+      show: session?.user?.isSeller
     },
     {
       displayName: "Wishlist",
@@ -103,7 +98,6 @@ const Navbar = () => {
             gap={2}
             sx={{
               display: "flex",
-              // justifyContent: "space-between",
               alignItems: "center",
               backgroundColor: theme.palette.primary.main
             }}>
@@ -135,7 +129,8 @@ const Navbar = () => {
                 }}>
                 <MenuItem
                   onClick={() => {
-                    router.push("/market"), handleClose();
+                    router.push("/market");
+                    handleClose();
                   }}>
                   All cards
                 </MenuItem>
@@ -144,7 +139,8 @@ const Navbar = () => {
                   <MenuItem
                     key={category}
                     onClick={() => {
-                      router.push(`/market?category=${encodeURIComponent(category)}`), handleClose();
+                      router.push(`/market?category=${encodeURIComponent(category)}`);
+                      handleClose();
                     }}>
                     {category}
                   </MenuItem>
@@ -210,7 +206,8 @@ const Navbar = () => {
                         <MenuItem
                           key={item.displayName}
                           onClick={() => {
-                            item.onClick(), handleCloseUserMenu();
+                            item.onClick();
+                            handleCloseUserMenu();
                           }}>
                           <Typography textAlign="center">{item.displayName}</Typography>
                         </MenuItem>
@@ -220,7 +217,8 @@ const Navbar = () => {
                   <Divider />
                   <MenuItem
                     onClick={() => {
-                      logout(), handleCloseUserMenu();
+                      logout();
+                      handleCloseUserMenu();
                     }}>
                     <Typography textAlign="center">Logout</Typography>
                   </MenuItem>
