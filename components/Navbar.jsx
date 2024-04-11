@@ -30,9 +30,14 @@ const Navbar = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [searchInput, setSearchInput] = useState("");
+  const [isSeller, setIsSeller] = useState(false);
   const router = useRouter();
   const { logout } = useAuthUser();
   const { data: session } = useSession();
+
+  useEffect(() => {
+    setIsSeller(session?.user?.isSeller);
+  }, []);
 
   const profileItems = [
     {
@@ -48,7 +53,7 @@ const Navbar = () => {
     {
       displayName: "Sell",
       onClick: () => router.push("/sell"),
-      show: session?.user?.isSeller
+      show: isSeller
     },
     {
       displayName: "Wishlist",
@@ -129,8 +134,7 @@ const Navbar = () => {
                 }}>
                 <MenuItem
                   onClick={() => {
-                    router.push("/market");
-                    handleClose();
+                    router.push("/market"), handleClose();
                   }}>
                   All cards
                 </MenuItem>
@@ -139,8 +143,7 @@ const Navbar = () => {
                   <MenuItem
                     key={category}
                     onClick={() => {
-                      router.push(`/market?category=${encodeURIComponent(category)}`);
-                      handleClose();
+                      router.push(`/market?category=${encodeURIComponent(category)}`), handleClose();
                     }}>
                     {category}
                   </MenuItem>
@@ -206,8 +209,7 @@ const Navbar = () => {
                         <MenuItem
                           key={item.displayName}
                           onClick={() => {
-                            item.onClick();
-                            handleCloseUserMenu();
+                            item.onClick(), handleCloseUserMenu();
                           }}>
                           <Typography textAlign="center">{item.displayName}</Typography>
                         </MenuItem>
@@ -217,8 +219,7 @@ const Navbar = () => {
                   <Divider />
                   <MenuItem
                     onClick={() => {
-                      logout();
-                      handleCloseUserMenu();
+                      logout(), handleCloseUserMenu();
                     }}>
                     <Typography textAlign="center">Logout</Typography>
                   </MenuItem>
