@@ -69,26 +69,17 @@ export async function GET(req, res) {
       return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
     }
 
-    // fetch all cards of the seller from the database
-    const cards = await Card.find({ createdBy: id });
-
     //fetch filtered cards from the database with pagination
-    const filteredCards = await Card.find({ createdBy: id, ...searchQuery })
+    const cards = await Card.find({ createdBy: id, ...searchQuery })
       .skip(skip)
       .limit(limit);
     const total = await Card.countDocuments(searchQuery);
-    if (searchQuery) {
-      if (!filteredCards) {
-        return NextResponse.json({ success: false, message: "No cards found" }, { status: 400 });
-      }
-      return NextResponse.json({ success: true, data: { cards: filteredCards, total, page, limit } }, { status: 200 });
-    } else {
-      if (!cards) {
-        return NextResponse.json({ success: false, message: error.message || "No cards found" }, { status: 400 });
-      }
 
-      return NextResponse.json({ success: true, data: cards }, { status: 200 });
+    if (!cards) {
+      return NextResponse.json({ success: false, message: error.message || "No cards found" }, { status: 400 });
     }
+
+    return NextResponse.json({ success: true, data: { cards, total, page, limit } }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ success: false, message: error }, { status: 400 });
   }

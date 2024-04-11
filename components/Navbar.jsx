@@ -30,7 +30,6 @@ const Navbar = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [searchInput, setSearchInput] = useState("");
-  // const [isSeller, setIsSeller] = useState(false);
   const router = useRouter();
   const { logout } = useAuthUser();
   const { data: session } = useSession();
