@@ -15,6 +15,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { Container, Typography, Box, Divider, Avatar } from "@mui/material";
+import CardComponent from "@/components/CardComponent";
 
 const order = {
   id: 1,
@@ -61,12 +62,12 @@ const totalPrice = subtotalPrice + order.shippingCost + tax;
 
 export default function Order({ item }) {
   return (
-    <Container maxWidth="md" sx={{ mt: 3 }}>
+    <Container maxWidth="md" sx={{ mt: 5, mb: 10 }}>
       <Box sx={{ mb: 3 }}>
-        <Typography variant="h1" sx={{ mb: 3 }}>
+        <Typography variant="h4" sx={{ mb: 3 }}>
           Order details #{order.orderNumber}
         </Typography>
-        <Typography variant="h2">{order.datePlaced}</Typography>
+        <Typography variant="h4">{order.datePlaced}</Typography>
       </Box>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -86,7 +87,7 @@ export default function Order({ item }) {
                   {item.itemNumber}
                 </TableCell>
                 <TableCell>
-                  <img src={item.imageURL} alt={item.name} style={{ maxWidth: 100, maxHeight: 100 }} />
+                  <CardComponent card={item} showInformation={false} showButtons={false} />
                 </TableCell>
                 <TableCell>{item.name}</TableCell>
                 <TableCell>{item.quantity}</TableCell>

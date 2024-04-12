@@ -1,4 +1,4 @@
-// "use client";
+"use client";
 // import { useRouter } from "next/navigation";
 // import { Button } from "@mui/material";
 // export default function Orders() {
@@ -15,24 +15,7 @@
 //     </div>
 //   );
 // }
-Orders;
-("use client");
-// import { useRouter } from "next/navigation";
-// import { Button } from "@mui/material";
-// export default function Orders() {
-//   const router = useRouter();
-//   return (
-//     <div>
-//       <p>
-//         Orders history Combined Buyer/Seller history of all orders with a way to filter by type (buy/sell), date,
-//         seller/buyer.
-//       </p>
-//       <Button variant="contained" color="primary" onClick={() => router.push("/orders/[id]")}>
-//         Order details
-//       </Button>
-//     </div>
-//   );
-// }
+
 import * as React from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -43,6 +26,7 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { Container, Typography, Box, ButtonBase, Button } from "@mui/material";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 const orders = [
   {
@@ -113,14 +97,15 @@ const orders = [
 
 export default function Orders({ order }) {
   const router = useRouter();
+  const { data: session } = useSession();
 
   return (
-    <Container maxWidth="md" sx={{ mt: 3 }}>
+    <Container maxWidth="md" sx={{ mt: 5 }}>
       <Box sx={{ mb: 3 }}>
-        <Typography variant="h1" sx={{ mb: 3 }}>
+        <Typography variant="h4" sx={{ mb: 3 }}>
           Order history
         </Typography>
-        <Typography variant="h2">Welcome back, User</Typography>
+        <Typography variant="h4">Welcome back, {session?.user?.name}</Typography>
       </Box>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table">

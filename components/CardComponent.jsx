@@ -10,7 +10,7 @@ import AddToCartButton from "./AddToCartButton";
  * @param {showButtons} Boolean
  */
 
-export default function CardComponent({ card, showButtons = true, buttonSet }) {
+export default function CardComponent({ card, showButtons = true, buttonSet, showInformation = true }) {
   const router = useRouter();
 
   // const buyNow = () => {
@@ -46,22 +46,24 @@ export default function CardComponent({ card, showButtons = true, buttonSet }) {
           alt={card.name}
           height="300"
         />
-        <CardContent sx={{ p: 0.5 }}>
-          <Box sx={{ display: "flex" }}>
-            <Typography gutterBottom variant="body2" component="div" flexGrow="1">
-              {card.name}
-            </Typography>
-            <Typography gutterBottom variant="body2" component="div">
-              {card.category}
-            </Typography>
-            <Typography gutterBottom variant="body2" component="div">
-              {card.conditions}
-            </Typography>
-            <Typography gutterBottom variant="body2" component="div">
-              {card.price} {card.currency}
-            </Typography>
-          </Box>
-        </CardContent>
+        {showInformation && (
+          <CardContent sx={{ p: 0.5 }}>
+            <Box sx={{ display: "flex" }}>
+              <Typography gutterBottom variant="body2" component="div" flexGrow="1">
+                {card.name}
+              </Typography>
+              <Typography gutterBottom variant="body2" component="div">
+                {card.category}
+              </Typography>
+              <Typography gutterBottom variant="body2" component="div">
+                {card.conditions}
+              </Typography>
+              <Typography gutterBottom variant="body2" component="div">
+                {card.price} {card.currency}
+              </Typography>
+            </Box>
+          </CardContent>
+        )}
       </CardActionArea>
       {showButtons && (
         <CardActions sx={{ p: 0.5 }}>
