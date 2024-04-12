@@ -48,6 +48,7 @@ export default function FormSection({ handleChange, userData, isEditing, handleS
           <TextField
             label="Location"
             name="address"
+            placeholder="e.g., Canada, Toronto"
             value={userData.address}
             sx={{ mb: 2 }}
             disabled={!isEditing}
