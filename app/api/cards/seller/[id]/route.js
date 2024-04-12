@@ -61,18 +61,19 @@ export async function GET(req, res) {
   }
 
   try {
-    const id = req.url.split("seller/")[1];
+    const idWithParams = req.url.split("seller/")[1];
+    const id = idWithParams.split("?")[0];
+
     const token = await getToken({ req });
     console.log("token", token);
+    console.log("idWithParams", idWithParams);
     console.log("id", id);
     if (!token) {
       return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
     }
 
     //fetch filtered cards from the database with pagination
-    const cards = await Card.find({ createdBy: id, ...searchQuery })
-      .skip(skip)
-      .limit(limit);
+    const cards = await Card.find({ createdBy: id }, searchQuery).skip(skip).limit(limit);
     const total = await Card.countDocuments(searchQuery);
 
     if (!cards) {

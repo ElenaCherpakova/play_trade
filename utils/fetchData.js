@@ -27,6 +27,7 @@ export async function fetchAllCardsData(searchTerm, filters, page, limit) {
   }
 
   const queryString = params.toString();
+  console.log("queryString", queryString);
   if (queryString) {
     url += `?${queryString}`;
   }
@@ -89,6 +90,7 @@ export async function createCardData(formData) {
 
 export async function fetchSellerCards(sellerId, filters, page, limit) {
   let url = `/api/cards/seller/${sellerId}`;
+  console.log("url", url);
 
   //converting searchParams object to URLSearchParams
   //to handle encoding and query string construction
@@ -116,7 +118,7 @@ export async function fetchSellerCards(sellerId, filters, page, limit) {
   if (queryString) {
     url += `?${queryString}`;
   }
-
+  console.log("url1", url);
   const response = await fetch(url);
   if (!response.ok) {
     console.log(data.errors);

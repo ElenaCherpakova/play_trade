@@ -25,7 +25,7 @@ const conditionsByCardCategory = {
   "Sport Card": ["Near Mint", "Excellent", "Very good", "Poor"]
 };
 
-const Filter = ({ filtersParams }) => {
+const Filter = ({ filtersParams, sellerPage = false, sellerId = null }) => {
   const [conditionsOptions, setConditionsOptions] = useState([]);
   const [filters, setFilters] = useState({
     category: "",
@@ -39,7 +39,7 @@ const Filter = ({ filtersParams }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const areFiltersApplied = Object.values(filters).some(value => value);
+  const areFiltersApplied = Object.values(filters).some(value => value)
 
   useEffect(() => {
     setFilters({
@@ -51,16 +51,18 @@ const Filter = ({ filtersParams }) => {
       priceTo: filtersParams.priceTo || ""
     });
     //rendering correct conditions after redirection from other page with category in the params
+    console.log("reload");
     setConditionsOptions(filtersParams.category ? conditionsByCardCategory[filtersParams.category] || [] : []);
   }, [searchParams]);
 
   useEffect(() => {
     updateQueryStringAndNavigate();
-  }, [filters, debouncedPriceRange, filtersParams.category, filtersParams.search]);
-
+    console.log("inside useEffect");
+  }, [filters, filtersParams.category, filtersParams.search, sellerPage]);
+cons
   const updateQueryStringAndNavigate = () => {
     //creating a new URLSearchParams object from the current search parameters.
-    const queryParams = new URLSearchParams();  
+    const queryParams = new URLSearchParams();
     //checking if the current price range is default (0 to 5000)
     const defaultPriceRange = filters.priceFrom === "0" && filters.priceTo === "5000";
     //adding filter to queryParams if value is truthy and not part of default price range
@@ -70,7 +72,9 @@ const Filter = ({ filtersParams }) => {
       }
     });
     //constructing the new URL with the updated query parameters.
-    const newUrl = `/market/?${queryParams.toString()}`;
+    let newUrl = !sellerPage
+      ? `/market/?${queryParams.toString()}`
+      : `/market/seller/${sellerId}/?${queryParams.toString()}`;
     router.push(newUrl);
   };
 
@@ -107,9 +111,9 @@ const Filter = ({ filtersParams }) => {
       category: "",
       conditions: "",
       availability: "",
-      search: "",
+      search: ""
     });
-    router.push("/market");
+    sellerPage !== true ? router.push("/market") : router.push(`/market/seller/${sellerId}`);
   };
 
   const handleRemoveFilter = filterKey => {

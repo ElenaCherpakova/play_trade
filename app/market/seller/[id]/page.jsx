@@ -61,7 +61,7 @@ export default function Seller() {
 
   //for now fot testing, later it will be a seller id
   const sellerId = session?.user?._id;
-
+  console.log("sellerId", sellerId);
   useEffect(() => {
     if (sellerId) {
       const fetchData = async () => {
@@ -211,7 +211,7 @@ export default function Seller() {
                     p: 1,
                     boxShadow: 3
                   }}>
-                  <Filter filtersParams={filters} />
+                  <Filter filtersParams={filters} sellerPage={true} sellerId={sellerId} />
                 </Box>
               </Box>
             </Grid>
