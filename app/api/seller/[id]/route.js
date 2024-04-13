@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/mongo/dbConnect";
 import { getToken } from "next-auth/jwt";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import User from "@/models/User";
 
 /**
@@ -14,13 +12,7 @@ import User from "@/models/User";
 
 export async function GET(req, res) {
   await dbConnect();
-  const session = await getServerSession(authOptions);
-  console.log("session", session);
-  if (!session || !session.user.isSeller) {
-    return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
-  }
   const token = await getToken({ req });
-
   if (!token) {
     return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
   }

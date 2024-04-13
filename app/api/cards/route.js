@@ -15,11 +15,6 @@ import Card from "@/models/Card";
 //all can watch all cards
 export async function GET(req, res) {
   await dbConnect();
-   const session = await getServerSession(authOptions);
-   console.log("session", session);
-   if (!session || !session.user.isSeller) {
-     return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
-   }
   //extracting query parameters from the request URL
   const name = req.nextUrl.searchParams.get("search");
   const condition = req.nextUrl.searchParams.get("conditions");
@@ -147,6 +142,11 @@ export async function POST(req) {
 //Delete all cards
 export async function DELETE(req) {
   await dbConnect();
+  const session = await getServerSession(authOptions);
+  console.log("session", session);
+  if (!session || !session.user.isSeller) {
+    return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+  }
   try {
     const token = await getToken({ req });
     if (!token) {
