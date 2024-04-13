@@ -25,10 +25,10 @@ export default function Profile() {
     try {
       const data = await updateProfile({ location, type: "seller" });
 
-      if (data && data.isSeller) {
+      if (data && data.isSeller && data.address) {
         updateSession({
           ...session,
-          user: { ...session.user, isSeller: data.isSeller }
+          user: { ...session.user, isSeller: data.isSeller, address: data.address }
         });
         setShowLocationForm(false);
         setError("");

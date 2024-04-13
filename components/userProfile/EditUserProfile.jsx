@@ -24,9 +24,11 @@ export default function UserProfileEditPage() {
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef(null);
   const { data: session, update: updateSession, status } = useSession();
+  console.log("session", session)
   const [userData, setUserData] = useState({
     name: "",
-    email: ""
+    email: "",
+    address: ""
   });
 
   useEffect(() => {
@@ -35,7 +37,8 @@ export default function UserProfileEditPage() {
       if (session && status === "authenticated") {
         setUserData({
           name: session?.user?.name,
-          email: session?.user?.email
+          email: session?.user?.email,
+          address: session?.user?.address
         });
         setAvatarPreview(session?.user?.avatar);
       }
@@ -112,6 +115,12 @@ export default function UserProfileEditPage() {
     const { value: trimmedEmail, error: emailError } = trimAndValidate("email", userData.email);
     if (emailError) {
       formErrors.emailError = emailError;
+      isValid = false;
+    }
+
+    const { value: trimmedAddress, error: addressError } = trimAndValidate("address", userData.address);
+    if (addressError) {
+      formErrors.addressError = addressError;
       isValid = false;
     }
     setError(formErrors);
@@ -199,6 +208,7 @@ export default function UserProfileEditPage() {
                 handleSubmit={handleSubmit}
                 error={error}
                 theme={theme}
+                isSeller={session.user.isSeller}
               />
             </Grid>
           </Grid>
