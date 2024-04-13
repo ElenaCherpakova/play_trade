@@ -22,8 +22,9 @@ import Image from "next/image";
 
 /**
  *
- * @param {cardValue} Object
- * @param {onSubmitForm} Function
+ * @param {object} props
+ * @param {object} props.cardValue
+ * @param {function} props.onSubmitForm
  */
 
 export default function CardForm({ cardValue, onSubmitForm }) {

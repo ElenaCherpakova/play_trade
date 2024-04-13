@@ -16,6 +16,13 @@ import {
 import SelectComponent from "./SelectComponent";
 import useDebounce from "@/hooks/useDebounce";
 
+/**
+ * @param {object} props
+ * @param {object} props.filtersParams
+ * @param {boolean} [props.sellerPage]
+ * @param {string} [props.sellerId]
+ */
+
 const categories = ["Magic", "Pokemon", "Digimon", "Yu-Gi-Oh!", "Sport Card"];
 const conditionsByCardCategory = {
   "Magic": ["Near Mint", "Lightly Played", "Moderately Played", "Heavily Played", "Damaged"],

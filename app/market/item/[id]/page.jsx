@@ -8,13 +8,17 @@ import { fetchCardData } from "@/utils/fetchData";
 import { fetchSellerData } from "@/utils/fetchData";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
+/**
+ *
+ * @param {*} params
+ */
+
 export default function Page({ params }) {
   const [openError, setOpenError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [cardDetails, setCardDetails] = useState(null);
   const [sellerName, setSellerName] = useState("Visit seller's page");
   const router = useRouter();
-  console.log("params", params);
   const id = params.id;
 
   // Function to convert currency code to symbol

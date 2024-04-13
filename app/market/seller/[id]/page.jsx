@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { fetchSellerCards } from "@/utils/fetchData";
 import { fetchSellerData } from "@/utils/fetchData";
@@ -27,6 +26,11 @@ import {
 import FilterListIcon from "@mui/icons-material/FilterList";
 import CloseIcon from "@mui/icons-material/Close";
 
+/**
+ *
+ * @param {*} params
+ */
+
 export default function Seller({ params }) {
   const [openError, setOpenError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -38,7 +42,6 @@ export default function Seller({ params }) {
   const [user, setUser] = useState({}); //for seller data
   const [seller, setSeller] = useState({}); //for seller data
 
-  const { data: session } = useSession();
   const showButtons = false;
   const searchParams = useSearchParams();
   const filters = {
