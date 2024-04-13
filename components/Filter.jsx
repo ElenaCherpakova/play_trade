@@ -100,8 +100,6 @@ const Filter = ({ filtersParams, sellerPage = false, sellerId = null }) => {
     }
   };
 
-  console.log("inside Filter");
-
   const handlePriceRangeChange = (event, newValue) => {
     const isDefaultRange = newValue[0] === 0 && newValue[1] === 5000;
     setFilters(prevFilters => ({
