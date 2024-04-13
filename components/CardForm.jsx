@@ -67,13 +67,13 @@ export default function CardForm({ cardValue, onSubmitForm }) {
     if (file) {
       setSelectedFile(file);
     }
-  }
+  };
 
   const handlePaperClick = () => {
     fileInputRef.current.click();
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
 
     const { cardName, set, price, currency, shippingCost, description, conditions, quantity, available } =
@@ -293,6 +293,9 @@ export default function CardForm({ cardValue, onSubmitForm }) {
                   name="quantity"
                   type="number"
                   label="quantity"
+                  inputProps={{
+                    min: "0"
+                  }}
                   defaultValue={cardValue?.quantity}
                 />
                 <FormControl required fullWidth size="small">
