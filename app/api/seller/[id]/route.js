@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/mongo/dbConnect";
 import { getToken } from "next-auth/jwt";
 import User from "@/models/User";
+import Seller from "@/models/Seller";
 
 /**
  * @param {NextRequest} req
@@ -28,7 +29,12 @@ export async function GET(req, res) {
     if (!user) {
       return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
     }
-    return NextResponse.json({ success: true, data: { user } }, { status: 200 });
+    const seller = await Seller.findOne({ userId: id });
+    console.log("seller", seller);
+    if (!seller) {
+      return NextResponse.json({ success: false, message: "Seller not found" }, { status: 404 });
+    }
+    return NextResponse.json({ success: true, data: { user, seller } }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ success: false, message: error }, { status: 400 });
   }

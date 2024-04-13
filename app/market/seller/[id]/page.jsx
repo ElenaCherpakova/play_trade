@@ -35,7 +35,8 @@ export default function Seller({ params }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalCards, setTotalCards] = useState(0);
   const [filterOpen, setFilterOpen] = useState(false);
-  const [seller, setSeller] = useState({});
+  const [user, setUser] = useState({}); //for seller data
+  const [seller, setSeller] = useState({}); //for seller data
 
   const { data: session } = useSession();
   const showButtons = false;
@@ -51,15 +52,16 @@ export default function Seller({ params }) {
 
   //for now fot testing, later it will be a seller id
   const sellerId = params.id;
-  console.log("params", params);
-  console.log("sellerId", sellerId);
+  let dateValue;
+
   useEffect(() => {
     if (sellerId) {
       const fetchData = async () => {
         try {
           const sellerData = await fetchSellerData(sellerId);
           console.log("sellerData", sellerData);
-          setSeller(sellerData.user);
+          setUser(sellerData.user);
+          setSeller(sellerData.seller);
         } catch (error) {
           console.error(error);
           setOpenError(true);
@@ -98,7 +100,28 @@ export default function Seller({ params }) {
     filters.availability
   ]);
 
-  console.log("seller", seller);
+  //create a date object from the seller's isRequestedAt
+  if (seller.isRequestedAt) {
+    const monthNames = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December"
+    ];
+    const year = new Date(seller.isRequestedAt).getFullYear();
+    const monthNumber = new Date(seller.isRequestedAt).getMonth();
+    const month = monthNames[monthNumber];
+    const day = new Date(seller.isRequestedAt).getDate();
+    dateValue = `${month}, ${day} ${year}`;
+  }
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
@@ -129,11 +152,11 @@ export default function Seller({ params }) {
               alignItems: "center"
             }}>
             <Box>
-              <Avatar alt="seller image" src={seller?.imageProfileURL} sx={{ width: 100, height: 100 }} />
+              <Avatar alt="seller image" src={user?.imageProfileURL} sx={{ width: 100, height: 100 }} />
             </Box>
             <Box gap={2} display="flex" flexDirection="column">
               <Box flexGrow={1}>
-                <Typography variant="h2">{seller.name}</Typography>
+                <Typography variant="h2">{user.name}</Typography>
               </Box>
               <Box display="flex" gap={2}>
                 <Typography variant="body2">Rating: {seller?.rating}</Typography>
@@ -257,16 +280,16 @@ export default function Seller({ params }) {
             <Paper elevation={3} sx={{ px: 2, py: 5 }}>
               <Box display="flex" gap={1} my={2}>
                 <Typography variant="h4">Location:</Typography>
-                <Typography variant="body1">{seller?.address || ""}</Typography>
+                <Typography variant="body1">{user?.address || ""}</Typography>
               </Box>
               <Box display="flex" gap={1} my={2}>
                 <Typography variant="h4">Seller since:</Typography>
-                <Typography variant="body1">{seller?.sellerSince || ""}</Typography>
+                <Typography variant="body1">{dateValue || ""}</Typography>
               </Box>
-              <Box display="flex" gap={1} my={2}>
+              {/* <Box display="flex" gap={1} my={2}>
                 <Typography variant="h4">Other:</Typography>
                 <Typography variant="body1">{seller?.other || ""}</Typography>
-              </Box>
+              </Box> */}
             </Paper>
           </Grid>
           <Grid item xs></Grid>
