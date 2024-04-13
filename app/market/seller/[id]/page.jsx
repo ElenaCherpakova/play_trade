@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
 import { fetchSellerCards } from "@/utils/fetchData";
+import { fetchSellerData } from "@/utils/fetchData";
 import Filter from "@/components/Filter";
 import CardComponent from "@/components/CardComponent";
 import {
@@ -26,7 +27,7 @@ import {
 import FilterListIcon from "@mui/icons-material/FilterList";
 import CloseIcon from "@mui/icons-material/Close";
 
-export default function Seller() {
+export default function Seller({ params }) {
   const [openError, setOpenError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [activeTab, setActiveTab] = useState("cards"); //for tabs
@@ -34,6 +35,7 @@ export default function Seller() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalCards, setTotalCards] = useState(0);
   const [filterOpen, setFilterOpen] = useState(false);
+  const [seller, setSeller] = useState({});
 
   const { data: session } = useSession();
   const showButtons = false;
@@ -48,8 +50,26 @@ export default function Seller() {
   };
 
   //for now fot testing, later it will be a seller id
-  const sellerId = session?.user?._id;
+  const sellerId = params.id;
+  console.log("params", params);
   console.log("sellerId", sellerId);
+  useEffect(() => {
+    if (sellerId) {
+      const fetchData = async () => {
+        try {
+          const sellerData = await fetchSellerData(sellerId);
+          console.log("sellerData", sellerData);
+          setSeller(sellerData.user);
+        } catch (error) {
+          console.error(error);
+          setOpenError(true);
+          setErrorMessage(error.toString() || "unknown error");
+        }
+      };
+      fetchData();
+    }
+  }, [sellerId]);
+
   useEffect(() => {
     if (sellerId) {
       const fetchData = async () => {
@@ -78,6 +98,7 @@ export default function Seller() {
     filters.availability
   ]);
 
+  console.log("seller", seller);
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
       return;
@@ -108,16 +129,16 @@ export default function Seller() {
               alignItems: "center"
             }}>
             <Box>
-              <Avatar alt="seller image" src={session?.user?.avatar} sx={{ width: 100, height: 100 }} />
+              <Avatar alt="seller image" src={seller?.imageProfileURL} sx={{ width: 100, height: 100 }} />
             </Box>
             <Box gap={2} display="flex" flexDirection="column">
               <Box flexGrow={1}>
-                <Typography variant="h2">{session?.user?.name}</Typography>
+                <Typography variant="h2">{seller.name}</Typography>
               </Box>
-              {/* <Box display="flex" gap={2}>
-                <Typography variant="body2">Rating: {seller.rating}</Typography>
-                <Typography variant="body2">Sales: {seller.numberOfSales}</Typography>
-              </Box> */}
+              <Box display="flex" gap={2}>
+                <Typography variant="body2">Rating: {seller?.rating}</Typography>
+                <Typography variant="body2">Sales: {seller?.numberOfSales}</Typography>
+              </Box>
             </Box>
           </Box>
         </Box>
@@ -236,15 +257,15 @@ export default function Seller() {
             <Paper elevation={3} sx={{ px: 2, py: 5 }}>
               <Box display="flex" gap={1} my={2}>
                 <Typography variant="h4">Location:</Typography>
-                <Typography variant="body1">{`${session?.user?.address}`}</Typography>
+                <Typography variant="body1">{seller?.address || ""}</Typography>
               </Box>
               <Box display="flex" gap={1} my={2}>
                 <Typography variant="h4">Seller since:</Typography>
-                <Typography variant="body1">here will be information since than the seller is seeling cards</Typography>
+                <Typography variant="body1">{seller?.sellerSince || ""}</Typography>
               </Box>
               <Box display="flex" gap={1} my={2}>
                 <Typography variant="h4">Other:</Typography>
-                <Typography variant="body1">here will be other information about the seller</Typography>
+                <Typography variant="body1">{seller?.other || ""}</Typography>
               </Box>
             </Paper>
           </Grid>

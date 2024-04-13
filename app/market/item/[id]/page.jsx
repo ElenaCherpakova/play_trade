@@ -1,4 +1,3 @@
-
 "use client";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -9,13 +8,14 @@ import {
   Card,
   CardActionArea,
   CardMedia,
-  Breadcrumbs, Divider,
+  Breadcrumbs,
+  Divider,
   Link,
   Snackbar,
   Alert
 } from "@mui/material";
 import { theme } from "@/styles/theme";
-import { fetchCardData } from "@/utils/fetchData";
+import { fetchCardData } from "@/utils/fetchData"
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
 export default function Page({ params }) {
@@ -51,15 +51,11 @@ export default function Page({ params }) {
     }
   }, [id]);
 
-  if (cardDetails) {
-    const sellerId = cardDetails.createdBy;
-  }
+  // const handleWishlistButtonClick = () => {
+  //   router.push(`/sell/wishlist/${id}`);
+  // }; // will add this route later
 
-  const handleWishlistButtonClick = () => {
-    router.push(`/sell/wishlist/${id}`);
-  }; // will add this route later
-
-  const handleSellerInfoButtonClick = () => {
+  const handleSellerInfoButtonClick = sellerId => {
     router.push(`/market/seller/${sellerId}`);
   };
 
@@ -73,7 +69,7 @@ export default function Page({ params }) {
     }
     setOpenError(false);
   };
-
+  console.log("cardDetails", cardDetails);
   return (
     <>
       <Box style={{ marginLeft: theme.spacing(2) }}>
@@ -86,7 +82,7 @@ export default function Page({ params }) {
         </Breadcrumbs>
 
         {/* Image and Details Section */}
-        <div style={{ display: "flex", marginTop: theme.spacing(2) }}>
+        <Box style={{ display: "flex", marginTop: theme.spacing(2) }}>
           {/* Image Section */}
           {cardDetails && (
             <Card style={{ boxShadow: "none", marginRight: theme.spacing(2) }}>
@@ -112,23 +108,20 @@ export default function Page({ params }) {
                       href={`/market/seller/${cardDetails.sellerId}`}
                       underline="none"
                       sx={{
-                        color: "accent.main",
-                        '&:hover': {
-                          textDecoration: 'underline',
-                        },
+                        "color": "accent.main",
+                        "&:hover": {
+                          textDecoration: "underline"
+                        }
                       }}
-                      onClick={(e) => {
+                      onClick={e => {
                         e.preventDefault();
-                        handleSellerInfoButtonClick(cardDetails.sellerId);
-                      }}
-                    >
-                      Visit seller's page
+                        handleSellerInfoButtonClick(cardDetails.createdBy);
+                      }}>
+                      Visit seller&apos;s page
                     </Link>
-
                   )}
                 </span>
               </Typography>
-
 
               <Typography variant="h4" gutterBottom>
                 {cardDetails.name}
@@ -217,14 +210,13 @@ export default function Page({ params }) {
                   color="accent"
                   onClick={handleAddToCartButtonClick}
                   style={{ color: theme.palette.background.paper }}
-                  startIcon={<ShoppingCartIcon />}
-                >
+                  startIcon={<ShoppingCartIcon />}>
                   Add to cart
                 </Button>
 
-                <Button variant="contained" color="primary" onClick={handleWishlistButtonClick}>
+                {/* <Button variant="contained" color="primary" onClick={handleWishlistButtonClick}>
                   Add to Wishlist
-                </Button>
+                </Button> */}
               </Box>
             </Box>
           )}

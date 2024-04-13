@@ -130,7 +130,9 @@ export async function fetchSellerCards(sellerId, filters, page, limit) {
 }
 
 export async function fetchSellerData(id) {
+  console.log("id", id);
   const response = await fetch(`/api/seller/${id}`);
+  console.log("response", response);
   if (!response.ok) {
     console.log(data.errors);
     const detailedErrorMessage = data.errors ? data.errors.join(", ") : data.message;
