@@ -9,6 +9,7 @@ import { useTheme } from "@mui/material/styles";
 import { useSession } from "next-auth/react";
 import useAuthUser from "../store/useAuthUser";
 import {
+  Badge,
   Box,
   Button,
   Typography,
@@ -30,6 +31,8 @@ const Navbar = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [searchInput, setSearchInput] = useState("");
+  //Cart badge count
+  const [count, setCount] = useState(0);
   const router = useRouter();
   const { logout } = useAuthUser();
   const { data: session } = useSession();
@@ -171,13 +174,15 @@ const Navbar = () => {
               />
             </Box>
             <Box flexGrow={1} />
-            <IconButton
-              color="inherit"
-              onClick={() => {
-                router.push("/cart");
-              }}>
-              <ShoppingCart />
-            </IconButton>
+            <Badge color="warning" badgeContent={count} overlap="circular">
+              <IconButton
+                color="inherit"
+                onClick={() => {
+                  router.push("/cart");
+                }}>
+                <ShoppingCart />
+              </IconButton>
+            </Badge>
             {session ? (
               <Box sx={{ flexGrow: 0 }}>
                 <Tooltip title="Open settings">
