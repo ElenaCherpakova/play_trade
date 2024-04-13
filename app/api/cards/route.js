@@ -142,6 +142,7 @@ export async function POST(req) {
 //Delete all cards
 export async function DELETE(req) {
   await dbConnect();
+  //protecting the route with seller authentication
   const session = await getServerSession(authOptions);
   console.log("session", session);
   if (!session || !session.user.isSeller) {

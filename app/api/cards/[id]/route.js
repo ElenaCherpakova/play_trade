@@ -33,6 +33,7 @@ export async function GET(req, res) {
 //edit data
 export async function PATCH(req, res) {
   await dbConnect();
+  //protecting the route with seller authentication
   const session = await getServerSession(authOptions);
   console.log("session", session);
   if (!session || !session.user.isSeller) {
@@ -72,6 +73,7 @@ export async function PATCH(req, res) {
 //delete data
 export async function DELETE(req, res) {
   await dbConnect();
+  //protecting the route with seller authentication
   const session = await getServerSession(authOptions);
   console.log("session", session);
   if (!session || !session.user.isSeller) {
