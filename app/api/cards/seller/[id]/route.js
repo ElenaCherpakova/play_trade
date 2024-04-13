@@ -13,6 +13,11 @@ import Card from "@/models/Card";
 
 export async function GET(req, res) {
   await dbConnect();
+  const session = await getServerSession(authOptions);
+  console.log("session", session);
+  if (!session || !session.user.isSeller) {
+    return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+  }
   //extracting query parameters from the request URL
   const name = req.nextUrl.searchParams.get("search");
   const condition = req.nextUrl.searchParams.get("conditions");

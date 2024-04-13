@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import useImageUpload from "../hooks/useImageUpload";
+import { theme } from "../styles/theme";
 import {
   Box,
   Button,
@@ -312,7 +313,15 @@ export default function CardForm({ cardValue, onSubmitForm }) {
                   </Select>
                 </FormControl>
               </Box>
-              <Button variant="contained" color="secondary" type="submit">
+              <Button
+                variant="contained"
+                color="secondary"
+                type="submit"
+                sx={{
+                  "&:hover": {
+                    backgroundColor: theme.palette.accent.main
+                  }
+                }}>
                 {editCard ? "Edit" : "Add"} card
               </Button>
             </Box>

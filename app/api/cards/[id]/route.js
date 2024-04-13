@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/mongo/dbConnect";
 import { getToken } from "next-auth/jwt";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import Card from "@/models/Card";
 
 /**
@@ -31,6 +33,11 @@ export async function GET(req, res) {
 //edit data
 export async function PATCH(req, res) {
   await dbConnect();
+  const session = await getServerSession(authOptions);
+  console.log("session", session);
+  if (!session || !session.user.isSeller) {
+    return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+  }
   try {
     const token = await getToken({ req });
     if (!token) {
@@ -65,6 +72,11 @@ export async function PATCH(req, res) {
 //delete data
 export async function DELETE(req, res) {
   await dbConnect();
+  const session = await getServerSession(authOptions);
+  console.log("session", session);
+  if (!session || !session.user.isSeller) {
+    return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+  }
   try {
     const token = await getToken({ req });
     if (!token) {
