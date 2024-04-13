@@ -1,27 +1,18 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
+import CardComponent from "@/components/CardComponent";
 import { useRouter } from "next/navigation";
-import {
-  Box,
-  Button,
-  Typography,
-  Card,
-  CardActionArea,
-  CardMedia,
-  Breadcrumbs,
-  Divider,
-  Link,
-  Snackbar,
-  Alert
-} from "@mui/material";
+import { Box, Button, Typography, Breadcrumbs, Divider, Link, Snackbar, Alert } from "@mui/material";
 import { theme } from "@/styles/theme";
-import { fetchCardData } from "@/utils/fetchData"
+import { fetchCardData } from "@/utils/fetchData";
+import { fetchSellerData } from "@/utils/fetchData";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
 export default function Page({ params }) {
   const [openError, setOpenError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [cardDetails, setCardDetails] = useState(null);
+  const [sellerName, setSellerName] = useState("Visit seller's page");
   const router = useRouter();
   console.log("params", params);
   const id = params.id;
@@ -50,6 +41,24 @@ export default function Page({ params }) {
       fetchData();
     }
   }, [id]);
+
+  useEffect(() => {
+    if (cardDetails) {
+      const id = cardDetails.createdBy;
+      const fetchData = async () => {
+        try {
+          const sellerData = await fetchSellerData(id);
+          console.log("sellerData", sellerData);
+          setSellerName(sellerData.user.name);
+        } catch (error) {
+          console.error(error);
+          setOpenError(true);
+          setErrorMessage(error.toString() || "unknown error");
+        }
+      };
+      fetchData();
+    }
+  }, [cardDetails]);
 
   // const handleWishlistButtonClick = () => {
   //   router.push(`/sell/wishlist/${id}`);
@@ -84,18 +93,7 @@ export default function Page({ params }) {
         {/* Image and Details Section */}
         <Box style={{ display: "flex", marginTop: theme.spacing(2) }}>
           {/* Image Section */}
-          {cardDetails && (
-            <Card style={{ boxShadow: "none", marginRight: theme.spacing(2) }}>
-              <CardActionArea type="button" onClick={() => router.push(`/market/item/${cardDetails.id}`)}>
-                <CardMedia
-                  component="img"
-                  image={cardDetails.imageURL}
-                  alt={cardDetails.name}
-                  style={{ width: 300, height: "auto" }}
-                />
-              </CardActionArea>
-            </Card>
-          )}
+          {cardDetails && <CardComponent card={cardDetails} showButtons={false} showInformation={false} />}
 
           {/* Details Section */}
 
@@ -117,7 +115,7 @@ export default function Page({ params }) {
                         e.preventDefault();
                         handleSellerInfoButtonClick(cardDetails.createdBy);
                       }}>
-                      Visit seller&apos;s page
+                      {sellerName}
                     </Link>
                   )}
                 </span>
