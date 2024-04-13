@@ -1,9 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import dbConnect from "@/lib/mongo/dbConnect";
 import { getToken } from "next-auth/jwt";
-//commented out the session check as we have a lot of cards already created
-// import { getServerSession } from "next-auth/next";
-// import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import Card from "@/models/Card";
 
 /**
@@ -16,12 +13,7 @@ import Card from "@/models/Card";
 
 export async function GET(req, res) {
   await dbConnect();
-  //commented out the session check as we have a lot of cards already created
-  // const session = await getServerSession(authOptions);
-  // console.log("session", session);
-  // if (!session || !session.user.isSeller) {
-  //   return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
-  // }
+
   //extracting query parameters from the request URL
   const name = req.nextUrl.searchParams.get("search");
   const condition = req.nextUrl.searchParams.get("conditions");
@@ -70,7 +62,6 @@ export async function GET(req, res) {
   }
 
   try {
-    console.log("Received request:", req.url);
     const idWithParams = req.url.split("seller/")[1];
     const id = idWithParams.split("?")[0];
     if (!id) {
@@ -78,9 +69,8 @@ export async function GET(req, res) {
     }
 
     const token = await getToken({ req });
-    console.log("token", token);
-    console.log("idWithParams", idWithParams);
-    console.log("id", id);
+    //protecting the route with token and seller authentication remove for now
+    // if (!token || !token.user.isSeller) {
     if (!token) {
       return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
     }

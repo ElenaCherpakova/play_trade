@@ -79,14 +79,11 @@ export async function GET(req, res) {
 //Create card
 export async function POST(req) {
   await dbConnect();
-  const session = await getServerSession(authOptions);
-  console.log("session", session);
-  if (!session || !session.user.isSeller) {
-    return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
-  }
+
   try {
     const token = await getToken({ req });
-    if (!token) {
+    //protecting the route with token and seller authentication
+    if (!token || !token.user.isSeller) {
       return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
     }
     const userId = token.user._id;
@@ -142,15 +139,11 @@ export async function POST(req) {
 //Delete all cards
 export async function DELETE(req) {
   await dbConnect();
-  //protecting the route with seller authentication
-  const session = await getServerSession(authOptions);
-  console.log("session", session);
-  if (!session || !session.user.isSeller) {
-    return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
-  }
+
   try {
     const token = await getToken({ req });
-    if (!token) {
+    //protecting the route with token and seller authentication
+    if (!token || !token.user.isSeller) {
       return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
     }
     const userId = token.user._id;
