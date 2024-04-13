@@ -61,8 +61,12 @@ export async function GET(req, res) {
   }
 
   try {
+    console.log("Received request:", req.url);
     const idWithParams = req.url.split("seller/")[1];
     const id = idWithParams.split("?")[0];
+    if (!id) {
+      return NextResponse.json({ success: false, message: "Seller ID not provided" }, { status: 400 });
+    }
 
     const token = await getToken({ req });
     console.log("token", token);
@@ -73,12 +77,17 @@ export async function GET(req, res) {
     }
 
     //fetch filtered cards from the database with pagination
-    const cards = await Card.find({ createdBy: id }, searchQuery).skip(skip).limit(limit);
-    const total = await Card.countDocuments(searchQuery);
+    const cards = await Card.find({ createdBy: id, ...searchQuery })
+      .skip(skip)
+      .limit(limit);
+    console.log("cards", cards);
+    const total = await Card.countDocuments({ createdBy: id, ...searchQuery });
+    console.log("total", total);
 
-    if (!cards) {
-      return NextResponse.json({ success: false, message: error.message || "No cards found" }, { status: 400 });
+    if (!cards || cards.length === 0) {
+      return NextResponse.json({ success: false, message: "No cards found" }, { status: 404 });
     }
+    console.log("cards, total, page, limit", cards, total, page, limit);
 
     return NextResponse.json({ success: true, data: { cards, total, page, limit } }, { status: 200 });
   } catch (error) {

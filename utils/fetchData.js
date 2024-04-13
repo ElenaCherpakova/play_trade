@@ -128,3 +128,15 @@ export async function fetchSellerCards(sellerId, filters, page, limit) {
   const data = await response.json();
   return data.data;
 }
+
+export async function fetchSellerData(id) {
+  const response = await fetch(`/api/seller/${id}`);
+  if (!response.ok) {
+    console.log(data.errors);
+    const detailedErrorMessage = data.errors ? data.errors.join(", ") : data.message;
+    throw new Error(detailedErrorMessage || "Unknown error occurred.");
+  }
+  const data = await response.json();
+  console.log("data", data);
+  return data.data;
+}

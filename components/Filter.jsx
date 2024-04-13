@@ -35,11 +35,14 @@ const Filter = ({ filtersParams, sellerPage = false, sellerId = null }) => {
     priceFrom: filtersParams.priceFrom || "0",
     priceTo: filtersParams.priceTo || "5000"
   });
-  const debouncedPriceRange = useDebounce([filters.priceFrom, filters.priceTo], 500);
+  //debounce each priceFrom and priceTo separately to prevent multiple API calls
+  const debouncedPriceFrom = useDebounce(filters.priceFrom, 500);
+  const debouncedPriceTo = useDebounce(filters.priceTo, 500);
+
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const areFiltersApplied = Object.values(filters).some(value => value)
+  const areFiltersApplied = Object.values(filters).some(value => value);
 
   useEffect(() => {
     setFilters({
@@ -51,15 +54,23 @@ const Filter = ({ filtersParams, sellerPage = false, sellerId = null }) => {
       priceTo: filtersParams.priceTo || ""
     });
     //rendering correct conditions after redirection from other page with category in the params
-    console.log("reload");
     setConditionsOptions(filtersParams.category ? conditionsByCardCategory[filtersParams.category] || [] : []);
   }, [searchParams]);
 
   useEffect(() => {
     updateQueryStringAndNavigate();
-    console.log("inside useEffect");
-  }, [filters, filtersParams.category, filtersParams.search, sellerPage]);
-cons
+  }, [
+    debouncedPriceFrom,
+    debouncedPriceTo,
+    filters.availability,
+    filters.category,
+    filters.conditions,
+    filters.search,
+    filtersParams.category,
+    filtersParams.search,
+    sellerPage
+  ]);
+
   const updateQueryStringAndNavigate = () => {
     //creating a new URLSearchParams object from the current search parameters.
     const queryParams = new URLSearchParams();
@@ -88,6 +99,8 @@ cons
       setFilters(prevFilters => ({ ...prevFilters, [filterId]: value }));
     }
   };
+
+  console.log("inside Filter");
 
   const handlePriceRangeChange = (event, newValue) => {
     const isDefaultRange = newValue[0] === 0 && newValue[1] === 5000;

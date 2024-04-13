@@ -26,18 +26,6 @@ import {
 import FilterListIcon from "@mui/icons-material/FilterList";
 import CloseIcon from "@mui/icons-material/Close";
 
-const user = {
-  name: "Our new seller",
-  email: "123456@gmail.com",
-  address: "123 Fake St., Springfield, IL 62701",
-  isSeller: true
-};
-const seller = {
-  rating: 4.5,
-  feedback: ["Great seller", "Fast shipping", "Good communication", "Highly recommended"],
-  numberOfSales: 2,
-  location: 100
-};
 export default function Seller() {
   const [openError, setOpenError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -126,10 +114,10 @@ export default function Seller() {
               <Box flexGrow={1}>
                 <Typography variant="h2">{session?.user?.name}</Typography>
               </Box>
-              <Box display="flex" gap={2}>
+              {/* <Box display="flex" gap={2}>
                 <Typography variant="body2">Rating: {seller.rating}</Typography>
                 <Typography variant="body2">Sales: {seller.numberOfSales}</Typography>
-              </Box>
+              </Box> */}
             </Box>
           </Box>
         </Box>
@@ -143,13 +131,13 @@ export default function Seller() {
           aria-label="handle seller info">
           <Tab label="Cards" value="cards" />
           <Tab label="About" value="about" />
-          <Tab label="Reviews" value="reviews" />
+          {/* <Tab label="Reviews" value="reviews" /> */}
         </Tabs>
       </Box>
       {activeTab === "cards" && (
         <Box>
           <Grid container spacing={2}>
-            <Grid item xs={2}>
+            <Grid item sm={3}>
               <Box display="flex" sx={{ flexDirection: { xs: "column", sm: "row" } }}>
                 <Box
                   display={{ xs: "block", sm: "none" }}
@@ -183,7 +171,7 @@ export default function Seller() {
                         <CloseIcon sx={{ fontSize: "40px" }} />
                       </IconButton>
                     </Box>
-                    <Filter filtersParams={filters} />
+                    <Filter filtersParams={filters} sellerPage={true} sellerId={sellerId} />
                   </Box>
                   <Box sx={{ p: 2 }}>
                     <Button
@@ -219,7 +207,7 @@ export default function Seller() {
               {cards.length > 0 ? (
                 <Grid container spacing={2}>
                   {cards.map(card => (
-                    <Grid item key={card._id} xs={12} sm={6} md={4} lg={3}>
+                    <Grid item key={card._id} xs={12} md={4} lg={3} sx={{ display: "flex", justifyContent: "center" }}>
                       <CardComponent key={card._id} card={card} showButtons={showButtons} />
                     </Grid>
                   ))}
@@ -248,7 +236,7 @@ export default function Seller() {
             <Paper elevation={3} sx={{ px: 2, py: 5 }}>
               <Box display="flex" gap={1} my={2}>
                 <Typography variant="h4">Location:</Typography>
-                <Typography variant="body1">here will be information about seller location</Typography>
+                <Typography variant="body1">{`${session?.user?.address}`}</Typography>
               </Box>
               <Box display="flex" gap={1} my={2}>
                 <Typography variant="h4">Seller since:</Typography>
@@ -263,12 +251,12 @@ export default function Seller() {
           <Grid item xs></Grid>
         </Grid>
       )}
-      {activeTab === "reviews" &&
+      {/* {activeTab === "reviews" &&
         seller.feedback.map((feedback, index) => (
           <Paper key={index} sx={{ p: 2, my: 1 }}>
             <Typography variant="body1">{feedback}</Typography>
           </Paper>
-        ))}
+        ))} */}
       <Snackbar
         open={openError}
         autoHideDuration={5000}

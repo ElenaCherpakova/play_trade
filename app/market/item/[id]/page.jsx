@@ -1,7 +1,19 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Box, Button, Typography, Card, CardActionArea, CardMedia, Breadcrumbs, Link, ThemeProvider } from "@mui/material";
+import {
+  Box,
+  Button,
+  Typography,
+  Card,
+  CardActionArea,
+  CardMedia,
+  Breadcrumbs,
+  Link,
+  ThemeProvider,
+  Snackbar,
+  Alert
+} from "@mui/material";
 import { theme } from "@/styles/theme";
 import { fetchCardData } from "@/utils/fetchData";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
@@ -11,17 +23,17 @@ export default function Page({ params }) {
   const [errorMessage, setErrorMessage] = useState("");
   const [cardDetails, setCardDetails] = useState(null);
   const router = useRouter();
+  console.log("params", params);
   const id = params.id;
 
   // Function to convert currency code to symbol
-  const getCurrencySymbol = (currencyCode) => {
+  const getCurrencySymbol = currencyCode => {
     const currencySymbols = {
       USD: "$",
-      CAD: "CA$",
+      CAD: "CA$"
     };
     return currencySymbols[currencyCode] || currencyCode;
   };
-
 
   useEffect(() => {
     if (id) {
@@ -39,34 +51,45 @@ export default function Page({ params }) {
     }
   }, [id]);
 
+  if (cardDetails) {
+    const sellerId = cardDetails.createdBy;
+  }
+
   const handleEditButtonClick = () => {
     router.push(`/sell/edit/${id}`);
   };
 
   const handleSellerInfoButtonClick = () => {
-    router.push(`/market/seller/${id}`);
+    router.push(`/market/seller/${sellerId}`);
   };
 
   const handleAddToCartButtonClick = () => {
     router.push("/cart");
   };
 
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenError(false);
+  };
+
   return (
-    <ThemeProvider theme={theme}>
+    <>
       <Box style={{ marginLeft: theme.spacing(2) }}>
         {/* Breadcrumbs */}
-        <Breadcrumbs aria-label="breadcrumb" style={{ marginTop: '8px' }}>
-          <Link color="inherit" href="/" onClick={() => router.push('/')}>
+        <Breadcrumbs aria-label="breadcrumb" style={{ marginTop: "8px" }}>
+          <Link color="inherit" href="/" onClick={() => router.push("/")}>
             Home
           </Link>
           <Typography color="text.primary">Card Details</Typography>
         </Breadcrumbs>
 
         {/* Image and Details Section */}
-        <div style={{ display: 'flex', marginTop: theme.spacing(2) }}>
+        <div style={{ display: "flex", marginTop: theme.spacing(2) }}>
           {/* Image Section */}
           {cardDetails && (
-            <Card style={{ boxShadow: 'none', marginRight: theme.spacing(2) }}>
+            <Card style={{ boxShadow: "none", marginRight: theme.spacing(2) }}>
               <CardActionArea type="button" onClick={() => router.push(`/market/item/${cardDetails.id}`)}>
                 <CardMedia
                   component="img"
@@ -78,7 +101,6 @@ export default function Page({ params }) {
             </Card>
           )}
 
-
           {/* Details Section */}
           {cardDetails && (
             <Box style={{ maxWidth: 600, paddingLeft: theme.spacing(2), borderRadius: theme.shape.borderRadius }}>
@@ -86,7 +108,8 @@ export default function Page({ params }) {
                 {cardDetails.name}
               </Typography>
               <Typography variant="subtitle1" gutterBottom>
-                Price: {getCurrencySymbol(cardDetails.currency)}{cardDetails.price}
+                Price: {getCurrencySymbol(cardDetails.currency)}
+                {cardDetails.price}
               </Typography>
               <Typography variant="body1" gutterBottom>
                 Description: {cardDetails.description}
@@ -114,8 +137,12 @@ export default function Page({ params }) {
         </div>
 
         {/* Action Buttons */}
-        <div style={{ display: 'flex', gap: theme.spacing(1), marginTop: theme.spacing(2) }}>
-          <Button variant="contained" color="accent" onClick={handleAddToCartButtonClick} style={{ color: theme.palette.background.paper }}>
+        <div style={{ display: "flex", gap: theme.spacing(1), marginTop: theme.spacing(2) }}>
+          <Button
+            variant="contained"
+            color="accent"
+            onClick={handleAddToCartButtonClick}
+            style={{ color: theme.palette.background.paper }}>
             <ShoppingCartIcon />
             Add to cart
           </Button>
@@ -126,9 +153,17 @@ export default function Page({ params }) {
           <Button variant="contained" color="secondary" onClick={handleSellerInfoButtonClick}>
             Watch information about the seller
           </Button>
-
         </div>
       </Box>
-    </ThemeProvider>
+      <Snackbar
+        open={openError}
+        autoHideDuration={5000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}>
+        <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
+          {errorMessage}
+        </Alert>
+      </Snackbar>
+    </>
   );
-};
+}
