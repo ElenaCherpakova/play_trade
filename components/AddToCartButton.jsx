@@ -1,14 +1,11 @@
 import React from "react";
 import Button from "@mui/material/Button";
-import { useRouter } from "next/navigation";
-
+import { useCartStore } from "@/store/cart-store";
 const AddToCartButton = ({ card }) => {
-  const router = useRouter();
+  const addToCart = useCartStore(state => state.addToCart);
 
   const handleAddToCart = () => {
-    // addToCart(card);
-    console.log("Product added to cart");
-    router.push(`/cart?id=${card.id}`); // Redirect to the shopping cart
+    addToCart(card);
   };
 
   return (
