@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import { useCartStore } from "@/store/cart-store";
 import { useRouter } from "next/navigation";
 import WhatshotIcon from "@mui/icons-material/Whatshot";
 import { theme } from "/styles/theme.js";
@@ -41,6 +42,7 @@ function useCountdown(initialTime, onEnd) {
 
 // Function for counting down time
 function CartItem({ item, index, handleCheck, removeItemFromCart, handleQuantityChange, cartItems }) {
+  console.log("ITEMA", item)
   const router = useRouter();
   const [open, setOpen] = React.useState(false);
   const timeLeft = useCountdown(1 * 60, () => setOpen(true));
@@ -63,12 +65,12 @@ function CartItem({ item, index, handleCheck, removeItemFromCart, handleQuantity
 
   //handleRemove - to remove the item from the cart
   const handleRemove = () => {
-    removeItemFromCart(item.id);
+    removeItemFromCart(item._id);
     handleClose();
   };
 
   return (
-    <React.Fragment key={item.id}>
+    <React.Fragment key={item._id}>
       <Grid container sx={{ mt: 2, mb: 1, justifyContent: "flex-start" }} spacing={2}>
         {/* Checkbox, img, and Price */}
         <Grid item xs={12} sm={4} sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
@@ -76,7 +78,7 @@ function CartItem({ item, index, handleCheck, removeItemFromCart, handleQuantity
             <Box>
               <Checkbox checked={item.checked} onChange={() => handleCheck(index)} />
             </Box>
-            <img src={`/cards/${item.img}`} alt={item.name} style={{ width: 100, height: 120 }} />
+            <img src={`${item.imageURL}`} alt={item.name} style={{ width: 100, height: 120 }} />
           </Grid>
           <Grid item xs={12} sx={{ mt: 1, pl: 5, display: "flex", textAlign: "center", textAlign: "center" }}>
             <Typography>Price:{item.price}</Typography>
@@ -102,11 +104,11 @@ function CartItem({ item, index, handleCheck, removeItemFromCart, handleQuantity
               type="number"
               InputProps={{ inputProps: { min: 0 } }}
               value={item.quantity}
-              onChange={e => handleQuantityChange(index, e.target.value)}
+              onChange={(e) => handleQuantityChange(index, e.target.value)}
               size="small"
               sx={{ width: "5rem", mr: 2 }}
             />
-            <Button onClick={() => removeItemFromCart(item.id)}>Remove</Button>
+            <Button onClick={() => removeItemFromCart(item._id)}>Remove</Button>
           </Grid>
         </Grid>
       </Grid>
@@ -138,11 +140,16 @@ function CartItem({ item, index, handleCheck, removeItemFromCart, handleQuantity
 }
 
 export default function Cart() {
+  const { cartItems, removeItemFromCart, handleCheck, handleQuantityChange } = useCartStore(state => ({
+    cartItems: state.cartItems,
+    removeItemFromCart: state.removeItemFromCart,
+    handleCheck: state.handleCheck,
+    handleQuantityChange: state.handleQuantityChange
+  }));
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const router = useRouter();
   const [checkoutUrl, setCheckoutUrl] = useState(() => () => {});
 
-  // TODO//const id = router.query ? router.query.id : null;//get id from query  for cart item
 
   // Declare cartItems variable
   // Remove the redundant declaration of 'cartItems'
@@ -151,51 +158,13 @@ export default function Cart() {
     setCheckoutUrl(() => () => router.push("/cart/checkout"));
   }, [router]);
 
-  // Hardcoded cart items
-  const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      name: "Destiny ",
-      description:
-        " You can reveal the top card of your Deck, and if it is a Normal Spell Card, send it to the Graveyard, otherwise place it on the bottom of your Deck",
-      price: 1.15,
-      img: "magic.png",
-      checked: false,
-      quantity: 2
-    },
-    {
-      id: 2,
-      name: "Gatomon",
-      description: "When one of your other Digimon is deleted, this Digimon gets +3000 DP for the turn.",
-      price: 0.1,
-      img: "yugioh.png",
-      checked: false,
-      quantity: 1
-    }
-  ]);
 
-  //check if cartItems is empty and count in the cart
-  const handleCheck = index => {
-    const newCartItems = [...cartItems];
-    newCartItems[index].checked = !newCartItems[index].checked;
-    setCartItems(newCartItems);
-  };
 
   //Subtotal section
   const itemsCount = cartItems.reduce((total, item) => (item.checked ? total + item.quantity : total), 0);
   const totalPrice = cartItems.reduce((total, item) => (item.checked ? total + item.price * item.quantity : total), 0);
 
-  // Remove item from cart
-  const removeItemFromCart = itemId => {
-    setCartItems(prevItems => prevItems.filter(item => item.id !== itemId));
-  };
 
-  // Changing quantity of the item in the cart
-  const handleQuantityChange = (index, quantity) => {
-    const newCartItems = [...cartItems];
-    newCartItems[index].quantity = Number(quantity);
-    setCartItems(newCartItems);
-  };
 
   return (
     <Grid container spacing={2} direction={isSmallScreen ? "column-reverse" : "row"}>
@@ -211,7 +180,7 @@ export default function Cart() {
           {cartItems &&
             cartItems.map((item, index) => (
               <CartItem
-                key={item.id}
+                key={item._id}
                 item={item}
                 index={index}
                 handleCheck={handleCheck}
