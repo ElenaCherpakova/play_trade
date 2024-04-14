@@ -2,9 +2,8 @@
 import { React, useState, useEffect, useRef } from "react";
 import { useSession, getSession } from "next-auth/react";
 
-import { theme as importedTheme } from "/styles/theme.js";
-import { ThemeProvider, useTheme } from "@mui/material/styles";
-import { Box, Typography, Grid, Backdrop, CircularProgress } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+import { Typography, Grid, Backdrop, CircularProgress } from "@mui/material";
 
 import useAuthUser from "@/store/useAuthUser";
 import useImageUpload from "@/hooks/useImageUpload";
@@ -149,7 +148,7 @@ export default function UserProfileEditPage() {
     return null;
   }
   return (
-    <ThemeProvider theme={importedTheme}>
+    <>
       <Grid
         container
         spacing={7}
@@ -202,6 +201,6 @@ export default function UserProfileEditPage() {
         open={loading}>
         <CircularProgress color="inherit" />
       </Backdrop>
-    </ThemeProvider>
+    </>
   );
 }

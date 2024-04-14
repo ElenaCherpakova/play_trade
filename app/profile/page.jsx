@@ -12,10 +12,11 @@ import {
   Backdrop,
   CircularProgress,
   Avatar,
-  Grid
+  Grid,
+  Snackbar,
+  Alert
 } from "@mui/material";
-import { theme as importedTheme } from "/styles/theme.js";
-import { ThemeProvider, useTheme } from "@mui/material/styles";
+import { useTheme } from "@mui/material/styles";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import EmailIcon from "@mui/icons-material/Email";
 import useAuthUser from "@/store/useAuthUser";
@@ -29,8 +30,7 @@ export default function Profile() {
   const [showLocationForm, setShowLocationForm] = useState(false);
   const [loading, setLoading] = useState(false);
   const [openError, setOpenError] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const router = useRouter();
 
   const [userData, setUserData] = useState({
@@ -42,15 +42,21 @@ export default function Profile() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const session = await getSession();
-      if (session && status === "authenticated") {
-        setUserData({
-          name: session?.user?.name,
-          email: session?.user?.email,
-          avatar: session?.user?.avatar,
-          userRole: session?.user?.isSeller ? "Seller" : "Buyer",
-          location: session?.user?.address
-        });
+      try {
+        const session = await getSession();
+        if (session && status === "authenticated") {
+          setUserData({
+            name: session?.user?.name,
+            email: session?.user?.email,
+            avatar: session?.user?.avatar,
+            userRole: session?.user?.isSeller ? "Seller" : "Buyer",
+            location: session?.user?.address
+          });
+        }
+      } catch (error) {
+        console.error(error);
+        setOpenError(true);
+        setErrorMessage(error.toString() || "unknown error");
       }
     };
     fetchData();
@@ -69,19 +75,20 @@ export default function Profile() {
           user: { ...session.user, isSeller: data.isSeller, address: data.address }
         });
         setShowLocationForm(false);
-        setError("");
-        setSuccess(data.message);
       } else {
-        setError(data.message || "Failed to become a seller");
+        setErrorMessage(data.message || "Failed to become a seller");
       }
     } catch (error) {
-      setError(data.message || "An error occurred while updating");
+      setErrorMessage(data.message || "An error occurred while updating");
     }
     setLoading(false);
   };
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   return (
-    <ThemeProvider theme={importedTheme}>
+    <>
       <Grid
         container
         spacing={7}
@@ -217,6 +224,15 @@ export default function Profile() {
         open={loading}>
         <CircularProgress color="inherit" />
       </Backdrop>
-    </ThemeProvider>
+      <Snackbar
+        open={openError}
+        autoHideDuration={5000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}>
+        <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
+          {errorMessage}
+        </Alert>
+      </Snackbar>
+    </>
   );
 }
