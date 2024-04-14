@@ -5,22 +5,23 @@ import { useRouter } from "next/navigation";
 import AddToCartButton from "./AddToCartButton";
 
 /**
- *
- * @param {card} Object
- * @param {showButtons} Boolean
+ * @param {object} props
+ * @param {object} props.card
+ * @param {boolean} [props.showButtons]
+ * @param {boolean} [props.showInformation]
  */
 
-export default function CardComponent({ card, showButtons = true, buttonSet }) {
+export default function CardComponent({ card, showButtons = true, showInformation = true }) {
   const router = useRouter();
 
   // const buyNow = () => {
   //   console.log("buy now");
   // };
 
-  const handleEdit = event => {
-    event.stopPropagation(); // Prevents click event from bubbling up to CardActionArea
-    onEdit(card.id);
-  };
+  // const handleEdit = event => {
+  //   event.stopPropagation(); // Prevents click event from bubbling up to CardActionArea
+  //   onEdit(card.id);
+  // };
 
   // const handleDelete = (event) => {
   //   event.stopPropagation(); // Prevents click event from bubbling up to CardActionArea
@@ -46,22 +47,30 @@ export default function CardComponent({ card, showButtons = true, buttonSet }) {
           alt={card.name}
           height="300"
         />
-        <CardContent sx={{ p: 0.5 }}>
-          <Box sx={{ display: "flex" }}>
-            <Typography gutterBottom variant="body2" component="div" flexGrow="1">
-              {card.name}
-            </Typography>
-            <Typography gutterBottom variant="body2" component="div">
-              {card.category}
-            </Typography>
-            <Typography gutterBottom variant="body2" component="div">
-              {card.conditions}
-            </Typography>
-            <Typography gutterBottom variant="body2" component="div">
-              {card.price} {card.currency}
-            </Typography>
-          </Box>
-        </CardContent>
+        {showInformation && (
+          <CardContent sx={{ p: 0.5 }}>
+            <Box sx={{ display: "flex", textAlign: "left", gap: 2 }}>
+              <Box flexGrow={1}>
+                <Typography gutterBottom variant="body1" component="div" flexGrow="1">
+                  <b>{card.name}</b>
+                </Typography>
+                <Typography gutterBottom variant="body2" component="div">
+                  {card.category}
+                </Typography>
+                <Typography gutterBottom variant="body2" component="div">
+                  {card.conditions}
+                </Typography>
+              </Box>
+              <Box width="65px">
+                <Typography gutterBottom variant="body1" component="div">
+                  <b>
+                    {card.price} {card.currency}
+                  </b>
+                </Typography>
+              </Box>
+            </Box>
+          </CardContent>
+        )}
       </CardActionArea>
       {showButtons && (
         <CardActions sx={{ p: 0.5 }}>

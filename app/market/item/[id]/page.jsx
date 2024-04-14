@@ -1,28 +1,34 @@
-
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
+import CardComponent from "@/components/CardComponent";
 import { useRouter } from "next/navigation";
-import { Box, Button, Typography, Card, CardActionArea, CardMedia, Breadcrumbs, Divider, Link, ThemeProvider } from "@mui/material";
+import { Box, Button, Typography, Breadcrumbs, Divider, Link, Snackbar, Alert } from "@mui/material";
 import { theme } from "@/styles/theme";
 import { fetchCardData } from "@/utils/fetchData";
+import { fetchSellerData } from "@/utils/fetchData";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+
+/**
+ *
+ * @param {*} params
+ */
 
 export default function Page({ params }) {
   const [openError, setOpenError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [cardDetails, setCardDetails] = useState(null);
+  const [sellerName, setSellerName] = useState("Visit seller's page");
   const router = useRouter();
   const id = params.id;
 
   // Function to convert currency code to symbol
-  const getCurrencySymbol = (currencyCode) => {
+  const getCurrencySymbol = currencyCode => {
     const currencySymbols = {
       USD: "$",
-      CAD: "CA$",
+      CAD: "CA$"
     };
     return currencySymbols[currencyCode] || currencyCode;
   };
-
 
   useEffect(() => {
     if (id) {
@@ -40,20 +46,45 @@ export default function Page({ params }) {
     }
   }, [id]);
 
-  const handleWishlistButtonClick = () => {
-    router.push(`/sell/wishlist/${id}`);
-  }; // will add this route later
+  useEffect(() => {
+    if (cardDetails) {
+      const id = cardDetails.createdBy;
+      const fetchData = async () => {
+        try {
+          const sellerData = await fetchSellerData(id);
+          console.log("sellerData", sellerData);
+          setSellerName(sellerData.user.name);
+        } catch (error) {
+          console.error(error);
+          setOpenError(true);
+          setErrorMessage(error.toString() || "unknown error");
+        }
+      };
+      fetchData();
+    }
+  }, [cardDetails]);
 
-  // const handleSellerInfoButtonClick = sellerId => {
-  //   router.push(`/market/seller/${sellerId}`);
-  // }; will add this route later
+  // const handleWishlistButtonClick = () => {
+  //   router.push(`/sell/wishlist/${id}`);
+  // }; // will add this route later
+
+  const handleSellerInfoButtonClick = sellerId => {
+    router.push(`/market/seller/${sellerId}`);
+  };
 
   const handleAddToCartButtonClick = () => {
     router.push("/cart");
   };
 
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenError(false);
+  };
+  console.log("cardDetails", cardDetails);
   return (
-    <ThemeProvider theme={theme}>
+    <>
       <Box style={{ marginLeft: theme.spacing(2) }}>
         {/* Breadcrumbs */}
         <Breadcrumbs aria-label="breadcrumb" style={{ marginTop: "8px" }}>
@@ -66,19 +97,7 @@ export default function Page({ params }) {
         {/* Image and Details Section */}
         <Box style={{ display: "flex", marginTop: theme.spacing(2) }}>
           {/* Image Section */}
-          {cardDetails && (
-            <Card style={{ boxShadow: "none", marginRight: theme.spacing(2) }}>
-              <CardActionArea type="button" onClick={() => router.push(`/market/item/${cardDetails.id}`)}>
-                <CardMedia
-                  component="img"
-                  image={cardDetails.imageURL}
-                  alt={cardDetails.name}
-                  style={{ width: 300, height: "auto" }}
-                />
-              </CardActionArea>
-            </Card>
-          )}
-
+          {cardDetails && <CardComponent card={cardDetails} showButtons={false} showInformation={false} />}
 
           {/* Details Section */}
 
@@ -91,23 +110,20 @@ export default function Page({ params }) {
                       href={`/market/seller/${cardDetails.sellerId}`}
                       underline="none"
                       sx={{
-                        color: "accent.main",
-                        '&:hover': {
-                          textDecoration: 'underline',
-                        },
+                        "color": "accent.main",
+                        "&:hover": {
+                          textDecoration: "underline"
+                        }
                       }}
-                      onClick={(e) => {
+                      onClick={e => {
                         e.preventDefault();
-                        handleSellerInfoButtonClick(cardDetails.sellerId);
-                      }}
-                    >
-                      Visit seller's page
+                        handleSellerInfoButtonClick(cardDetails.createdBy);
+                      }}>
+                      {sellerName}
                     </Link>
-
                   )}
                 </span>
               </Typography>
-
 
               <Typography variant="h4" gutterBottom>
                 {cardDetails.name}
@@ -196,19 +212,27 @@ export default function Page({ params }) {
                   color="accent"
                   onClick={handleAddToCartButtonClick}
                   style={{ color: theme.palette.background.paper }}
-                  startIcon={<ShoppingCartIcon />}
-                >
+                  startIcon={<ShoppingCartIcon />}>
                   Add to cart
                 </Button>
 
-                <Button variant="contained" color="primary" onClick={handleWishlistButtonClick}>
+                {/* <Button variant="contained" color="primary" onClick={handleWishlistButtonClick}>
                   Add to Wishlist
-                </Button>
+                </Button> */}
               </Box>
             </Box>
           )}
         </Box>
       </Box>
-    </ThemeProvider>
+      <Snackbar
+        open={openError}
+        autoHideDuration={5000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}>
+        <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
+          {errorMessage}
+        </Alert>
+      </Snackbar>
+    </>
   );
-};
+}
