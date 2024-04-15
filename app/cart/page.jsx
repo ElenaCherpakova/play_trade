@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import WhatshotIcon from "@mui/icons-material/Whatshot";
 import { theme } from "/styles/theme.js";
+import { useCountdown } from "/hooks/useCountDownTimer";
 import {
   Grid,
   Typography,
@@ -19,34 +20,12 @@ import {
   Box
 } from "@mui/material";
 
-// Custom hook for countdown timer interval
-function useCountdown(initialTime, onEnd) {
-  const [timeLeft, setTimeLeft] = useState(initialTime);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft(timeLeft => {
-        if (timeLeft === 0) {
-          onEnd();
-          return 0;
-        } else {
-          return timeLeft - 1;
-        }
-      });
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [onEnd]);
-  return timeLeft;
-}
-
 // Function for counting down time
 function CartItem({ item, index, handleCheck, removeItemFromCart, handleQuantityChange, cartItems }) {
   const router = useRouter();
   const [open, setOpen] = React.useState(false);
   const timeLeft = useCountdown(1 * 60, () => setOpen(true));
-  {
-    /* For the presentation should be changed for useCountdown(15 * 60, */
-  }
+  /* For the presentation should be changed for useCountdown(15 * 60, */
   const minutes = Math.floor(timeLeft / 60);
   const seconds = timeLeft % 60;
 
@@ -102,7 +81,7 @@ function CartItem({ item, index, handleCheck, removeItemFromCart, handleQuantity
               type="number"
               InputProps={{ inputProps: { min: 0 } }}
               value={item.quantity}
-              onChange={e => handleQuantityChange(index, e.target.value)}
+              onChange={e => handleQuantityChange(index, Math.max(0, parseInt(e.target.value)))}
               size="small"
               sx={{ width: "5rem", mr: 2 }}
             />
@@ -145,7 +124,6 @@ export default function Cart() {
   // TODO//const id = router.query ? router.query.id : null;//get id from query  for cart item
 
   // Declare cartItems variable
-  // Remove the redundant declaration of 'cartItems'
 
   useEffect(() => {
     setCheckoutUrl(() => () => router.push("/cart/checkout"));
@@ -191,9 +169,9 @@ export default function Cart() {
   };
 
   // Changing quantity of the item in the cart
-  const handleQuantityChange = (index, quantity) => {
+  const handleQuantityChange = (index, newQuantity) => {
     const newCartItems = [...cartItems];
-    newCartItems[index].quantity = Number(quantity);
+    newCartItems[index].quantity = newQuantity;
     setCartItems(newCartItems);
   };
 
