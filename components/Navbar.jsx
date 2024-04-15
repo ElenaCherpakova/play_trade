@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTheme } from "@mui/material/styles";
 import { useSession } from "next-auth/react";
-import { useCartStore } from "@/store/cart-store";
+import { useCartStore } from "@/store/cartStore";
 import useAuthUser from "../store/useAuthUser";
 import {
   Badge,
@@ -33,7 +33,7 @@ const Navbar = () => {
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [searchInput, setSearchInput] = useState("");
   //Cart badge count
-  const count = useCartStore(state => state.count);
+  const count = useCartStore(state => state.itemsCount);
   const router = useRouter();
   const { logout } = useAuthUser();
   const { data: session } = useSession();
