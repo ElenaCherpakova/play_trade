@@ -1,6 +1,6 @@
 import React from "react";
 import Button from "@mui/material/Button";
-import { useCartStore } from "@/store/cart-store";
+import { useCartStore } from "@/store/cartStore";
 const AddToCartButton = ({ card }) => {
   const addToCart = useCartStore(state => state.addToCart);
 

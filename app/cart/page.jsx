@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { useCartStore } from "@/store/cart-store";
+import { useCartStore } from "@/store/cartStore";
 import { useRouter } from "next/navigation";
 import WhatshotIcon from "@mui/icons-material/Whatshot";
 import { theme } from "/styles/theme.js";
@@ -140,11 +140,13 @@ function CartItem({ item, index, handleCheck, removeItemFromCart, handleQuantity
 }
 
 export default function Cart() {
-  const { cartItems, removeItemFromCart, handleCheck, handleQuantityChange } = useCartStore(state => ({
+  const { cartItems, removeItemFromCart, handleCheck, handleQuantityChange, itemsCount, totalPrice } = useCartStore(state => ({
     cartItems: state.cartItems,
     removeItemFromCart: state.removeItemFromCart,
     handleCheck: state.handleCheck,
-    handleQuantityChange: state.handleQuantityChange
+    handleQuantityChange: state.handleQuantityChange,
+    itemsCount: state.itemsCount,
+    totalPrice: state.totalPrice
   }));
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const router = useRouter();
@@ -158,14 +160,6 @@ export default function Cart() {
     setCheckoutUrl(() => () => router.push("/cart/checkout"));
   }, [router]);
 
-
-
-  //Subtotal section
-  const itemsCount = cartItems.reduce((total, item) => (item.checked ? total + item.quantity : total), 0);
-  const totalPrice = cartItems.reduce((total, item) => (item.checked ? total + item.price * item.quantity : total), 0);
-
-
-
   return (
     <Grid container spacing={2} direction={isSmallScreen ? "column-reverse" : "row"}>
       <Grid item xs={12} sm={8}>
@@ -177,8 +171,7 @@ export default function Cart() {
           </Grid>
           <Divider />
           {/* Check if items exist and map over them to render each item for future adding to the cart as well*/}
-          {cartItems &&
-            cartItems.map((item, index) => (
+          {cartItems?.map((item, index) => (
               <CartItem
                 key={item._id}
                 item={item}

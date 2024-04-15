@@ -7,7 +7,7 @@ import { theme } from "@/styles/theme";
 import { fetchCardData } from "@/utils/fetchData";
 import { fetchSellerData } from "@/utils/fetchData";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import {useCartStore} from "@/store/cart-store"
+import {useCartStore} from "@/store/cartStore"
 /**
  *
  * @param {*} params
