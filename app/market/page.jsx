@@ -97,7 +97,7 @@ export default function Market() {
                   <CloseIcon sx={{ fontSize: "40px" }} />
                 </IconButton>
               </Box>
-              <Filter filtersParams={filters}/>
+              <Filter filtersParams={filters} />
             </Box>
             <Box sx={{ p: 2 }}>
               <Button
@@ -125,7 +125,7 @@ export default function Market() {
               p: 1,
               boxShadow: 3
             }}>
-            <Filter filtersParams={filters}/>
+            <Filter filtersParams={filters} />
           </Box>
           <Box
             sx={{
@@ -138,18 +138,9 @@ export default function Market() {
               minHeight: "70vh"
             }}>
             {cards.length > 0 ? (
-              <Grid container alignItems="center" sx={{ alignItems: "center", gap: 5, justifyContent: "center" }}>
+              <Grid container gap={5}>
                 {cards.map(card => (
-                  <Grid
-                    item
-                    xs={12}
-                    key={card._id}
-                    md={4}
-                    lg={3}
-                    align="center"
-                    alignItems="center"
-                    justifyContent="center"
-                    sx={{ p: 0, m: 1 }}>
+                  <Grid item xs={12} key={card._id} md={4} lg={3} sx={{ display: "flex", justifyContent: "center" }}>
                     <CardComponent card={card} />
                   </Grid>
                 ))}

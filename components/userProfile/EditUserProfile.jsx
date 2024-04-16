@@ -2,9 +2,8 @@
 import { React, useState, useEffect, useRef } from "react";
 import { useSession, getSession } from "next-auth/react";
 
-import { theme as importedTheme } from "/styles/theme.js";
-import { ThemeProvider, useTheme } from "@mui/material/styles";
-import { Box, Typography, Grid, Backdrop, CircularProgress } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+import { Typography, Grid, Backdrop, CircularProgress, Snackbar, Alert } from "@mui/material";
 
 import useAuthUser from "@/store/useAuthUser";
 import useImageUpload from "@/hooks/useImageUpload";
@@ -22,28 +21,39 @@ export default function UserProfileEditPage() {
   const [isEditAvatar, setIsEditAvatar] = useState(false);
   const [error, setError] = useState({});
   const [loading, setLoading] = useState(false);
+  const [openError, setOpenError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const fileInputRef = useRef(null);
   const { data: session, update: updateSession, status } = useSession();
+  console.log("session", session);
   const [userData, setUserData] = useState({
     name: "",
-    email: ""
+    email: "",
+    address: ""
   });
 
   useEffect(() => {
     const fetchData = async () => {
-      const session = await getSession();
-      if (session && status === "authenticated") {
-        setUserData({
-          name: session?.user?.name,
-          email: session?.user?.email
-        });
-        setAvatarPreview(session?.user?.avatar);
+      try {
+        const session = await getSession();
+        if (session && status === "authenticated") {
+          setUserData({
+            name: session?.user?.name,
+            email: session?.user?.email,
+            address: session?.user?.address
+          });
+          setAvatarPreview(session?.user?.avatar);
+        }
+      } catch (error) {
+        console.error(error);
+        setOpenError(true);
+        setErrorMessage(error.toString() || "unknown error");
       }
     };
     fetchData();
   }, [status, session]);
 
-  console.log(userData);
+  //console.log(userData);
   useEffect(() => {
     if (!selectedFile) {
       setAvatarPreview("");
@@ -114,6 +124,12 @@ export default function UserProfileEditPage() {
       formErrors.emailError = emailError;
       isValid = false;
     }
+
+    const { value: trimmedAddress, error: addressError } = trimAndValidate("address", userData.address);
+    if (addressError) {
+      formErrors.addressError = addressError;
+      isValid = false;
+    }
     setError(formErrors);
     return isValid;
   };
@@ -139,76 +155,75 @@ export default function UserProfileEditPage() {
   if (!session) {
     return null;
   }
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setOpenError(false);
+  };
   return (
-    //entire screen
-    <ThemeProvider theme={importedTheme}>
-      <Box
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        justifyContent="space-between"
+    <>
+      <Grid
+        container
+        spacing={7}
         sx={{
-          mt: 0, //margin -top
-          mb: 0,
-          p: 0, // padding
-          width: "95%"
+          mx: "auto",
+          my: 5,
+          width: "calc(100% - 10em)"
         }}>
-        <Typography
-          variant="h4"
-          align="center"
-          color="primary"
-          sx={{
-            flexGrow: 0,
-            p: 0,
-            mt: 5
-          }}>
-          Welcome {session?.user?.name}!
-        </Typography>
-        {/* left and right side of screen */}
-        {errorAvatarUpload && (
-          <Typography color="error" style={{ marginBottom: "10px" }}>
-            {errorAvatarUpload}
+        <Grid item xs={12} md={6} lg={3}>
+          <AvatarSection
+            avatarPreview={avatarPreview}
+            handleAvatarChange={handleAvatarChange}
+            isEditAvatar={isEditAvatar}
+            fileInputRef={fileInputRef}
+            submitAvatar={submitAvatar}
+            theme={theme}
+          />
+        </Grid>
+
+        <Grid item xs={12} md={6} lg={9}>
+          <Typography
+            variant="h2"
+            color="primary"
+            gutterBottom
+            sx={{
+              flexGrow: 0,
+              p: 0,
+              textAlign: "left"
+            }}>
+            Update Your Profile
           </Typography>
-        )}
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          width="100%"
-          sx={{
-            mt: 2, //margin -top
-            p: 2 // padding
-          }}>
-          <Grid container spacing={2}>
-            <Grid item xs={12} md={4}>
-              {/* left side of screen */}
-              <AvatarSection
-                avatarPreview={avatarPreview}
-                handleAvatarChange={handleAvatarChange}
-                isEditAvatar={isEditAvatar}
-                fileInputRef={fileInputRef}
-                submitAvatar={submitAvatar}
-                theme={theme}
-              />
-            </Grid>
-            <Grid item xs={12} md={8}>
-              {/* right side of screen */}
-              <FormSection
-                handleChange={handleChange}
-                userData={userData}
-                isEditing={isEditing}
-                handleSubmit={handleSubmit}
-                error={error}
-                theme={theme}
-              />
-            </Grid>
-          </Grid>
-        </Box>
-      </Box>
+          <FormSection
+            handleChange={handleChange}
+            userData={userData}
+            isEditing={isEditing}
+            handleSubmit={handleSubmit}
+            error={error}
+            theme={theme}
+            isSeller={session.user.isSeller}
+          />
+        </Grid>
+      </Grid>
+      {errorAvatarUpload && (
+        <Typography color="error" style={{ marginBottom: "10px" }}>
+          {errorAvatarUpload}
+        </Typography>
+      )}
       <Backdrop
         sx={{ color: "#fff", zIndex: theme => theme.zIndex.drawer + 1, backdropFilter: "blur(2px)" }}
         open={loading}>
         <CircularProgress color="inherit" />
       </Backdrop>
-    </ThemeProvider>
+      <Snackbar
+        open={openError}
+        autoHideDuration={5000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}>
+        <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
+          {errorMessage}
+        </Alert>
+      </Snackbar>
+    </>
   );
 }
