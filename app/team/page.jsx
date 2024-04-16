@@ -24,6 +24,14 @@ const Team = () => {
 
   const teamMembers = [
     {
+      name: "Cesar Lopez",
+      description: "Frontend Developer",
+      githubUsername: "wowgr8",
+      image: "/images/cesar-lopez.png",
+      width: 200,
+      height: 200
+    },
+    {
       name: "Liubov Rodin",
       description: "Frontend Developer",
       githubUsername: "LiubovCass ",
@@ -55,15 +63,6 @@ const Team = () => {
       description: "Backend Developer",
       githubUsername: "ElenaCherpakova",
       image: "/images/elena-cherpakova.png",
-      width: 200,
-      height: 200
-    },
-
-    {
-      name: "Anna Pestova",
-      description: "Full Stack Developer",
-      githubUsername: "AnnaPestova1 ",
-      image: "/images/anna-pestova.png",
       width: 200,
       height: 200
     },
