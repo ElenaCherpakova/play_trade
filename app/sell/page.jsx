@@ -1,44 +1,63 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Box, Button, Typography, Container, Tab, Tabs, Snackbar, Alert } from "@mui/material";
+import { Box, Grid, Button, Typography, Container, Tab, Tabs, Snackbar, Alert } from "@mui/material";
 import { theme } from "@/styles/theme";
 import CardComponent from "@/components/CardComponent";
-import { createCardData } from "@/utils/fetchData";
+import { createCardData, fetchSellerCards } from "@/utils/fetchData";
 import CardForm from "@/components/CardForm";
+import { useSession } from "next-auth/react";
 
 export default function Sell() {
   const router = useRouter();
   const [openError, setOpenError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [add, setAdd] = useState(false);
+  const [add] = useState(false);
   const [id, setId] = useState("");
-  //create card for testing routes
-  const [card, setCard] = useState({
-    name: "",
-    set: "",
-    price: 0,
-    currency: "",
-    shippingCost: 0,
-    description: "",
-    conditions: "",
-    category: "",
-    imageURL: "",
-    quantity: 0,
-    available: ""
-  });
   const [selectedTab, setSelectedTab] = useState(0);
+  const [sellerItemsSold, setSellerItemsSold] = useState([]);
+  const [sellerItemsAvailable, setSellerItemsAvailable] = useState([]);
+  const { data: session } = useSession();
+  // const [cards, setCards] = useState([]);
+  const sellerID = session?.user?._id;
 
   const handleTabChange = (event, newValue) => {
     setSelectedTab(newValue);
   };
+
+  //fetch cards data and filter them based on availability
+  useEffect(() => {
+    if (!sellerID) return;
+    const fetchData = async () => {
+      try {
+        const fetchedData = await fetchSellerCards(sellerID);
+
+        // Check if fetchedData.cards is an array before calling filter on it
+        let allCards = [];
+        if (Array.isArray(fetchedData.cards)) {
+          allCards = fetchedData.cards;
+        } else {
+          console.error("fetchedData.cards is not an array:", fetchedData.cards);
+        }
+        //filter cards based on availability
+        const soldCards = allCards.filter(card => card.available !== "available");
+        const availableCards = allCards.filter(card => card.available === "available");
+        setSellerItemsSold(soldCards);
+        setSellerItemsAvailable(availableCards);
+      } catch (error) {
+        console.error("Error fetching cards", error);
+        setOpenError(true);
+        setErrorMessage(error.toString() || "Unknown error occurred");
+      }
+    };
+    fetchData();
+  }, [sellerID, session]);
 
   useEffect(() => {
     if (id) {
       router.push(`/market/item/${id}`); //user should probably be redirected to /sell/carddetails or /sell page
     }
   }, [id, router]);
-
 
   //fetch data need to move to file in utils
   const addCard = async formData => {
@@ -62,76 +81,71 @@ export default function Sell() {
     router.push("/sell/add");
   };
 
-  const handleEditButtonClick = () => {
+  const handleEditButtonClick = id => {
     router.push(`/sell/edit/${id}`);
   };
 
-  const handleDeleteButtonClick = () => {
+  const handleDeleteButtonClick = id => {
     router.push("/market/item/[id]"); // will update later
   };
 
-  const [sellerItemsSold, setSellerItemsSold] = useState([]);
-  const [sellerItemsAvailable, setSellerItemsAvailable] = useState([]);
-
-  useEffect(() => {
-    // Fetch seller items data
-    // I will replace this with the actual fetch logic when it's done
-    // For demonstration purposes, I'm setting dummy data here
-    setSellerItemsSold([
-      { id: 1, name: "Item 1", imageURL: "/images/pokemon.jpg", price: "$10" },
-      { id: 2, name: "Item 2", imageURL: "/images/pokemon.jpg", price: "$20" },
-      { id: 3, name: "Item 3", imageURL: "/images/pokemon.jpg", price: "$30" },
-      { id: 4, name: "Item 4", imageURL: "/images/pokemon.jpg", price: "$60" }
-    ]);
-    setSellerItemsAvailable([
-      { id: 1, name: "Item 1", imageURL: "/images/pokemon.jpg", price: "$10" },
-      { id: 2, name: "Item 2", imageURL: "/images/pokemon.jpg", price: "$20" },
-      { id: 3, name: "Item 3", imageURL: "/images/pokemon.jpg", price: "$30" },
-      { id: 4, name: "Item 4", imageURL: "/images/pokemon.jpg", price: "$60" }
-    ]);
-  }, []);
-
   return (
     <Container maxWidth="lg">
-      <Box>
+      <Box mt={theme.spacing(3)}>
         <Box display="flex" justifyContent="space-between" alignItems="center" mt={theme.spacing(2)}>
           <Typography variant="h5" gutterBottom>
-            Create new card{" "}
+            Create new card
           </Typography>
 
           <Button variant="contained" color="primary" onClick={handleAddButtonClick}>
-            Add card
+            Add new card
           </Button>
         </Box>
 
         <Box mt={2}>{add && <CardForm cardValue={card} onSubmitForm={addCard} />}</Box>
 
         <Tabs value={selectedTab} onChange={handleTabChange} indicatorColor="primary">
-          <Tab label="Items Sold" />
           <Tab label="Items Available" />
+          <Tab label="Items Sold" />
         </Tabs>
 
-        <Box mt={theme.spacing(2)} gap={theme.spacing(2)} display="flex" flexWrap="wrap">
-          {selectedTab === 0 &&
-            sellerItemsSold.map(item => (
-              <CardComponent
-                key={item.id}
-                card={item}
-                buttonSet="seller"
-                onEdit={() => handleEditButtonClick(item.id)} // add more functionality later
-                onDelete={() => handleDeleteButtonClick(item.id)}  // add more functionality later
-              />
-            ))}
-          {selectedTab === 1 &&
-            sellerItemsAvailable.map(item => (
-              <CardComponent
-                key={item.id}
-                card={item}
-                buttonSet="seller"
-                onEdit={() => handleEditButtonClick(item.id)} // add more functionality later
-                onDelete={() => handleDeleteButtonClick(item.id)}  // add more functionality later
-              />
-            ))}
+        <Box mt={theme.spacing(2)}>
+          <Grid container spacing={2}>
+            {selectedTab === 0 &&
+              sellerItemsAvailable.map((item, index) => (
+                <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+                  <CardComponent
+                    card={item}
+                    buttonSet="seller"
+                    showAddToCartButton={false}
+                    onEdit={() => handleEditButtonClick(item.id)} // add more functionality later
+                    onDelete={() => handleDeleteButtonClick(item.id)} // add more functionality later
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      height: "100%"
+                    }}
+                  />
+                </Grid>
+              ))}
+            {selectedTab === 1 &&
+              sellerItemsSold.map((item, index) => (
+                <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+                  <CardComponent
+                    card={item}
+                    buttonSet="seller"
+                    showAddToCartButton={false}
+                    onEdit={() => handleEditButtonClick(item.id)} // add more functionality later
+                    onDelete={() => handleDeleteButtonClick(item.id)} // add more functionality later
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      height: "100%"
+                    }}
+                  />
+                </Grid>
+              ))}
+          </Grid>
         </Box>
         <Snackbar
           open={openError}

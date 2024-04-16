@@ -88,9 +88,25 @@ export async function createCardData(formData) {
   return data.data;
 }
 
-export async function fetchSellerCards(sellerId, filters, page, limit) {
+export async function deleteCardData(id) {
+  const response = await fetch(`/api/cards/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  });
+  if (!response.ok) {
+    const data = await response.json();
+    console.log(data.errors);
+    const detailedErrorMessage = data.errors ? data.errors.join(", ") : data.message;
+    throw new Error(detailedErrorMessage || "Unknown error occurred.");
+  }
+  // No need to return anything for a DELETE operation
+}
+
+export async function fetchSellerCards(sellerId, filters = {}, page = 0, limit = 0) {
   let url = `/api/cards/seller/${sellerId}`;
-  console.log("url", url);
+  console.log("url from fetch seller cards", url);
 
   //converting searchParams object to URLSearchParams
   //to handle encoding and query string construction

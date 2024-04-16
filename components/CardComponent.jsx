@@ -11,22 +11,13 @@ import AddToCartButton from "./AddToCartButton";
  * @param {boolean} [props.showInformation]
  */
 
-export default function CardComponent({ card, showButtons = true, showInformation = true }) {
+export default function CardComponent({
+  card,
+  showButtons = true,
+  showInformation = true,
+  showAddToCartButton = true
+}) {
   const router = useRouter();
-
-  // const buyNow = () => {
-  //   console.log("buy now");
-  // };
-
-  // const handleEdit = event => {
-  //   event.stopPropagation(); // Prevents click event from bubbling up to CardActionArea
-  //   onEdit(card.id);
-  // };
-
-  // const handleDelete = (event) => {
-  //   event.stopPropagation(); // Prevents click event from bubbling up to CardActionArea
-  //   onDelete(card.id);
-  // };
 
   return (
     <Card
@@ -73,12 +64,7 @@ export default function CardComponent({ card, showButtons = true, showInformatio
         )}
       </CardActionArea>
       {showButtons && (
-        <CardActions sx={{ p: 0.5 }}>
-          {/* <Button disabled onClick={buyNow} variant="contained" color="secondary">
-            Buy Now
-          </Button> */}
-          <AddToCartButton card={card} />
-        </CardActions>
+        <CardActions sx={{ p: 0.5 }}>{showAddToCartButton && <AddToCartButton card={card} />}</CardActions>
       )}
     </Card>
   );
