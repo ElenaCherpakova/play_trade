@@ -119,6 +119,7 @@ export default function Sell() {
                     card={item}
                     buttonSet="seller"
                     showButtons={false}
+                    showEditDelete={true}
                     onEdit={() => handleEditButtonClick(item.id)} // add more functionality later
                     onDelete={() => handleDeleteButtonClick(item.id)} // add more functionality later
                     sx={{
@@ -135,7 +136,8 @@ export default function Sell() {
                   <CardComponent
                     card={item}
                     buttonSet="seller"
-                    showAddToCartButton={false}
+                    showButtons={false}
+                    showEditDelete={true}
                     onEdit={() => handleEditButtonClick(item.id)} // add more functionality later
                     onDelete={() => handleDeleteButtonClick(item.id)} // add more functionality later
                     sx={{
