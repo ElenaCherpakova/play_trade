@@ -11,12 +11,7 @@ import AddToCartButton from "./AddToCartButton";
  * @param {boolean} [props.showInformation]
  */
 
-export default function CardComponent({
-  card,
-  showButtons = true,
-  showInformation = true,
-  showAddToCartButton = true
-}) {
+export default function CardComponent({ card, showButtons = true, showInformation = true }) {
   const router = useRouter();
 
   return (
@@ -64,7 +59,9 @@ export default function CardComponent({
         )}
       </CardActionArea>
       {showButtons && (
-        <CardActions sx={{ p: 0.5 }}>{showAddToCartButton && <AddToCartButton card={card} />}</CardActions>
+        <CardActions sx={{ p: 0.5 }}>
+          <AddToCartButton card={card} />
+        </CardActions>
       )}
     </Card>
   );

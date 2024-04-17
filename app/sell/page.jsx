@@ -3,10 +3,10 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Box, Grid, Button, Typography, Container, Tab, Tabs, Snackbar, Alert } from "@mui/material";
 import { theme } from "@/styles/theme";
-import CardComponent from "@/components/CardComponent";
 import { createCardData, fetchSellerCards } from "@/utils/fetchData";
-import CardForm from "@/components/CardForm";
 import { useSession } from "next-auth/react";
+import CardForm from "@/components/CardForm";
+import CardComponent from "@/components/CardComponent";
 
 export default function Sell() {
   const router = useRouter();
@@ -18,7 +18,6 @@ export default function Sell() {
   const [sellerItemsSold, setSellerItemsSold] = useState([]);
   const [sellerItemsAvailable, setSellerItemsAvailable] = useState([]);
   const { data: session } = useSession();
-  // const [cards, setCards] = useState([]);
   const sellerID = session?.user?._id;
 
   const handleTabChange = (event, newValue) => {
@@ -92,22 +91,24 @@ export default function Sell() {
   return (
     <Container maxWidth="lg">
       <Box mt={theme.spacing(3)}>
-        <Box display="flex" justifyContent="space-between" alignItems="center" mt={theme.spacing(2)}>
-          <Typography variant="h5" gutterBottom>
-            Create new card
-          </Typography>
-
-          <Button variant="contained" color="primary" onClick={handleAddButtonClick}>
-            Add new card
-          </Button>
-        </Box>
-
+        <Typography variant="h5" gutterBottom>
+          My Cards
+        </Typography>
         <Box mt={2}>{add && <CardForm cardValue={card} onSubmitForm={addCard} />}</Box>
 
-        <Tabs value={selectedTab} onChange={handleTabChange} indicatorColor="primary">
-          <Tab label="Items Available" />
-          <Tab label="Items Sold" />
-        </Tabs>
+        <Grid container justifyContent="space-between" alignItems="center" mt={theme.spacing(2)}>
+          <Grid item xs={12} sm={6} md={4} lg={3}>
+            <Tabs value={selectedTab} onChange={handleTabChange} indicatorColor="primary">
+              <Tab label="Items Available" />
+              <Tab label="Items Sold" />
+            </Tabs>
+          </Grid>
+          <Grid item xs={12} sm={6} md={4} lg={3} container justifyContent="flex-end">
+            <Button variant="contained" color="primary" onClick={handleAddButtonClick} sx={{ mr: 7 }}>
+              Add new card
+            </Button>
+          </Grid>
+        </Grid>
 
         <Box mt={theme.spacing(2)}>
           <Grid container spacing={2}>
@@ -117,7 +118,7 @@ export default function Sell() {
                   <CardComponent
                     card={item}
                     buttonSet="seller"
-                    showAddToCartButton={false}
+                    showButtons={false}
                     onEdit={() => handleEditButtonClick(item.id)} // add more functionality later
                     onDelete={() => handleDeleteButtonClick(item.id)} // add more functionality later
                     sx={{
@@ -146,7 +147,7 @@ export default function Sell() {
                 </Grid>
               ))}
           </Grid>
-        </Box>
+        </Box>      
         <Snackbar
           open={openError}
           autoHideDuration={5000}
