@@ -40,7 +40,7 @@ function useCountdown(initialTime, onEnd) {
 // Function for counting down time
 export default function CartItem({ item, index, handleCheck, removeItemFromCart, handleQuantityChange, cartItems }) {
   const router = useRouter();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const timeLeft = useCountdown(1 * 60, () => setOpen(true));
   {
     /* For the presentation should be changed for useCountdown(15 * 60, */
