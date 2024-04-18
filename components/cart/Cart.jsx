@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { theme } from "/styles/theme.js";
 import { Grid, Typography, Paper, Divider, Button, useMediaQuery } from "@mui/material";
 import CartItem from "./CartItem";
-import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 
 export default function Cart() {
   const { cartItems, removeItemFromCart, handleCheck, handleQuantityChange, itemsCount, totalPrice } = useCartStore(
@@ -19,14 +18,13 @@ export default function Cart() {
     })
   );
 
-  const stripe = useStripe();
-  const elements = useElements();
+ 
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const router = useRouter();
   const [checkoutUrl, setCheckoutUrl] = useState(() => () => {});
 
-  // Declare cartItems variable
-  // Remove the redundant declaration of 'cartItems'
+
+  
 
   useEffect(() => {
     setCheckoutUrl(() => () => router.push("/cart/checkout"));
