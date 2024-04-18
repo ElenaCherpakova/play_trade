@@ -78,8 +78,7 @@ export default function CardComponent({ card, showButtons = true, showInformatio
           image={card.imageURL}
           alt={card.name}
           height="300"
-        />
-          
+        />          
         {showInformation && (
           <CardContent sx={{ p: 0.5 }}>
             <Box sx={{ display: "flex", textAlign: "left", gap: 2 }}>
