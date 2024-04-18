@@ -18,15 +18,7 @@ export default function Market() {
   const [openError, setOpenError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [filterOpen, setFilterOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-    }, 3000);
-  }, []);
-
+  const [loading, setLoading] = useState(true);
   const searchParams = useSearchParams();
   const filters = {
     conditions: searchParams.get("conditions") || "",
@@ -45,6 +37,7 @@ export default function Market() {
         const data = await fetchAllCardsData(filters.search, filters, page, limit);
         setCards(data.cards);
         setTotalCards(data.total);
+        setLoading(false);
       } catch (error) {
         console.error;
         setOpenError(true);
