@@ -22,7 +22,7 @@ const CheckoutForm = () => {
     }
 
     setLoading(true);
-    const cardElement = elements?.getElement(CardElement);
+    const cardElement = elements?.getElement('card');
 
     try {
       const response = await fetch("/api/stripe", {
