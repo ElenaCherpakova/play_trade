@@ -95,12 +95,38 @@ export default function Page({ params }) {
         </Breadcrumbs>
 
         {/* Image and Details Section */}
-        <Box style={{ display: "flex", marginTop: theme.spacing(2) }}>
+        <Box
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: theme.spacing(3),
+            // marginTop: theme.spacing(2)
+          }}>
           {/* Image Section */}
-          {cardDetails && <CardComponent card={cardDetails} showButtons={false} showInformation={false} />}
-
+          {cardDetails && (
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: theme.spacing(2)
+              }}>
+              <CardComponent card={cardDetails} showButtons={false} showInformation={false} />
+              <Button
+                variant="contained"
+                color="accent"
+                onClick={handleAddToCartButtonClick}
+                style={{ color: theme.palette.background.paper }}
+                startIcon={<ShoppingCartIcon />}
+              >
+                Add to cart
+              </Button>
+            </Box>
+          )}
+          
           {/* Details Section */}
-
           {cardDetails && (
             <Box style={{ maxWidth: 600, paddingLeft: theme.spacing(2), borderRadius: theme.shape.borderRadius }}>
               <Typography variant="body1" gutterBottom style={{ display: "flex" }}>
@@ -206,7 +232,7 @@ export default function Page({ params }) {
               </Typography>
 
               {/* Action Buttons */}
-              <Box style={{ marginTop: theme.spacing(2), display: "flex", gap: theme.spacing(2) }}>
+              {/* <Box style={{ marginTop: theme.spacing(2), display: "flex", gap: theme.spacing(2) }}>
                 <Button
                   variant="contained"
                   color="accent"
@@ -214,12 +240,12 @@ export default function Page({ params }) {
                   style={{ color: theme.palette.background.paper }}
                   startIcon={<ShoppingCartIcon />}>
                   Add to cart
-                </Button>
+                </Button> */}
 
-                {/* <Button variant="contained" color="primary" onClick={handleWishlistButtonClick}>
+              {/* <Button variant="contained" color="primary" onClick={handleWishlistButtonClick}>
                   Add to Wishlist
                 </Button> */}
-              </Box>
+              {/* </Box> */}
             </Box>
           )}
         </Box>
