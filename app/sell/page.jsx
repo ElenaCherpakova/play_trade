@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Box, Grid, Button, Typography, Container, Tab, Tabs, Snackbar, Alert } from "@mui/material";
 import { theme } from "@/styles/theme";
-import { createCardData, fetchSellerCards } from "@/utils/fetchData";
+import { createCardData, fetchSellerCards, deleteCardData, editCardData } from "@/utils/fetchData";
 import { useSession } from "next-auth/react";
 import CardForm from "@/components/CardForm";
 import CardComponent from "@/components/CardComponent";
@@ -50,13 +50,17 @@ export default function Sell() {
       }
     };
     fetchData();
-  }, [sellerID, session]);
+  }, [sellerID, session, ]);
 
   useEffect(() => {
     if (id) {
       router.push(`/market/item/${id}`); //user should probably be redirected to /sell/carddetails or /sell page
     }
   }, [id, router]);
+
+  // This useEffect only watches for changes in sellerItemsAvailable and sellerItemsSold
+useEffect(() => { 
+}, [sellerItemsAvailable, sellerItemsSold]);
 
   //fetch data need to move to file in utils
   const addCard = async formData => {
@@ -84,8 +88,16 @@ export default function Sell() {
     router.push(`/sell/edit/${id}`);
   };
 
-  const handleDeleteButtonClick = id => {
-    router.push("/market/item/[id]"); // will update later
+  const handleDeleteButtonClick = async id => {
+    try {
+      await deleteCardData(id);
+      // After successful deletion, remove the card from the state
+      setSellerItemsAvailable(sellerItemsAvailable.filter(item => item._id !== id));
+      setSellerItemsSold(sellerItemsSold.filter(item => item._id !== id));
+    } catch (error) {
+      setOpenError(true);
+      setErrorMessage(error.toString() || "Unknown error occurred");
+    }
   };
 
   return (
@@ -120,8 +132,8 @@ export default function Sell() {
                     buttonSet="seller"
                     showButtons={false}
                     showEditDelete={true}
-                    onEdit={() => handleEditButtonClick(item.id)} // add more functionality later
-                    onDelete={() => handleDeleteButtonClick(item.id)} // add more functionality later
+                    onEdit={() => handleEditButtonClick(item._id)} // add more functionality later
+                    onDelete={() => handleDeleteButtonClick(item._id)} // add more functionality later
                     sx={{
                       display: "flex",
                       flexDirection: "column",
@@ -149,7 +161,7 @@ export default function Sell() {
                 </Grid>
               ))}
           </Grid>
-        </Box>      
+        </Box>
         <Snackbar
           open={openError}
           autoHideDuration={5000}

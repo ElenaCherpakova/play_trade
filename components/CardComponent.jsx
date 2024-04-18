@@ -1,7 +1,18 @@
 "use client";
 import * as React from 'react';
 import Card from "@mui/material/Card";
-import { CardActionArea, Box, Paper, Typography, CardActions, CardContent, CardMedia, CardHeader, IconButton, Menu, MenuItem } from "@mui/material";
+import { 
+  CardActionArea, 
+  Box, 
+  Typography, 
+  CardActions, 
+  CardContent, 
+  CardMedia, 
+  CardHeader, 
+  IconButton, 
+  Menu, 
+  MenuItem 
+} from "@mui/material";
 import { useRouter } from "next/navigation";
 import AddToCartButton from "./AddToCartButton";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -13,7 +24,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
  * @param {boolean} [props.showInformation]
  */
 
-export default function CardComponent({ card, showButtons = true, showInformation = true, showEditDelete = false }) {
+export default function CardComponent({ card, onEdit, onDelete, showButtons = true, showInformation = true, showEditDelete = false }) {
   const router = useRouter();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -25,6 +36,7 @@ export default function CardComponent({ card, showButtons = true, showInformatio
   const handleClose = () => {
     setAnchorEl(null);
   };
+
 
   return (
     <Card
@@ -58,10 +70,10 @@ export default function CardComponent({ card, showButtons = true, showInformatio
             transformOrigin={{ horizontal: 'right', vertical: 'top' }}
             anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
           >
-            <MenuItem>
+            <MenuItem onClick={onEdit}>
               Edit
             </MenuItem>
-            <MenuItem>
+            <MenuItem onClick={onDelete}>
               Delete
             </MenuItem>
           </Menu>
