@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Box, Button, Typography, Breadcrumbs, Divider, Link, Snackbar, Alert } from "@mui/material";
 import { theme } from "@/styles/theme";
 import { fetchCardData } from "@/utils/fetchData";
+import { useSession } from "next-auth/react";
 import { fetchSellerData } from "@/utils/fetchData";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 
@@ -83,6 +84,16 @@ export default function Page({ params }) {
     setOpenError(false);
   };
   console.log("cardDetails", cardDetails);
+
+  const { data: session } = useSession(); // get session data
+  const currentUserId = session?.user?._id; // get current user id
+
+  const handleEdit = () => {
+    // handle edit logic here
+  };
+  const handleDelete = () => {
+    // handle delete logic here
+  };
   return (
     <>
       <Box style={{ marginLeft: theme.spacing(2) }}>
@@ -100,7 +111,7 @@ export default function Page({ params }) {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            gap: theme.spacing(3),
+            gap: theme.spacing(3)
             // marginTop: theme.spacing(2)
           }}>
           {/* Image Section */}
@@ -114,18 +125,32 @@ export default function Page({ params }) {
                 gap: theme.spacing(2)
               }}>
               <CardComponent card={cardDetails} showButtons={false} showInformation={false} />
-              <Button
-                variant="contained"
-                color="accent"
-                onClick={handleAddToCartButtonClick}
-                style={{ color: theme.palette.background.paper }}
-                startIcon={<ShoppingCartIcon />}
-              >
-                Add to cart
-              </Button>
+              {currentUserId === cardDetails?.createdBy && (
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: theme.spacing(2)
+                  }}>
+                  <Button onClick={handleEdit}>Edit</Button>
+                  <Button onClick={handleDelete}>Delete</Button>
+                </Box>
+              )}
+              {currentUserId !== cardDetails?.createdBy && (
+                <Button
+                  variant="contained"
+                  color="accent"
+                  onClick={handleAddToCartButtonClick}
+                  style={{ color: theme.palette.background.paper }}
+                  startIcon={<ShoppingCartIcon />}>
+                  Add to cart
+                </Button>
+              )}
             </Box>
           )}
-          
+
           {/* Details Section */}
           {cardDetails && (
             <Box style={{ maxWidth: 600, paddingLeft: theme.spacing(2), borderRadius: theme.shape.borderRadius }}>
