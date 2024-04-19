@@ -1,12 +1,14 @@
 "use client";
 import React, { useState } from "react";
-import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
+import  { useRouter } from "next/navigation"
+
+import { useStripe, useElements, CardElement, LinkAuthenticationElement } from "@stripe/react-stripe-js";
 import { Button, Paper, Backdrop, Box, CircularProgress, Typography } from "@mui/material";
 import { useCartStore } from "@/store/cartStore";
 import { useTheme } from "@mui/material/styles";
 
-
 const CheckoutForm = () => {
+  const router = useRouter();
   const theme = useTheme();
   const totalPrice = useCartStore(state => state.totalPrice);
   const stripe = useStripe();
@@ -22,7 +24,7 @@ const CheckoutForm = () => {
     }
 
     setLoading(true);
-    const cardElement = elements?.getElement('card');
+    const cardElement = elements?.getElement("card");
 
     try {
       const response = await fetch("/api/stripe", {
@@ -35,14 +37,23 @@ const CheckoutForm = () => {
 
       const data = await response.json();
       console.log("DATA", data);
-  
+
       const res = await stripe?.confirmCardPayment(data?.intent, {
         payment_method: { card: cardElement }
       });
-
+      if (res.error) {
+        if (res.error.type === "card_error" || res.error.type === "Validation_error") {
+          setError(res.error.message);
+          setLoading(false);
+          return;
+        } else {
+          setError("An unknown error occurred. Please try again");
+        }
+      }
       const status = res?.paymentIntent?.status;
       if (status === "succeeded") {
         setError("Payment Successful");
+        router.push("/stripe/purchase-success");
       }
     } catch (error) {
       setError(error.message);
@@ -65,13 +76,13 @@ const CheckoutForm = () => {
         maxWidth: 480
       }}>
       <Paper sx={{ p: 2, mt: 3, width: "100%" }}>
-        <CardElement/>
+        <CardElement />
         {loading ? (
           <Backdrop
-          sx={{ color: "#fff", zIndex: theme => theme.zIndex.drawer + 1, backdropFilter: "blur(2px)" }}
-          open={loading}>
-          <CircularProgress color="inherit" />
-        </Backdrop>
+            sx={{ color: "#fff", zIndex: theme => theme.zIndex.drawer + 1, backdropFilter: "blur(2px)" }}
+            open={loading}>
+            <CircularProgress color="inherit" />
+          </Backdrop>
         ) : (
           <Button type="submit" disabled={!stripe} fullWidth sx={{ mt: 4 }}>
             Pay ${totalPrice}
