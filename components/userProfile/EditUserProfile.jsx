@@ -25,7 +25,6 @@ export default function UserProfileEditPage() {
   const [errorMessage, setErrorMessage] = useState("");
   const fileInputRef = useRef(null);
   const { data: session, update: updateSession, status } = useSession();
-  console.log("session", session);
   const [userData, setUserData] = useState({
     name: "",
     email: "",
@@ -53,7 +52,6 @@ export default function UserProfileEditPage() {
     fetchData();
   }, [status, session]);
 
-  //console.log(userData);
   useEffect(() => {
     if (!selectedFile) {
       setAvatarPreview("");

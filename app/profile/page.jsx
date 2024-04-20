@@ -61,7 +61,6 @@ export default function Profile() {
     };
     fetchData();
   }, [status, session]);
-  console.log(userData);
 
   const handleBecomeSeller = async e => {
     e.preventDefault();

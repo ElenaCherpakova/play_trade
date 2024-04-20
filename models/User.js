@@ -41,11 +41,11 @@ const UserSchema = new Schema({
   },
   passwordResetToken: {
     type: String,
-    required: false,
+    required: false
   },
   passwordResetExpiry: {
     type: Date,
-    required: false,
+    required: false
   },
   role: {
     type: String,
@@ -58,7 +58,6 @@ const UserSchema = new Schema({
     required: function () {
       return this.isSeller === true;
     }
-    
   },
   isSeller: {
     type: Boolean,
@@ -68,12 +67,11 @@ const UserSchema = new Schema({
 
 // Encrypt password before saving
 UserSchema.pre("save", async function () {
-  if (this.isModified('password')) {
+  if (this.isModified("password")) {
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
   }
 });
-
 
 UserSchema.methods.createJWT = function () {
   return jwt.sign({ userId: this._id, email: this.email }, process.env.JWT_SECRET, {
@@ -96,7 +94,6 @@ UserSchema.methods.editUser = async function (updatedUserInfo) {
     await this.save();
     console.log("User was successfully updated");
   } catch (error) {
-    console.log("Error");
     throw error;
   }
 };
@@ -107,7 +104,6 @@ UserSchema.methods.deleteUser = async function () {
     await this.remove();
     console.log("User was successfully deleted");
   } catch (error) {
-    console.log("Error");
     throw error;
   }
 };
