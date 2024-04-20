@@ -4,7 +4,7 @@ import CardComponent from "@/components/CardComponent";
 import { useRouter } from "next/navigation";
 import { Box, Button, Typography, Breadcrumbs, Divider, Link, Snackbar, Alert } from "@mui/material";
 import { theme } from "@/styles/theme";
-import { fetchCardData } from "@/utils/fetchData";
+import { fetchCardData, deleteCardData } from "@/utils/fetchData";
 import { useSession } from "next-auth/react";
 import { fetchSellerData } from "@/utils/fetchData";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
@@ -89,10 +89,18 @@ export default function Page({ params }) {
   const currentUserId = session?.user?._id; // get current user id
 
   const handleEdit = () => {
-    // handle edit logic here
+    router.push(`/sell/edit/${id}`);
   };
-  const handleDelete = () => {
-    // handle delete logic here
+  const handleDelete = async () => {
+    try {
+      await deleteCardData(id);
+      // navigate back to the previous page
+      router.back();
+    } catch (error) {
+      console.error(error);
+      setOpenError(true);
+      setErrorMessage(error.toString() || "unknown error");
+    }
   };
   return (
     <>
