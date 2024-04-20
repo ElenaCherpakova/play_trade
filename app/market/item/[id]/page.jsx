@@ -7,6 +7,7 @@ import { theme } from "@/styles/theme";
 import { fetchCardData } from "@/utils/fetchData";
 import { fetchSellerData } from "@/utils/fetchData";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import Loader from "@/components/loader/Loader";
 
 /**
  *
@@ -20,6 +21,7 @@ export default function Page({ params }) {
   const [sellerName, setSellerName] = useState("Visit seller's page");
   const router = useRouter();
   const id = params.id;
+  const [loading, setLoading] = useState(true);
 
   // Function to convert currency code to symbol
   const getCurrencySymbol = currencyCode => {
@@ -32,6 +34,7 @@ export default function Page({ params }) {
 
   useEffect(() => {
     if (id) {
+      setLoading(true);
       const fetchData = async () => {
         try {
           const cardData = await fetchCardData(id);
@@ -40,6 +43,8 @@ export default function Page({ params }) {
           console.error(error);
           setOpenError(true);
           setErrorMessage(error.toString() || "unknown error");
+        } finally {
+          setLoading(false);
         }
       };
       fetchData();
@@ -48,6 +53,7 @@ export default function Page({ params }) {
 
   useEffect(() => {
     if (cardDetails) {
+      setLoading(true);
       const id = cardDetails.createdBy;
       const fetchData = async () => {
         try {
@@ -58,6 +64,8 @@ export default function Page({ params }) {
           console.error(error);
           setOpenError(true);
           setErrorMessage(error.toString() || "unknown error");
+        } finally {
+          setLoading(false);
         }
       };
       fetchData();
@@ -95,134 +103,138 @@ export default function Page({ params }) {
         </Breadcrumbs>
 
         {/* Image and Details Section */}
-        <Box style={{ display: "flex", marginTop: theme.spacing(2) }}>
-          {/* Image Section */}
-          {cardDetails && <CardComponent card={cardDetails} showButtons={false} showInformation={false} />}
+        {loading ? (
+          <Loader /> // Show Loader component while loading card data
+        ) : (
+          <Box style={{ display: "flex", marginTop: theme.spacing(2) }}>
+            {/* Image Section */}
+            {cardDetails && <CardComponent card={cardDetails} showButtons={false} showInformation={false} />}
 
-          {/* Details Section */}
+            {/* Details Section */}
 
-          {cardDetails && (
-            <Box style={{ maxWidth: 600, paddingLeft: theme.spacing(2), borderRadius: theme.shape.borderRadius }}>
-              <Typography variant="body1" gutterBottom style={{ display: "flex" }}>
-                <span style={{ flex: 1 }}>
-                  {cardDetails && (
-                    <Link
-                      href={`/market/seller/${cardDetails.sellerId}`}
-                      underline="none"
-                      sx={{
-                        "color": "accent.main",
-                        "&:hover": {
-                          textDecoration: "underline"
-                        }
-                      }}
-                      onClick={e => {
-                        e.preventDefault();
-                        handleSellerInfoButtonClick(cardDetails.createdBy);
-                      }}>
-                      {sellerName}
-                    </Link>
-                  )}
-                </span>
-              </Typography>
+            {cardDetails && (
+              <Box style={{ maxWidth: 600, paddingLeft: theme.spacing(2), borderRadius: theme.shape.borderRadius }}>
+                <Typography variant="body1" gutterBottom style={{ display: "flex" }}>
+                  <span style={{ flex: 1 }}>
+                    {cardDetails && (
+                      <Link
+                        href={`/market/seller/${cardDetails.sellerId}`}
+                        underline="none"
+                        sx={{
+                          "color": "accent.main",
+                          "&:hover": {
+                            textDecoration: "underline"
+                          }
+                        }}
+                        onClick={e => {
+                          e.preventDefault();
+                          handleSellerInfoButtonClick(cardDetails.createdBy);
+                        }}>
+                        {sellerName}
+                      </Link>
+                    )}
+                  </span>
+                </Typography>
 
-              <Typography variant="h4" gutterBottom>
-                {cardDetails.name}
-              </Typography>
+                <Typography variant="h4" gutterBottom>
+                  {cardDetails.name}
+                </Typography>
 
-              <Typography variant="body1" gutterBottom style={{ display: "flex" }}>
-                <span style={{ width: 120, marginRight: 40 }}>
-                  <Typography component="span" variant="subtitle1" style={{ fontWeight: "bold" }}>
-                    Price:
-                  </Typography>
-                </span>
-                <span style={{ flex: 1 }}>
-                  {getCurrencySymbol(cardDetails.currency)}
-                  {cardDetails.price}
-                </span>
-              </Typography>
-              <Typography variant="body1" gutterBottom style={{ display: "flex" }}>
-                <span style={{ width: 120, marginRight: 40 }}>
-                  <Typography component="span" variant="subtitle1" style={{ fontWeight: "bold" }}>
-                    Description:
-                  </Typography>
-                </span>
-                <span style={{ flex: 1 }}>{cardDetails.description}</span>
-              </Typography>
+                <Typography variant="body1" gutterBottom style={{ display: "flex" }}>
+                  <span style={{ width: 120, marginRight: 40 }}>
+                    <Typography component="span" variant="subtitle1" style={{ fontWeight: "bold" }}>
+                      Price:
+                    </Typography>
+                  </span>
+                  <span style={{ flex: 1 }}>
+                    {getCurrencySymbol(cardDetails.currency)}
+                    {cardDetails.price}
+                  </span>
+                </Typography>
+                <Typography variant="body1" gutterBottom style={{ display: "flex" }}>
+                  <span style={{ width: 120, marginRight: 40 }}>
+                    <Typography component="span" variant="subtitle1" style={{ fontWeight: "bold" }}>
+                      Description:
+                    </Typography>
+                  </span>
+                  <span style={{ flex: 1 }}>{cardDetails.description}</span>
+                </Typography>
 
-              <Divider style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
+                <Divider style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
 
-              <Typography variant="body1" gutterBottom style={{ display: "flex" }}>
-                <span style={{ width: 120, marginRight: 40 }}>
-                  <Typography component="span" variant="subtitle1" style={{ fontWeight: "bold" }}>
-                    Conditions:
-                  </Typography>
-                </span>
-                <span style={{ flex: 1 }}>{cardDetails.conditions}</span>
-              </Typography>
+                <Typography variant="body1" gutterBottom style={{ display: "flex" }}>
+                  <span style={{ width: 120, marginRight: 40 }}>
+                    <Typography component="span" variant="subtitle1" style={{ fontWeight: "bold" }}>
+                      Conditions:
+                    </Typography>
+                  </span>
+                  <span style={{ flex: 1 }}>{cardDetails.conditions}</span>
+                </Typography>
 
-              <Typography variant="body1" gutterBottom style={{ display: "flex" }}>
-                <span style={{ width: 120, marginRight: 40 }}>
-                  <Typography component="span" variant="subtitle1" style={{ fontWeight: "bold" }}>
-                    Category:
-                  </Typography>
-                </span>
-                <span style={{ flex: 1 }}>{cardDetails.category}</span>
-              </Typography>
+                <Typography variant="body1" gutterBottom style={{ display: "flex" }}>
+                  <span style={{ width: 120, marginRight: 40 }}>
+                    <Typography component="span" variant="subtitle1" style={{ fontWeight: "bold" }}>
+                      Category:
+                    </Typography>
+                  </span>
+                  <span style={{ flex: 1 }}>{cardDetails.category}</span>
+                </Typography>
 
-              <Typography variant="body1" gutterBottom style={{ display: "flex" }}>
-                <span style={{ width: 120, marginRight: 40 }}>
-                  <Typography component="span" variant="subtitle1" style={{ fontWeight: "bold" }}>
-                    Quantity:
-                  </Typography>
-                </span>
-                <span style={{ flex: 1 }}>{cardDetails.quantity}</span>
-              </Typography>
+                <Typography variant="body1" gutterBottom style={{ display: "flex" }}>
+                  <span style={{ width: 120, marginRight: 40 }}>
+                    <Typography component="span" variant="subtitle1" style={{ fontWeight: "bold" }}>
+                      Quantity:
+                    </Typography>
+                  </span>
+                  <span style={{ flex: 1 }}>{cardDetails.quantity}</span>
+                </Typography>
 
-              <Typography variant="body1" gutterBottom style={{ display: "flex" }}>
-                <span style={{ width: 120, marginRight: 40 }}>
-                  <Typography component="span" variant="subtitle1" style={{ fontWeight: "bold" }}>
-                    Availability:
-                  </Typography>
-                </span>
-                <span style={{ flex: 1 }}>{cardDetails.available}</span>
-              </Typography>
+                <Typography variant="body1" gutterBottom style={{ display: "flex" }}>
+                  <span style={{ width: 120, marginRight: 40 }}>
+                    <Typography component="span" variant="subtitle1" style={{ fontWeight: "bold" }}>
+                      Availability:
+                    </Typography>
+                  </span>
+                  <span style={{ flex: 1 }}>{cardDetails.available}</span>
+                </Typography>
 
-              <Typography variant="body1" gutterBottom style={{ display: "flex" }}>
-                <span style={{ width: 120, marginRight: 40 }}>
-                  <Typography component="span" variant="subtitle1" style={{ fontWeight: "bold" }}>
-                    Set:
-                  </Typography>
-                </span>
-                <span style={{ flex: 1 }}>{cardDetails.set}</span>
-              </Typography>
+                <Typography variant="body1" gutterBottom style={{ display: "flex" }}>
+                  <span style={{ width: 120, marginRight: 40 }}>
+                    <Typography component="span" variant="subtitle1" style={{ fontWeight: "bold" }}>
+                      Set:
+                    </Typography>
+                  </span>
+                  <span style={{ flex: 1 }}>{cardDetails.set}</span>
+                </Typography>
 
-              <Typography variant="body1" gutterBottom style={{ display: "flex" }}>
-                <span style={{ width: 120, marginRight: 40 }}>
-                  <Typography component="span" variant="subtitle1" style={{ fontWeight: "bold" }}>
-                    Shipping Cost:
-                  </Typography>
-                </span>
-                <span style={{ flex: 1 }}>{cardDetails.shippingCost}</span>
-              </Typography>
+                <Typography variant="body1" gutterBottom style={{ display: "flex" }}>
+                  <span style={{ width: 120, marginRight: 40 }}>
+                    <Typography component="span" variant="subtitle1" style={{ fontWeight: "bold" }}>
+                      Shipping Cost:
+                    </Typography>
+                  </span>
+                  <span style={{ flex: 1 }}>{cardDetails.shippingCost}</span>
+                </Typography>
 
-              {/* Action Buttons */}
-              <Box style={{ marginTop: theme.spacing(2), display: "flex", gap: theme.spacing(2) }}>
-                <Button
-                  variant="contained"
-                  color="accent"
-                  onClick={handleAddToCartButtonClick}
-                  style={{ color: theme.palette.background.paper }}
-                  startIcon={<ShoppingCartIcon />}>
-                  Add to cart
-                </Button>
+                {/* Action Buttons */}
+                <Box style={{ marginTop: theme.spacing(2), display: "flex", gap: theme.spacing(2) }}>
+                  <Button
+                    variant="contained"
+                    color="accent"
+                    onClick={handleAddToCartButtonClick}
+                    style={{ color: theme.palette.background.paper }}
+                    startIcon={<ShoppingCartIcon />}>
+                    Add to cart
+                  </Button>
 
-                {/* <Button variant="contained" color="primary" onClick={handleWishlistButtonClick}>
+                  {/* <Button variant="contained" color="primary" onClick={handleWishlistButtonClick}>
                   Add to Wishlist
                 </Button> */}
+                </Box>
               </Box>
-            </Box>
-          )}
-        </Box>
+            )}
+          </Box>
+        )}
       </Box>
       <Snackbar
         open={openError}
