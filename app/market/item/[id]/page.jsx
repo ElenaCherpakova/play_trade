@@ -7,13 +7,14 @@ import { theme } from "@/styles/theme";
 import { fetchCardData } from "@/utils/fetchData";
 import { fetchSellerData } from "@/utils/fetchData";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-
+import {useCartStore} from "@/store/cartStore"
 /**
  *
  * @param {*} params
  */
 
 export default function Page({ params }) {
+  const addToCart = useCartStore(state=> state.addToCart)
   const [openError, setOpenError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [cardDetails, setCardDetails] = useState(null);
@@ -73,7 +74,7 @@ export default function Page({ params }) {
   };
 
   const handleAddToCartButtonClick = () => {
-    router.push("/cart");
+    addToCart(cardDetails)
   };
 
   const handleClose = (event, reason) => {
