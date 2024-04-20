@@ -120,7 +120,7 @@ export default function Page({ params }) {
                         e.preventDefault();
                         handleSellerInfoButtonClick(cardDetails.createdBy);
                       }}>
-                      {sellerName}
+                      <b>{sellerName}</b>
                     </Link>
                   )}
                 </span>

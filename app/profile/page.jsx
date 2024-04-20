@@ -106,7 +106,7 @@ export default function Profile() {
               flexDirection: "column",
               alignItems: "center"
             }}>
-            <Avatar src={userData.avatar} sx={{ width: 180, height: 180 }} />
+            <Avatar src={userData.avatar} alt="user image" sx={{ width: 180, height: 180 }} />
             <Typography variant="h6" sx={{ fontWeight: "bold", mt: 3 }}>
               {userData.name}
             </Typography>
