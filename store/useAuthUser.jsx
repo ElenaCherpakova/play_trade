@@ -141,10 +141,8 @@ const useAuthUser = create(set => ({
         },
         body: JSON.stringify(userData)
       });
-      console.log("RESPONSE", response);
       if (response.ok) {
         const data = await response.json();
-        console.log("Data", data);
         set({ data, isLoading: false, error: null });
         return data;
       } else {

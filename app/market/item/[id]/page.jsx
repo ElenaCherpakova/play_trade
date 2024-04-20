@@ -52,7 +52,6 @@ export default function Page({ params }) {
       const fetchData = async () => {
         try {
           const sellerData = await fetchSellerData(id);
-          console.log("sellerData", sellerData);
           setSellerName(sellerData.user.name);
         } catch (error) {
           console.error(error);
@@ -82,7 +81,6 @@ export default function Page({ params }) {
     }
     setOpenError(false);
   };
-  console.log("cardDetails", cardDetails);
   return (
     <>
       <Box style={{ marginLeft: theme.spacing(2) }}>
