@@ -45,7 +45,8 @@ export default function CardComponent({ card, onEdit, onDelete, showButtons = tr
         border: "none",
         maxWidth: 220,
         height: "100%",
-        justifyContent: "space-between"
+        justifyContent: "space-between",
+        position: "relative"
       }}>        
       
       {showEditDelete && (
@@ -80,7 +81,7 @@ export default function CardComponent({ card, onEdit, onDelete, showButtons = tr
         </>
       )}
       <CardActionArea
-       sx={{ padding: 0, margin: 0 }} // Add this line
+       sx={{ padding: 0, margin: 0, padding: 0, margin: 0, paddingBottom: '3.125em'  }} 
        component="button"
        onClick={id => router.push(`/market/item/${card._id}`)}
       >
@@ -117,7 +118,7 @@ export default function CardComponent({ card, onEdit, onDelete, showButtons = tr
         )}
       </CardActionArea>
       {showButtons && (
-        <CardActions sx={{ p: 0.5 }}>
+        <CardActions sx={{ p: 0.5, position: 'absolute', bottom: 0, left: 0, right: 0 }}>
           <AddToCartButton card={card} />
         </CardActions>
       )}      
