@@ -1,5 +1,5 @@
 "use client";
-import  { useRouter } from "next/navigation"
+import { useRouter } from "next/navigation";
 import { Avatar, Paper, Button } from "@mui/material";
 
 export default function AvatarSection({
@@ -19,7 +19,7 @@ export default function AvatarSection({
         flexDirection: "column",
         alignItems: "center"
       }}>
-      <Avatar src={avatarPreview} sx={{ width: 180, height: 180 }} />
+      <Avatar src={avatarPreview} alt="user image" sx={{ width: 180, height: 180 }} />
       <input
         type="file"
         ref={fileInputRef}
@@ -64,8 +64,8 @@ export default function AvatarSection({
         variant="contained"
         color="accent"
         sx={{
-          letterSpacing: "0.1em",
-          mt: 2,
+          "letterSpacing": "0.1em",
+          "mt": 2,
           "&:hover": {
             backgroundColor: theme.palette.accent.main
           }

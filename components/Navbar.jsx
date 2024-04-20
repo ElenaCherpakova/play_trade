@@ -177,6 +177,7 @@ const Navbar = () => {
             <Badge color="warning" badgeContent={count} overlap="circular">
               <IconButton
                 color="inherit"
+                aria-label="cart"
                 onClick={() => {
                   router.push("/cart");
                 }}>
