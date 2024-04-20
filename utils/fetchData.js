@@ -27,7 +27,6 @@ export async function fetchAllCardsData(searchTerm, filters, page, limit) {
   }
 
   const queryString = params.toString();
-  console.log("queryString", queryString);
   if (queryString) {
     url += `?${queryString}`;
   }
@@ -92,7 +91,6 @@ export async function createCardData(formData) {
 
 export async function fetchSellerCards(sellerId, filters, page, limit) {
   let url = `/api/cards/seller/${sellerId}`;
-  console.log("url", url);
 
   //converting searchParams object to URLSearchParams
   //to handle encoding and query string construction
@@ -120,9 +118,7 @@ export async function fetchSellerCards(sellerId, filters, page, limit) {
   if (queryString) {
     url += `?${queryString}`;
   }
-  console.log("url1", url);
   const response = await fetch(url);
-  console.log("response", response);
   if (!response.ok) {
     const errorData = await response.json();
     console.log("errorData", errorData);
@@ -130,7 +126,6 @@ export async function fetchSellerCards(sellerId, filters, page, limit) {
     throw new Error(detailedErrorMessage || "Unknown error occurred.");
   }
   const data = await response.json();
-  console.log();
   return data.data;
 }
 

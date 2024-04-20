@@ -62,7 +62,6 @@ export default function Seller({ params }) {
       const fetchData = async () => {
         try {
           const sellerData = await fetchSellerData(sellerId);
-          console.log("sellerData", sellerData);
           setUser(sellerData.user);
           setSeller(sellerData.seller);
         } catch (error) {
