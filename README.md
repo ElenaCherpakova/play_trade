@@ -3,8 +3,17 @@
 Welcome to the Playtrade repository — a card trading platform designed to enhance your collecting experience.
 
 ## Table of Contents
-- [Running the project](#getting-started)
+- [Running the Project](#running-the-project)
 - [Technologies Used](#technologies-used)
+- [Schemas & Data Structures](#schemas--data-structures)
+    - [User Schema](#user-schema)
+    - [Market Schema](#market-schema)
+        - [MarketItem Subdocument](#marketitem-subdocument)
+    - [Card Schema](#card-schema)
+    - [Order History Schema](#order-history-schema)
+    - [Seller Schema](#seller-schema)
+    - [Seller Listing Schema](#seller-listing-schema)
+    - [Buyer Schema](#buyer-schema)
 - [Authors](#authors)
 - [Contributing & Improvements](#contributing--improvements)
 - [License](#license)
@@ -47,6 +56,80 @@ NEXT_PUBLIC_STRIPE_SECRET_KEY= <your_stripe_secret_key>
 ```
 6. Run `npm run start` to start the development server
 7. The app will be served at <http://localhost:3000/>.
+
+## Schemas & Data Structures
+
+### User Schema
+**Purpose**: Defines the data structure for user accounts.
+**Fields**:
+- `username`: The user's chosen username.
+- `email`: The user's email address.
+- `password`: The user's hashed password for secure storage.
+
+**Features**:
+- **Password Management**: Methods included for setting, updating, and verifying passwords.
+- **JWT Token Creation**: Supports the generation of JSON Web Tokens for secure user authentication.
+
+### Market Schema
+**Purpose**: Manages listings in the market, linking cards and sellers.
+**Fields**:
+- `items`: An array of `MarketItem` subdocuments, each representing a unique listing in the marketplace.
+
+### MarketItem Subdocument
+**Purpose**: Represents an individual listing in the market.
+**Fields**:
+- `cardId`: Reference to the `Card` schema, indicating the card being sold.
+- `sellerId`: Reference to the `User` schema, identifying the seller.
+
+### Card Schema
+**Purpose**: Defines the details of trading cards available for sale.
+**Fields**:
+- `name`: The name of the card.
+- `set`: The set or series to which the card belongs.
+- `price`: The sale price of the card.
+- `currency`: The currency in which the price is denoted.
+- `shippingCost`: The cost of shipping the card.
+- `description`: A description of the card.
+- `conditions`: The condition of the card.
+- `category`: The category of the card (e.g., Magic, Pokemon).
+- `imageURL`: A URL link to an image of the card.
+- `quantity`: The number of such cards available.
+- `available`: The availability status of the card (e.g., available, sold).
+- `createdBy`: The user who listed the card.
+- `createdAt`: The timestamp when the card was listed.
+
+### Order History Schema
+**Purpose**: Tracks each transaction, providing a history of card purchases.
+**Fields**:
+- `buyerId`: Reference to the buyer's user profile.
+- `cardId`: Reference to the purchased card.
+- `sellerId`: Reference to the seller's user profile.
+- `purchaseDate`: The date on which the purchase was made.
+
+### Seller Schema
+**Purpose**: Profiles for users who sell on the platform, tracking their sales and feedback.
+**Fields**:
+- `userId`: Link to the user's profile.
+- `rating`: The seller's overall rating.
+- `feedback`: Array of feedback comments from buyers.
+- `numberOfSales`: Total number of sales completed.
+- `isRequestedAt`: The date when the user requested to become a seller.
+
+### Seller Listing Schema
+**Purpose**: Details the card listings managed by a seller.
+**Fields**:
+- `sellerId`: Reference to the seller's user profile.
+- `cardId`: Reference to the card being listed.
+- `cardsForSaleId`: Array of card IDs that are available for sale from the seller.
+
+### Buyer Schema
+**Purpose**: Profiles for users who purchase cards, tracking their buying history.
+**Fields**:
+- `userId`: Link to the user's profile.
+- `cardsPurchasedId`: Array of card IDs that the user has purchased.
+
+## Functionality
+
 
 ## Technologies Used
 
