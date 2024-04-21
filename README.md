@@ -22,7 +22,7 @@ Welcome to the Playtrade repository — a card trading platform designed to enha
 
 1. Clone the repository onto your local device (following steps):
 ```
-git@github.com:Code-the-Dream-School/ffprac-team6.git
+git clone git@github.com:Code-the-Dream-School/ffprac-team6.git
 cd ffprac-team6
 npm install
 ```
