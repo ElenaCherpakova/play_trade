@@ -8,13 +8,14 @@ import { fetchCardData } from "@/utils/fetchData";
 import { fetchSellerData } from "@/utils/fetchData";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import Loader from "@/components/loader/Loader";
-
+import { useCartStore } from "@/store/cartStore";
 /**
  *
  * @param {*} params
  */
 
 export default function Page({ params }) {
+  const addToCart = useCartStore(state => state.addToCart);
   const [openError, setOpenError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [cardDetails, setCardDetails] = useState(null);
@@ -58,7 +59,6 @@ export default function Page({ params }) {
       const fetchData = async () => {
         try {
           const sellerData = await fetchSellerData(id);
-          console.log("sellerData", sellerData);
           setSellerName(sellerData.user.name);
         } catch (error) {
           console.error(error);
@@ -81,7 +81,7 @@ export default function Page({ params }) {
   };
 
   const handleAddToCartButtonClick = () => {
-    router.push("/cart");
+    addToCart(cardDetails);
   };
 
   const handleClose = (event, reason) => {
@@ -90,7 +90,6 @@ export default function Page({ params }) {
     }
     setOpenError(false);
   };
-  console.log("cardDetails", cardDetails);
   return (
     <>
       <Box style={{ marginLeft: theme.spacing(2) }}>
@@ -130,7 +129,7 @@ export default function Page({ params }) {
                           e.preventDefault();
                           handleSellerInfoButtonClick(cardDetails.createdBy);
                         }}>
-                        {sellerName}
+                        <b>{sellerName}</b>
                       </Link>
                     )}
                   </span>
