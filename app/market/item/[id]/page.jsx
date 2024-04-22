@@ -4,7 +4,8 @@ import CardComponent from "@/components/CardComponent";
 import { useRouter } from "next/navigation";
 import { Box, Button, Typography, Breadcrumbs, Divider, Link, Snackbar, Alert } from "@mui/material";
 import { theme } from "@/styles/theme";
-import { fetchCardData } from "@/utils/fetchData";
+import { fetchCardData, deleteCardData } from "@/utils/fetchData";
+import { useSession } from "next-auth/react";
 import { fetchSellerData } from "@/utils/fetchData";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import {useCartStore} from "@/store/cartStore"
@@ -82,6 +83,25 @@ export default function Page({ params }) {
     }
     setOpenError(false);
   };
+  console.log("cardDetails", cardDetails);
+
+  const { data: session } = useSession(); // get session data
+  const currentUserId = session?.user?._id; // get current user id
+
+  const handleEdit = () => {
+    router.push(`/sell/edit/${id}`);
+  };
+  const handleDelete = async () => {
+    try {
+      await deleteCardData(id);
+      // navigate back to the previous page
+      router.back();
+    } catch (error) {
+      console.error(error);
+      setOpenError(true);
+      setErrorMessage(error.toString() || "unknown error");
+    }
+  };
   return (
     <>
       <Box style={{ marginLeft: theme.spacing(2) }}>
@@ -94,12 +114,52 @@ export default function Page({ params }) {
         </Breadcrumbs>
 
         {/* Image and Details Section */}
-        <Box style={{ display: "flex", marginTop: theme.spacing(2) }}>
+        <Box
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: theme.spacing(3)
+            // marginTop: theme.spacing(2)
+          }}>
           {/* Image Section */}
-          {cardDetails && <CardComponent card={cardDetails} showButtons={false} showInformation={false} />}
+          {cardDetails && (
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: theme.spacing(2)
+              }}>
+              <CardComponent card={cardDetails} showButtons={false} showInformation={false} />
+              {currentUserId === cardDetails?.createdBy && (
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: theme.spacing(2)
+                  }}>
+                  <Button onClick={handleEdit}>Edit</Button>
+                  <Button onClick={handleDelete}>Delete</Button>
+                </Box>
+              )}
+              {currentUserId !== cardDetails?.createdBy && (
+                <Button
+                  variant="contained"
+                  color="accent"
+                  onClick={handleAddToCartButtonClick}
+                  style={{ color: theme.palette.background.paper }}
+                  startIcon={<ShoppingCartIcon />}>
+                  Add to cart
+                </Button>
+              )}
+            </Box>
+          )}
 
           {/* Details Section */}
-
           {cardDetails && (
             <Box style={{ maxWidth: 600, paddingLeft: theme.spacing(2), borderRadius: theme.shape.borderRadius }}>
               <Typography variant="body1" gutterBottom style={{ display: "flex" }}>
@@ -205,7 +265,7 @@ export default function Page({ params }) {
               </Typography>
 
               {/* Action Buttons */}
-              <Box style={{ marginTop: theme.spacing(2), display: "flex", gap: theme.spacing(2) }}>
+              {/* <Box style={{ marginTop: theme.spacing(2), display: "flex", gap: theme.spacing(2) }}>
                 <Button
                   variant="contained"
                   color="accent"
@@ -213,12 +273,12 @@ export default function Page({ params }) {
                   style={{ color: theme.palette.background.paper }}
                   startIcon={<ShoppingCartIcon />}>
                   Add to cart
-                </Button>
+                </Button> */}
 
-                {/* <Button variant="contained" color="primary" onClick={handleWishlistButtonClick}>
+              {/* <Button variant="contained" color="primary" onClick={handleWishlistButtonClick}>
                   Add to Wishlist
                 </Button> */}
-              </Box>
+              {/* </Box> */}
             </Box>
           )}
         </Box>
