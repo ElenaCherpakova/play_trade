@@ -48,11 +48,14 @@ GOOGLE_CLIENT_ID= <your_client_id>
 GOOGLE_CLIENT_SECRET=  <your_client_secret>
 GOOGLE_CLIENT_REFRESH_TOKEN=  <your_refresh_token>
 REDIRECT_URI= <your_redirect_uri>
-NEXT_PUBLIC_CLOUDINARY_NAME= <your_cloud_name>
 CLOUDINARY_API_KEY= <your_api_key>
 CLOUDINARY_API_SECRET= <your_api_secret>
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY= <your_stripe_publishable_key>
 NEXT_PUBLIC_STRIPE_SECRET_KEY= <your_stripe_secret_key>
+NEXT_PUBLIC_CLOUDINARY_NAME=<your_cloud_name>
+NEXT_PUBLIC_CLOUDINARY_API_KEY=<your_api_key>
+NEXT_PUBLIC_CLOUDINARY_PRESET_SECRET=<your_present_secret>
+CLOUDINARY_API_SECRET=<your_cloud_api_secret>
 ```
 6. Run `npm run start` to start the development server
 7. The app will be served at <http://localhost:3000/>.
