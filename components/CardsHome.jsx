@@ -12,20 +12,18 @@ export default function CardsHome() {
       justifyContent="center"
       sx={{ p: { xs: 2, sm: 0 }, flexDirection: { xs: "column", sm: "row" } }}>
       {categories.map((category, index) => (
-        <Grid item xs={12} sm={6} md={4} lg={2} key={index} sx={{ height: "100%" }}>
+        <Grid item xs={12} sm={6} md={4} lg={2} key={index}>
           <Link href={`/market?category=${encodeURIComponent(category)}`} style={{ textDecoration: "none" }}>
-            <Card sx={{ display: "flex", flexDirection: "column", height: "200px", width: "60%" }}>
+            <Card sx={{ display: "flex", flexDirection: "column", height: "150px", width: "60%"}}>
+              <CardContent sx={{ p: 0 }}>
+                <Typography sx={{ fontSize: "1rem", textAlign: "center", fontWeight: "bold" }}>{category}</Typography>
+              </CardContent>
               <CardMedia
                 component="img"
-                sx={{ height: "80%", objectFit: "cover" }}
+                sx={{  height: "90%",  objectFit: "contain" }}
                 image={`/cards/${category === "Sport Card" ? "sport" : category.toLowerCase().replace(/\W+/g, "")}.png`}
                 alt={category}
               />
-              <CardContent>
-                <Typography variant="h8" component="div" style={{ textAlign: "center" }}>
-                  {category}
-                </Typography>
-              </CardContent>
             </Card>
           </Link>
         </Grid>
