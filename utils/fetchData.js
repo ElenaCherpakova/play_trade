@@ -27,7 +27,6 @@ export async function fetchAllCardsData(searchTerm, filters, page, limit) {
   }
 
   const queryString = params.toString();
-  console.log("queryString", queryString);
   if (queryString) {
     url += `?${queryString}`;
   }
@@ -136,9 +135,7 @@ export async function fetchSellerCards(sellerId, filters = {}, page = 0, limit =
   if (queryString) {
     url += `?${queryString}`;
   }
-  console.log("url1", url);
   const response = await fetch(url);
-  console.log("response", response);
   if (!response.ok) {
     const errorData = await response.json();
     console.log("errorData", errorData);
@@ -146,7 +143,6 @@ export async function fetchSellerCards(sellerId, filters = {}, page = 0, limit =
     throw new Error(detailedErrorMessage || "Unknown error occurred.");
   }
   const data = await response.json();
-  console.log();
   return data.data;
 }
 
