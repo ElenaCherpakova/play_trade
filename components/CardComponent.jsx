@@ -29,6 +29,7 @@ export default function CardComponent({ card, onEdit, onDelete, showButtons = tr
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
 
+ //  opening and closing the menu
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -97,10 +98,7 @@ export default function CardComponent({ card, onEdit, onDelete, showButtons = tr
             <Box sx={{ display: "flex" }}>
               <Typography gutterBottom variant="body2" component="div" flexGrow="1">
                 {card.name}
-              </Typography>
-              {/* <Typography gutterBottom variant="body2" component="div">
-                {card.category}
-              </Typography> */}
+              </Typography>              
               <Typography gutterBottom variant="body2" component="div">
                 {card.conditions}
               </Typography>

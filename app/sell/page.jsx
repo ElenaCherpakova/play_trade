@@ -62,7 +62,7 @@ export default function Sell() {
 useEffect(() => { 
 }, [sellerItemsAvailable, sellerItemsSold]);
 
-  //fetch data need to move to file in utils
+ // Add a new card
   const addCard = async formData => {
     try {
       const data = await createCardData(formData);
@@ -106,7 +106,10 @@ useEffect(() => {
         <Typography variant="h5" gutterBottom>
           My Cards
         </Typography>
-        <Box mt={2}>{add && <CardForm cardValue={card} onSubmitForm={addCard} />}</Box>
+        <Box mt={2}>
+          {add && 
+            <CardForm cardValue={card} onSubmitForm={addCard} />}
+        </Box>
 
         <Grid container justifyContent="space-between" alignItems="center" mt={theme.spacing(2)}>
           <Grid item xs={12} sm={6} md={4} lg={3}>
@@ -132,8 +135,8 @@ useEffect(() => {
                     buttonSet="seller"
                     showButtons={false}
                     showEditDelete={true}
-                    onEdit={() => handleEditButtonClick(item._id)} // add more functionality later
-                    onDelete={() => handleDeleteButtonClick(item._id)} // add more functionality later
+                    onEdit={() => handleEditButtonClick(item._id)} 
+                    onDelete={() => handleDeleteButtonClick(item._id)} 
                     sx={{
                       display: "flex",
                       flexDirection: "column",
