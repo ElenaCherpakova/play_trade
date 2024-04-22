@@ -7,6 +7,7 @@ import { createCardData, fetchSellerCards, deleteCardData, editCardData } from "
 import { useSession } from "next-auth/react";
 import CardForm from "@/components/CardForm";
 import CardComponent from "@/components/CardComponent";
+import ConfirmationDialog from "@/components/DialogBox";
 
 export default function Sell() {
   const router = useRouter();
@@ -19,6 +20,8 @@ export default function Sell() {
   const [sellerItemsAvailable, setSellerItemsAvailable] = useState([]);
   const { data: session } = useSession();
   const sellerID = session?.user?._id;
+  const [cardToDelete, setCardToDelete] = useState(null);
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
 
   const handleTabChange = (event, newValue) => {
     setSelectedTab(newValue);
@@ -88,16 +91,21 @@ useEffect(() => {
     router.push(`/sell/edit/${id}`);
   };
 
-  const handleDeleteButtonClick = async id => {
+  const handleDeleteButtonClick = id => {
+    setCardToDelete(id);
+    setOpenConfirmDialog(true);
+  };
+
+  const handleConfirmDelete = async () => {
     try {
-      await deleteCardData(id);
-      // After successful deletion, remove the card from the state
-      setSellerItemsAvailable(sellerItemsAvailable.filter(item => item._id !== id));
-      setSellerItemsSold(sellerItemsSold.filter(item => item._id !== id));
+      await deleteCardData(cardToDelete);
+      setSellerItemsAvailable(sellerItemsAvailable.filter(item => item._id !== cardToDelete));
+      setSellerItemsSold(sellerItemsSold.filter(item => item._id !== cardToDelete));
     } catch (error) {
       setOpenError(true);
       setErrorMessage(error.toString() || "Unknown error occurred");
     }
+    setOpenConfirmDialog(false);
   };
 
   return (
@@ -160,11 +168,17 @@ useEffect(() => {
                       flexDirection: "column",
                       height: "100%"
                     }}
-                  />
+                  />                  
                 </Grid>
               ))}
           </Grid>
         </Box>
+        <ConfirmationDialog 
+                    open={openConfirmDialog} 
+                    handleConfirm={handleConfirmDelete} 
+                    handleCancel={() => setOpenConfirmDialog(false)} 
+                    message="Are you sure you would like to delete this card?"                    
+                  />
         <Snackbar
           open={openError}
           autoHideDuration={5000}
