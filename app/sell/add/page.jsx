@@ -18,6 +18,7 @@ const SellAddPage = () => {
     conditions: "",
     category: "",
     imageURL: "",
+    imagePublicId: "",
     quantity: 0,
     available: ""
   });

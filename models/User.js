@@ -31,6 +31,9 @@ const UserSchema = new Schema({
       "Invalid image URL format"
     ]
   },
+  imageProfilePublicId:{
+    type: String,
+  },
   authProvider: {
     type: Boolean,
     default: false,

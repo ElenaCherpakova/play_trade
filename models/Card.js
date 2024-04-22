@@ -50,6 +50,9 @@ const CardSchema = new Schema({
     type: String,
     match: [/(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|jpeg|gif|png|webp|svg|JPG|JPEG|GIF|PNG|WEBP|SVG)/, "Invalid image URL format"]
   },
+  imagePublicId:{
+    type: String,
+  },
   quantity: {
     type: Number,
     required: true,

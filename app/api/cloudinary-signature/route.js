@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import cloudinary from "@/app/config/cloudinaryConfig";
 
-export const routeConfig = {
+export const config = {
   api: {
     bodyParser: {
       sizeLimit: "8mb"
@@ -9,30 +9,41 @@ export const routeConfig = {
   }
 };
 
-//Get signiture
-export async function GET(req) {
+async function parseJson(req) {
+  const { readable, writable } = new TransformStream();
+  req.body.pipeTo(writable);
+  const reader = readable.getReader();
+  let received = "";
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    received += new TextDecoder().decode(value);
+  }
+  return JSON.parse(received);
+}
+
+export async function POST(req, res) {
   try {
-    const timestamp = Math.round(new Date().getTime() / 1000);
-    const signature = cloudinary.v2.utils.api_sign_request(
-      {
-        timestamp: timestamp
-      },
-      process.env.CLOUDINARY_API_SECRET
-    );
+    const body = await parseJson(req);
+    const { timestamp, public_id, overwrite, upload_preset } = body;
 
-    const responseData = JSON.stringify({
-      success: true,
+    const paramsToSign = {
       timestamp,
-      signature,
-      api_key: process.env.CLOUDINARY_API_KEY
-    });
+      ...(public_id && { public_id }),
+      ...(overwrite && { overwrite: true }),
+      ...(upload_preset && { upload_preset })
+    };
 
-    return new NextResponse(responseData, {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json"
-      }
-    });
+    const signature = cloudinary.v2.utils.api_sign_request(paramsToSign, process.env.CLOUDINARY_API_SECRET);
+
+    return new NextResponse(
+      JSON.stringify({
+        success: true,
+        signature,
+        timestamp
+      }),
+      { status: 200 }
+    );
   } catch (error) {
     return new NextResponse(JSON.stringify({ success: false, message: "Internal Server Error" }), {
       status: 500,
