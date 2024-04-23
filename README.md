@@ -96,7 +96,7 @@ pages: {
 | HTTP Verbs | Endpoints                         | Action            | Description |
 |------------|-----------------------------------|-------------------| ------------|
 | POST       | /api/register                     | Register User     |
-| POST       | /api/auth/[...nextauth]           | Handles various auth actions| Dynamically handles login, logout, and token refresh actions.|
+| POST       | /api/auth/[...nextauth]           | Handles various auth actions| Dynamically handles login, logout, token and session refresh actions.|
 | GET        | /api/auth/[...nextauth]           |Retrieves session & user information| Used to fetch current user session and profile data securely.|
 | POST       | /api/forget-password              | Forgot Password   |
 | POST       | /api/reset-password               | Reset Password    |
