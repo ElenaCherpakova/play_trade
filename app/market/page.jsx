@@ -9,6 +9,7 @@ import Stack from "@mui/material/Stack";
 import { fetchAllCardsData } from "@/utils/fetchData";
 import CardComponent from "../../components/CardComponent";
 import Filter from "../../components/Filter";
+import Loader from "@/components/loader/Loader";
 
 export default function Market() {
   const [cards, setCards] = useState([]);
@@ -17,7 +18,7 @@ export default function Market() {
   const [openError, setOpenError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [filterOpen, setFilterOpen] = useState(false);
-
+  const [loading, setLoading] = useState(true);
   const searchParams = useSearchParams();
   const filters = {
     conditions: searchParams.get("conditions") || "",
@@ -36,6 +37,7 @@ export default function Market() {
         const data = await fetchAllCardsData(filters.search, filters, page, limit);
         setCards(data.cards);
         setTotalCards(data.total);
+        setLoading(false);
       } catch (error) {
         console.error;
         setOpenError(true);
@@ -137,18 +139,30 @@ export default function Market() {
               alignItems: "center",
               minHeight: "70vh"
             }}>
-            {cards.length > 0 ? (
-              <Grid container gap={5}>
-                {cards.map(card => (
-                  <Grid item xs={12} key={card._id} md={4} lg={3} sx={{ display: "flex", justifyContent: "center" }}>
-                    <CardComponent card={card} />
-                  </Grid>
-                ))}
-              </Grid>
+            {loading ? (
+              <Loader />
             ) : (
-              <Typography variant="h6" align="center" sx={{ width: "100%" }}>
-                No matches found.
-              </Typography>
+              <>
+                {cards.length > 0 ? (
+                  <Grid container gap={5}>
+                    {cards.map(card => (
+                      <Grid
+                        item
+                        xs={12}
+                        key={card._id}
+                        md={4}
+                        lg={3}
+                        sx={{ display: "flex", justifyContent: "center" }}>
+                        <CardComponent card={card} />
+                      </Grid>
+                    ))}
+                  </Grid>
+                ) : (
+                  <Typography variant="h6" align="center" sx={{ width: "100%" }}>
+                    No matches found.
+                  </Typography>
+                )}
+              </>
             )}
           </Box>
         </Box>
