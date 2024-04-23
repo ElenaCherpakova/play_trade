@@ -63,7 +63,7 @@ CLOUDINARY_API_SECRET=<your_cloud_api_secret>
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY= <your_stripe_publishable_key>
 NEXT_PUBLIC_STRIPE_SECRET_KEY= <your_stripe_secret_key>
 ```
-6. Run `npm run start` to start the development server
+6. Run `npm run dev` to start the development server
 7. The app will be served at <http://localhost:3000/>.
 
 ## User Authentication & Management
