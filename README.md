@@ -93,11 +93,11 @@ pages: {
 ```
 ## Endpoints
 
-| HTTP Verbs | Endpoints                         | Action            |
-|------------|-----------------------------------|-------------------|
-| POST       | /api/register/signup              | Register User     |
-| POST       | /api/auth/signin                  | Login User        |
-| POST       | /api/auth/logout                  | Logout User       |
+| HTTP Verbs | Endpoints                         | Action            | Description |
+|------------|-----------------------------------|-------------------| ------------|
+| POST       | /api/register                     | Register User     |
+| POST       | /api/auth/[...nextauth]           | Handles various auth actions| Dynamically handles login, logout, and token refresh actions.|
+| GET        | /api/auth/[...nextauth]           |Retrieves session & user information| Used to fetch current user session and profile data securely.|
 | POST       | /api/forget-password              | Forgot Password   |
 | POST       | /api/reset-password               | Reset Password    |
 | POST       | /api/verify-token                 | Verify Reset Token|
