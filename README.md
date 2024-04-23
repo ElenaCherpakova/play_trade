@@ -181,8 +181,7 @@ pages: {
 ### Endpoints
 | HTTP Verbs | Endpoints                      | Action            | Description                                               |
 |------------|--------------------------------|-------------------|-----------------------------------------------------------|
-| GET     | /api/seller/[id]                 | Get Seller by ID          | Retrieves comprehensive information about a seller.
- |
+| GET     | /api/seller/[id]                 | Get Seller by ID          | Retrieves comprehensive information about a seller.|
 ### Seller Listing Schema
 **Purpose**: Details the card listings managed by a seller.
 **Fields**:
