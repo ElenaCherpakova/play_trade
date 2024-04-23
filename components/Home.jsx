@@ -9,7 +9,7 @@ export default function Home() {
   const theme = useTheme(); // Access the theme
 
   return (
-    <Box height="calc(100vh - 17px)" position="relative" display="flex" flexDirection="column" justifyContent="space-between">
+    <Box height="100%" position="relative" display="flex" flexDirection="column" justifyContent="space-between">
       <Box
         display="flex"
         flexDirection="column"
@@ -38,16 +38,16 @@ export default function Home() {
           color="accent"
           onClick={() => router.push("/market")}
           sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            fontSize: theme.typography.h4.fontSize,
-            padding: theme.spacing(1),
-            letterSpacing: "10px",
-            fontWeight: "bold",
-            paddingLeft: theme.spacing(2),
-            borderRadius: theme.shape.borderRadius, // Use the theme border radius
+            "position": "absolute",
+            "top": "50%",
+            "left": "50%",
+            "transform": "translate(-50%, -50%)",
+            "fontSize": theme.typography.h4.fontSize,
+            "padding": theme.spacing(1),
+            "letterSpacing": "10px",
+            "fontWeight": "bold",
+            "paddingLeft": theme.spacing(2),
+            "borderRadius": theme.shape.borderRadius, // Use the theme border radius
             "&:hover": {
               backgroundColor: theme.palette.background.paper
             }
