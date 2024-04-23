@@ -126,74 +126,74 @@ export default function Page({ params }) {
           <Loader /> // Show Loader component while loading card data
         ) : (
           <Box
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            gap: theme.spacing(3)
-            // marginTop: theme.spacing(2)
-          }}>
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: theme.spacing(3)
+              // marginTop: theme.spacing(2)
+            }}>
             {/* Image Section */}
             {cardDetails && (
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: theme.spacing(2)
-              }}>
-              <CardComponent card={cardDetails} showButtons={false} showInformation={false} />
-              {currentUserId === cardDetails?.createdBy && (
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    gap: theme.spacing(2)
-                  }}>
-                  <Button onClick={handleEdit}>Edit</Button>
-                  <Button onClick={handleDelete}>Delete</Button>
-                </Box>
-              )}
-              {currentUserId !== cardDetails?.createdBy && (
-                <Button
-                  variant="contained"
-                  color="accent"
-                  onClick={handleAddToCartButtonClick}
-                  style={{ color: theme.palette.background.paper }}
-                  startIcon={<ShoppingCartIcon />}>
-                  Add to cart
-                </Button>
-              )}
-            </Box>
-          )}
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: theme.spacing(2)
+                }}>
+                <CardComponent card={cardDetails} showButtons={false} showInformation={false} />
+                {currentUserId === cardDetails?.createdBy && (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      gap: theme.spacing(2)
+                    }}>
+                    <Button onClick={handleEdit}>Edit</Button>
+                    <Button onClick={handleDelete}>Delete</Button>
+                  </Box>
+                )}
+                {currentUserId !== cardDetails?.createdBy && (
+                  <Button
+                    variant="contained"
+                    color="accent"
+                    onClick={handleAddToCartButtonClick}
+                    style={{ color: theme.palette.background.paper }}
+                    startIcon={<ShoppingCartIcon />}>
+                    Add to cart
+                  </Button>
+                )}
+              </Box>
+            )}
 
-          {/* Details Section */}
-          {cardDetails && (
-            <Box style={{ maxWidth: 600, paddingLeft: theme.spacing(2), borderRadius: theme.shape.borderRadius }}>
-              <Typography variant="body1" gutterBottom style={{ display: "flex" }}>
-                <span style={{ flex: 1 }}>
-                  {cardDetails && (
-                    <Link
-                      href={`/market/seller/${cardDetails.sellerId}`}
-                      underline="none"
-                      sx={{
-                        "color": "accent.main",
-                        "&:hover": {
-                          textDecoration: "underline"
-                        }
-                      }}
-                      onClick={e => {
-                        e.preventDefault();
-                        handleSellerInfoButtonClick(cardDetails.createdBy);
-                      }}>
-                      <b>{sellerName}</b>
-                    </Link>
-                  )}
-                </span>
-              </Typography>
+            {/* Details Section */}
+            {cardDetails && (
+              <Box style={{ maxWidth: 600, paddingLeft: theme.spacing(2), borderRadius: theme.shape.borderRadius }}>
+                <Typography variant="body1" gutterBottom style={{ display: "flex" }}>
+                  <span style={{ flex: 1 }}>
+                    {cardDetails && (
+                      <Link
+                        href={`/market/seller/${cardDetails.sellerId}`}
+                        underline="none"
+                        sx={{
+                          "color": "accent.main",
+                          "&:hover": {
+                            textDecoration: "underline"
+                          }
+                        }}
+                        onClick={e => {
+                          e.preventDefault();
+                          handleSellerInfoButtonClick(cardDetails.createdBy);
+                        }}>
+                        <b>{sellerName}</b>
+                      </Link>
+                    )}
+                  </span>
+                </Typography>
 
                 <Typography variant="h4" gutterBottom>
                   {cardDetails.name}
@@ -275,8 +275,8 @@ export default function Page({ params }) {
                   <span style={{ flex: 1 }}>{cardDetails.shippingCost}</span>
                 </Typography>
 
-              {/* Action Buttons */}
-              {/* <Box style={{ marginTop: theme.spacing(2), display: "flex", gap: theme.spacing(2) }}>
+                {/* Action Buttons */}
+                {/* <Box style={{ marginTop: theme.spacing(2), display: "flex", gap: theme.spacing(2) }}>
                 <Button
                   variant="contained"
                   color="accent"
@@ -286,13 +286,14 @@ export default function Page({ params }) {
                   Add to cart
                 </Button> */}
 
-              {/* <Button variant="contained" color="primary" onClick={handleWishlistButtonClick}>
+                {/* <Button variant="contained" color="primary" onClick={handleWishlistButtonClick}>
                   Add to Wishlist
                 </Button> */}
-              {/* </Box> */}
-            </Box>
-          )}
-        </Box>
+                {/* </Box> */}
+              </Box>
+            )}
+          </Box>
+        )}
       </Box>
       <Snackbar
         open={openError}
