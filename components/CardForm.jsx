@@ -83,7 +83,7 @@ export default function CardForm({ cardValue, onSubmitForm }) {
 
     const defaultImage = `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_NAME}/image/upload/v1711381226/vr2hc3udhtc8z9u1hrp4.png`;
 
-    const submitFormData = imageURL => {
+    const submitFormData = (imageURL, imagePublicId) => {
       const formData = {
         name: cardName.value,
         set: set.value,
@@ -95,19 +95,21 @@ export default function CardForm({ cardValue, onSubmitForm }) {
         quantity: quantity.value,
         available: available.value,
         category: cardCategory,
-        imageURL: imageURL || cardValue?.imageURL || defaultImage
+        imageURL: imageURL || cardValue?.imageURL || defaultImage,
+        imagePublicId: imagePublicId  
       };
+      console.log(formData)
       onSubmitForm(formData);
     };
 
     try {
       setLoading(true);
       if (selectedFile) {
-        await handleImageUpload(selectedFile, submitFormData);
+        await handleImageUpload(selectedFile, submitFormData, cardValue?.imagePublicId);
       } else {
-        submitFormData(cardValue?.imageURL || defaultImage);
+        submitFormData(cardValue?.imageURL || defaultImage, cardValue?.imagePublicId);
       }
-    } catch {
+    } catch (error) {
       console.log(error);
     } finally {
       setLoading(false);
