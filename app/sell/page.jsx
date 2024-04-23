@@ -55,9 +55,10 @@ export default function Sell() {
     fetchData();
   }, [sellerID, session, ]);
 
+// Redirect to item page when id changes
   useEffect(() => {
     if (id) {
-      router.push(`/market/item/${id}`); //user should probably be redirected to /sell/carddetails or /sell page
+      router.push(`/market/item/${id}`); 
     }
   }, [id, router]);
 
@@ -95,15 +96,16 @@ useEffect(() => {
     setCardToDelete(id);
     setOpenConfirmDialog(true);
   };
-
+  //delete from alert box
   const handleConfirmDelete = async () => {
     try {
       await deleteCardData(cardToDelete);
       setSellerItemsAvailable(sellerItemsAvailable.filter(item => item._id !== cardToDelete));
       setSellerItemsSold(sellerItemsSold.filter(item => item._id !== cardToDelete));
     } catch (error) {
+      console.error(error);
       setOpenError(true);
-      setErrorMessage(error.toString() || "Unknown error occurred");
+      setErrorMessage(error.message || "Unknown error occurred"); 
     }
     setOpenConfirmDialog(false);
   };
@@ -161,8 +163,8 @@ useEffect(() => {
                     buttonSet="seller"
                     showButtons={false}
                     showEditDelete={true}
-                    onEdit={() => handleEditButtonClick(item.id)} // add more functionality later
-                    onDelete={() => handleDeleteButtonClick(item.id)} // add more functionality later
+                    onEdit={() => handleEditButtonClick(item._id)}
+                    onDelete={() => handleDeleteButtonClick(item._id)} 
                     sx={{
                       display: "flex",
                       flexDirection: "column",
@@ -178,7 +180,7 @@ useEffect(() => {
                     handleConfirm={handleConfirmDelete} 
                     handleCancel={() => setOpenConfirmDialog(false)} 
                     message="Are you sure you would like to delete this card?"                    
-                  />
+        />
         <Snackbar
           open={openError}
           autoHideDuration={5000}

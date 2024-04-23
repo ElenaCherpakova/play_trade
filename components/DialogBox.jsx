@@ -1,6 +1,6 @@
 'use client';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from "@mui/material";
-import { theme } from "@/styles/theme";
+//import { theme } from "@/styles/theme";
 
 export default function ConfirmationDialog({ open, handleConfirm, handleCancel, message }) {
   return (

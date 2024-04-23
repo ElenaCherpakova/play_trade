@@ -8,19 +8,25 @@ import { fetchCardData, deleteCardData } from "@/utils/fetchData";
 import { useSession } from "next-auth/react";
 import { fetchSellerData } from "@/utils/fetchData";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import {useCartStore} from "@/store/cartStore"
+import { useCartStore } from "@/store/cartStore";
+import ConfirmationDialog from "@/components/DialogBox";
 /**
  *
  * @param {*} params
  */
 
 export default function Page({ params }) {
-  const addToCart = useCartStore(state=> state.addToCart)
+  const addToCart = useCartStore(state => state.addToCart);
   const [openError, setOpenError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [cardDetails, setCardDetails] = useState(null);
   const [sellerName, setSellerName] = useState("Visit seller's page");
   const router = useRouter();
+  const [openDialog, setOpenDialog] = useState(false);
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
+  const [cardToDelete, setCardToDelete] = useState(null);
+  const [sellerItemsAvailable, setSellerItemsAvailable] = useState([]);
+  const [sellerItemsSold, setSellerItemsSold] = useState([]);
   const id = params.id;
 
   // Function to convert currency code to symbol
@@ -74,7 +80,7 @@ export default function Page({ params }) {
   };
 
   const handleAddToCartButtonClick = () => {
-    addToCart(cardDetails)
+    addToCart(cardDetails);
   };
 
   const handleClose = (event, reason) => {
@@ -91,17 +97,29 @@ export default function Page({ params }) {
   const handleEdit = () => {
     router.push(`/sell/edit/${id}`);
   };
-  const handleDelete = async () => {
-    try {
-      await deleteCardData(id);
-      // navigate back to the previous page
-      router.back();
-    } catch (error) {
-      console.error(error);
-      setOpenError(true);
-      setErrorMessage(error.toString() || "unknown error");
-    }
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
   };
+
+  const handleDeleteButtonClick = id => {
+    setCardToDelete(id);
+    setOpenConfirmDialog(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    try {
+      await deleteCardData(cardToDelete);
+      setSellerItemsAvailable(sellerItemsAvailable.filter(item => item._id !== cardToDelete));
+      setSellerItemsSold(sellerItemsSold.filter(item => item._id !== cardToDelete));
+      
+    } catch (error) {
+      setOpenError(true);
+      setErrorMessage(error.toString() || "Unknown error occurred");
+    }
+    setOpenConfirmDialog(false);
+    router.push("/sell");
+  };
+
   return (
     <>
       <Box style={{ marginLeft: theme.spacing(2) }}>
@@ -119,7 +137,7 @@ export default function Page({ params }) {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            gap: theme.spacing(3)
+            gap: theme.spacing(10)
             // marginTop: theme.spacing(2)
           }}>
           {/* Image Section */}
@@ -129,8 +147,8 @@ export default function Page({ params }) {
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                justifyContent: "center",
-                gap: theme.spacing(2)
+                justifyContent: "center"
+                //gap: theme.spacing(2)
               }}>
               <CardComponent card={cardDetails} showButtons={false} showInformation={false} />
               {currentUserId === cardDetails?.createdBy && (
@@ -140,10 +158,11 @@ export default function Page({ params }) {
                     flexDirection: "row",
                     alignItems: "center",
                     justifyContent: "space-between",
-                    gap: theme.spacing(2)
+                    gap: theme.spacing(6),
+                    mb: 2
                   }}>
                   <Button onClick={handleEdit}>Edit</Button>
-                  <Button onClick={handleDelete}>Delete</Button>
+                  <Button onClick={() => handleDeleteButtonClick(id)}>Delete</Button>
                 </Box>
               )}
               {currentUserId !== cardDetails?.createdBy && (
@@ -266,18 +285,18 @@ export default function Page({ params }) {
 
               {/* Action Buttons */}
               {/* <Box style={{ marginTop: theme.spacing(2), display: "flex", gap: theme.spacing(2) }}>
-                <Button
-                  variant="contained"
-                  color="accent"
-                  onClick={handleAddToCartButtonClick}
-                  style={{ color: theme.palette.background.paper }}
-                  startIcon={<ShoppingCartIcon />}>
-                  Add to cart
-                </Button> */}
+                          <Button
+                            variant="contained"
+                            color="accent"
+                            onClick={handleAddToCartButtonClick}
+                            style={{ color: theme.palette.background.paper }}
+                            startIcon={<ShoppingCartIcon />}>
+                            Add to cart
+                          </Button> */}
 
               {/* <Button variant="contained" color="primary" onClick={handleWishlistButtonClick}>
-                  Add to Wishlist
-                </Button> */}
+                            Add to Wishlist
+                          </Button> */}
               {/* </Box> */}
             </Box>
           )}
@@ -292,6 +311,14 @@ export default function Page({ params }) {
           {errorMessage}
         </Alert>
       </Snackbar>
+
+      {/* Dialog component */}
+      <ConfirmationDialog
+        open={openConfirmDialog}
+        handleConfirm={handleConfirmDelete}
+        handleCancel={() => setOpenConfirmDialog(false)}
+        message="Are you sure you would like to delete this card?"
+      />
     </>
   );
 }
