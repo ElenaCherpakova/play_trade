@@ -37,7 +37,7 @@ export default function Page({ params }) {
     };
     return currencySymbols[currencyCode] || currencyCode;
   };
-
+  // Fetch card data when id changes
   useEffect(() => {
     if (id) {
       const fetchData = async () => {
@@ -53,7 +53,7 @@ export default function Page({ params }) {
       fetchData();
     }
   }, [id]);
-
+  // Fetch seller data when cardDetails changes
   useEffect(() => {
     if (cardDetails) {
       const id = cardDetails.createdBy;
