@@ -63,13 +63,10 @@ export async function GET(req, res) {
   try {
     //fetch filtered cards from the database with pagination
     const cards = await Card.find(searchQuery).skip(skip).limit(limit);
-    console.log("cards", cards);
     const total = await Card.countDocuments(searchQuery);
-    console.log("total", total);
     if (!cards) {
       return NextResponse.json({ success: false, message: error.message || "No cards found" }, { status: 400 });
     }
-    console.log("cards, total, page, limit", cards, total, page, limit);
     return NextResponse.json({ success: true, data: { cards, total, page, limit } }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ success: false, message: error }, { status: 400 });

@@ -25,6 +25,7 @@ import {
 } from "@mui/material";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import CloseIcon from "@mui/icons-material/Close";
+import Loader from "@/components/loader/Loader";
 
 /**
  *
@@ -41,6 +42,7 @@ export default function Seller({ params }) {
   const [filterOpen, setFilterOpen] = useState(false);
   const [user, setUser] = useState({}); //for seller data
   const [seller, setSeller] = useState({}); //for seller data
+  const [loading, setLoading] = useState(true); // for loader component
 
   const showButtons = false;
   const searchParams = useSearchParams();
@@ -62,7 +64,6 @@ export default function Seller({ params }) {
       const fetchData = async () => {
         try {
           const sellerData = await fetchSellerData(sellerId);
-          console.log("sellerData", sellerData);
           setUser(sellerData.user);
           setSeller(sellerData.seller);
         } catch (error) {
@@ -88,6 +89,8 @@ export default function Seller({ params }) {
           console.error;
           setOpenError(true);
           setErrorMessage(error.toString() || "unknown error");
+        } finally {
+          setLoading(false);
         }
       };
       fetchData();
@@ -250,21 +253,25 @@ export default function Seller({ params }) {
                 </Box>
               </Box>
             </Grid>
-            <Grid item xs>
-              {cards.length > 0 ? (
-                <Grid container gap={5}>
-                  {cards.map(card => (
-                    <Grid item key={card._id} xs={12} md={4} sx={{ display: "flex", justifyContent: "center" }}>
-                      <CardComponent key={card._id} card={card} showButtons={showButtons} />
-                    </Grid>
-                  ))}
-                </Grid>
-              ) : (
-                <Typography variant="h6" align="center" sx={{ width: "100%" }}>
-                  No matches found.
-                </Typography>
-              )}
-            </Grid>
+            {loading ? (
+              <Loader /> // Show Loader component while loading card data
+            ) : (
+              <Grid item xs>
+                {cards.length > 0 ? (
+                  <Grid container spacing={2}>
+                    {cards.map(card => (
+                      <Grid item key={card._id} xs={12} md={4} sx={{ display: "flex", justifyContent: "center" }}>
+                        <CardComponent key={card._id} card={card} showButtons={showButtons} />
+                      </Grid>
+                    ))}
+                  </Grid>
+                ) : (
+                  <Typography variant="h6" align="center" sx={{ width: "100%" }}>
+                    No matches found.
+                  </Typography>
+                )}
+              </Grid>
+            )}
           </Grid>
           <Stack spacing={2} alignItems="center">
             <Pagination

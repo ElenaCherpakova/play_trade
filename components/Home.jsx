@@ -9,7 +9,7 @@ export default function Home() {
   const theme = useTheme(); // Access the theme
 
   return (
-    <Box height="100vh">
+    <Box height="100%" position="relative" display="flex" flexDirection="column" justifyContent="space-between">
       <Box
         display="flex"
         flexDirection="column"
@@ -29,7 +29,7 @@ export default function Home() {
             backgroundSize: "cover",
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
-            opacity: 0.7,
+            opacity: 0.75,
             zIndex: -1
           }
         }}>
@@ -45,6 +45,7 @@ export default function Home() {
             "fontSize": theme.typography.h4.fontSize,
             "padding": theme.spacing(1),
             "letterSpacing": "10px",
+            "fontWeight": "bold",
             "paddingLeft": theme.spacing(2),
             "borderRadius": theme.shape.borderRadius, // Use the theme border radius
             "&:hover": {

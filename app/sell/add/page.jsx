@@ -18,6 +18,7 @@ const SellAddPage = () => {
     conditions: "",
     category: "",
     imageURL: "",
+    imagePublicId: "",
     quantity: 0,
     available: ""
   });
@@ -25,8 +26,10 @@ const SellAddPage = () => {
   const addCard = async formData => {
     try {
       const data = await createCardData(formData);
-      // Navigate to the new page upon successful card addition
-      router.push(`/market/item/${data._id}`);
+      // Navigate to the sell page upon successful card addition
+    router.push(`/sell`);
+      // // Navigate to the new page upon successful card addition
+      // router.push(`/market/item/${data._id}`);
     } catch (error) {
       console.error(error);
     }
