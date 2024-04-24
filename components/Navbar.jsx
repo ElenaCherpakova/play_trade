@@ -92,8 +92,7 @@ const Navbar = () => {
       sx={{
         display: "flex",
         flexDirection: "column",
-        p: 4,
-        flexGrow: 1
+        p: 4
       }}>
       <AppBar component="nav" display="flex" sx={{ flexGrow: 1 }}>
         <Toolbar>

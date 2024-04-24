@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { useSession } from "next-auth/react";
 import { Grid, Box, Snackbar, Alert, Typography, IconButton, Drawer, Button } from "@mui/material";
 import Pagination from "@mui/material/Pagination";
 import FilterListIcon from "@mui/icons-material/FilterList";
@@ -20,6 +21,7 @@ export default function Market() {
   const [filterOpen, setFilterOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const searchParams = useSearchParams();
+  const { data: session } = useSession();
   const filters = {
     conditions: searchParams.get("conditions") || "",
     priceFrom: searchParams.get("priceFrom") || "",
@@ -153,7 +155,7 @@ export default function Market() {
                         md={4}
                         lg={3}
                         sx={{ display: "flex", justifyContent: "center" }}>
-                        <CardComponent card={card} />
+                        <CardComponent card={card} showButtons={session?.user?._id !== card?.createdBy} />
                       </Grid>
                     ))}
                   </Grid>

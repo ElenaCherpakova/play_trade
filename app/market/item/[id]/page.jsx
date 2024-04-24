@@ -91,7 +91,6 @@ export default function Page({ params }) {
     }
     setOpenError(false);
   };
-  console.log("cardDetails", cardDetails);
 
   const { data: session } = useSession(); // get session data
   const currentUserId = session?.user?._id; // get current user id
