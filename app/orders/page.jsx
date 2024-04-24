@@ -16,7 +16,7 @@
 //   );
 // }
 
-import * as React from "react";
+import React, { useState } from "react";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -27,6 +27,7 @@ import Paper from "@mui/material/Paper";
 import { Container, Typography, Box, ButtonBase, Button } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import Loader from "@/components/loader/Loader";
 
 const orders = [
   {
@@ -99,6 +100,9 @@ export default function Orders({ order }) {
   const router = useRouter();
   const { data: session } = useSession();
 
+  const [loading, setLoading] = useState(false); // set initial state to true when GET logic is added
+  //to be replaced with fetch-able data
+
   return (
     <Container maxWidth="md" sx={{ mt: 5 }}>
       <Box sx={{ mb: 3 }}>
@@ -118,26 +122,31 @@ export default function Orders({ order }) {
               <TableCell sx={{ fontWeight: "bold" }}></TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
-            {orders.map(order => (
-              <TableRow key={order.id} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
-                <TableCell component="th" scope="row">
-                  {order.orderNumber}
-                </TableCell>
-                <TableCell>{order.datePlaced}</TableCell>
-                <TableCell>{order.orderStatus}</TableCell>
-                <TableCell>
-                  {order.totalPrice}
-                  {order.currency}
-                </TableCell>
-                <TableCell>
-                  <Button variant="contained" color="primary" onClick={() => router.push(`/orders/${order.id}`)}>
-                    View order
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
+
+          {loading ? (
+            <Loader /> // Show Loader component while loading table data
+          ) : (
+            <TableBody>
+              {orders.map(order => (
+                <TableRow key={order.id} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                  <TableCell component="th" scope="row">
+                    {order.orderNumber}
+                  </TableCell>
+                  <TableCell>{order.datePlaced}</TableCell>
+                  <TableCell>{order.orderStatus}</TableCell>
+                  <TableCell>
+                    {order.totalPrice}
+                    {order.currency}
+                  </TableCell>
+                  <TableCell>
+                    <Button variant="contained" color="primary" onClick={() => router.push(`/orders/${order.id}`)}>
+                      View order
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          )}
         </Table>
       </TableContainer>
     </Container>
