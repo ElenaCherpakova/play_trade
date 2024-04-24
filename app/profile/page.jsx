@@ -90,20 +90,21 @@ export default function Profile() {
     <>
       <Grid
         container
-        spacing={7}
+        spacing={3}
         sx={{
           mx: "auto",
           my: 5,
-          width: "calc(100% - 10em)"
+          width: "80%"
         }}>
-        {/* User Personal Info Column */}
-        <Grid item xs={12} md={6} lg={3}>
+        <Grid item xs={12} sm={6} md={4} lg={3}>
           <Paper
             sx={{
-              p: 5,
+              p: 3,
               display: "flex",
               flexDirection: "column",
-              alignItems: "center"
+              alignItems: "center",
+              justifyContent: "center",
+              minWidth: 240
             }}>
             <Avatar src={userData.avatar} alt="user image" sx={{ width: 180, height: 180 }} />
             <Typography variant="h6" sx={{ fontWeight: "bold", mt: 3 }}>
@@ -123,11 +124,9 @@ export default function Profile() {
             </Button>
           </Paper>
         </Grid>
-
-        {/* Greetings and Actions Column */}
-        <Grid item xs={12} md={6} lg={9}>
+        <Grid item xs={12} md={8} lg={9}>
           <Typography
-            variant="h1"
+            variant="h3"
             color="primary"
             gutterBottom
             sx={{
@@ -139,14 +138,14 @@ export default function Profile() {
           </Typography>
           <Box sx={{ display: "flex", alignItems: "center", gap: 2, mt: 5 }}>
             <EmailIcon sx={{ fontSize: 35 }} color="primary" />
-            <Typography variant="subtitle" color="primary" gutterBottom m="0">
+            <Typography variant="subtitle1" color="primary" gutterBottom m="0">
               {userData.email}
             </Typography>
           </Box>
           {userData.location && (
             <Box sx={{ display: "flex", alignItems: "center", gap: 2, mt: 3 }}>
               <LocationOnIcon sx={{ fontSize: 35 }} color="primary" />
-              <Typography variant="subtitle" color="primary" m="0">
+              <Typography variant="subtitle1" color="primary" m="0">
                 {userData.location}
               </Typography>
             </Box>
@@ -188,7 +187,7 @@ export default function Profile() {
               component="form"
               onSubmit={handleBecomeSeller}>
               <Typography variant="h5" color="primary">
-                Add you location
+                Add your location
               </Typography>
               <TextField
                 onChange={e => setLocation(e.target.value)}

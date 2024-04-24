@@ -14,10 +14,12 @@ export default function AvatarSection({
   return (
     <Paper
       sx={{
-        p: 5,
+        p: 6,
         display: "flex",
         flexDirection: "column",
-        alignItems: "center"
+        alignItems: "center",
+        justifyContent: "center",
+        minWidth: 240
       }}>
       <Avatar src={avatarPreview} alt="user image" sx={{ width: 180, height: 180 }} />
       <input
