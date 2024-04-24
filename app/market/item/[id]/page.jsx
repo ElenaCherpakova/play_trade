@@ -2,15 +2,15 @@
 import React, { useState, useEffect, use } from "react";
 import CardComponent from "@/components/CardComponent";
 import { useRouter } from "next/navigation";
-import { Box, Button, Typography, Breadcrumbs, Divider, Link, Snackbar, Alert } from "@mui/material";
+import { Box, Button, Typography, Breadcrumbs, Divider, Link, Snackbar, Alert, Grid } from "@mui/material";
 import { theme } from "@/styles/theme";
 import { fetchCardData, deleteCardData } from "@/utils/fetchData";
 import { useSession } from "next-auth/react";
 import { fetchSellerData } from "@/utils/fetchData";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import Loader from "@/components/loader/Loader";
-import {  useCartStore  } from "@/store/cartStore";
-import ConfirmationDialog from "@/components/DialogBox";;
+import { useCartStore } from "@/store/cartStore";
+import ConfirmationDialog from "@/components/DialogBox";
 /**
  *
  * @param {*} params
@@ -118,7 +118,6 @@ export default function Page({ params }) {
       await deleteCardData(cardToDelete);
       setSellerItemsAvailable(sellerItemsAvailable.filter(item => item._id !== cardToDelete));
       setSellerItemsSold(sellerItemsSold.filter(item => item._id !== cardToDelete));
-      
     } catch (error) {
       setOpenError(true);
       setErrorMessage(error.toString() || "Unknown error occurred");
@@ -129,9 +128,9 @@ export default function Page({ params }) {
 
   return (
     <>
-      <Box style={{ marginLeft: theme.spacing(2) }}>
+      <Box sx={{ ml: theme.spacing(2)}}>
         {/* Breadcrumbs */}
-        <Breadcrumbs aria-label="breadcrumb" style={{ marginTop: "8px" }}>
+        <Breadcrumbs aria-label="breadcrumb" sx={{ mt: 2, mb: 3 }}>
           <Link color="inherit" href="/" onClick={() => router.push("/")}>
             Home
           </Link>
@@ -142,57 +141,51 @@ export default function Page({ params }) {
         {loading ? (
           <Loader /> // Show Loader component while loading card data
         ) : (
-          <Box
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              gap: theme.spacing(10)
-              // marginTop: theme.spacing(2)
-            }}>
+          <Grid container spacing={1} justifyContent="center" alignItems="stretch">
             {/* Image Section */}
-            {cardDetails && (
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  //gap: theme.spacing(2)
-                }}>
-                <CardComponent card={cardDetails} showButtons={false} showInformation={false} />
-                {currentUserId === cardDetails?.createdBy && (
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "row",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      gap: theme.spacing(6)
-                      mb: 2
-                    }}>
-                    <Button onClick={handleEdit}>Edit</Button>
-                    <Button onClick={() => handleDeleteButtonClick(id)}>Delete</Button>
-                  </Box>
-                )}
-                {currentUserId !== cardDetails?.createdBy && (
-                  <Button
-                    variant="contained"
-                    color="accent"
-                    onClick={handleAddToCartButtonClick}
-                    style={{ color: theme.palette.background.paper }}
-                    startIcon={<ShoppingCartIcon />}>
-                    Add to cart
-                  </Button>
-                )}
-              </Box>
-            )}
-
+            <Grid item xs={12} sm={6}>
+              {cardDetails && (
+                <Box
+                  sx={{                    
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center"
+                    //gap: theme.spacing(2)
+                  }}>
+                  <CardComponent card={cardDetails} showButtons={false} showInformation={false} />
+                  {currentUserId === cardDetails?.createdBy && (
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        gap: theme.spacing(6),
+                        mb: 2
+                      }}>
+                      <Button onClick={handleEdit}>Edit</Button>
+                      <Button onClick={() => handleDeleteButtonClick(id)}>Delete</Button>
+                    </Box>
+                  )}
+                  {currentUserId !== cardDetails?.createdBy && (
+                    <Button
+                      variant="contained"
+                      color="accent"
+                      onClick={handleAddToCartButtonClick}
+                      style={{ color: theme.palette.background.paper, marginBottom: theme.spacing(2)}}
+                      startIcon={<ShoppingCartIcon />}>
+                      Add to cart
+                    </Button>
+                  )}
+                </Box>
+              )}
+            </Grid>
             {/* Details Section */}
-            {cardDetails && (
-              <Box style={{ maxWidth: 600, paddingLeft: theme.spacing(2), borderRadius: theme.shape.borderRadius }}>
-                <Typography variant="body1" gutterBottom style={{ display: "flex" }}>
-                  <span style={{ flex: 1 }}>
+            <Grid item xs={12} sm={6}>
+              {cardDetails && (
+                <Box sx={{ width: "80%" }}>
+                  <Typography variant="body1" gutterBottom style={{ display: "flex" }}>
                     {cardDetails && (
                       <Link
                         href={`/market/seller/${cardDetails.sellerId}`}
@@ -210,107 +203,107 @@ export default function Page({ params }) {
                         <b>{sellerName}</b>
                       </Link>
                     )}
-                  </span>
-                </Typography>
+                  </Typography>
 
-                <Typography variant="h4" gutterBottom>
-                  {cardDetails.name}
-                </Typography>
+                  <Typography variant="h4" gutterBottom>
+                    {cardDetails.name}
+                  </Typography>
 
-                <Typography variant="body1" gutterBottom style={{ display: "flex" }}>
-                  <span style={{ width: 120, marginRight: 40 }}>
-                    <Typography component="span" variant="subtitle1" style={{ fontWeight: "bold" }}>
-                      Price:
-                    </Typography>
-                  </span>
-                  <span style={{ flex: 1 }}>
-                    {getCurrencySymbol(cardDetails.currency)}
-                    {cardDetails.price}
-                  </span>
-                </Typography>
-                <Typography variant="body1" gutterBottom style={{ display: "flex" }}>
-                  <span style={{ width: 120, marginRight: 40 }}>
-                    <Typography component="span" variant="subtitle1" style={{ fontWeight: "bold" }}>
-                      Description:
-                    </Typography>
-                  </span>
-                  <span style={{ flex: 1 }}>{cardDetails.description}</span>
-                </Typography>
+                  <Typography variant="body1" gutterBottom style={{ display: "flex" }}>
+                    <span style={{ width: 120, marginRight: 40 }}>
+                      <Typography component="span" variant="subtitle1" style={{ fontWeight: "bold" }}>
+                        Price:
+                      </Typography>
+                    </span>
+                    <span style={{ flex: 1 }}>
+                      {getCurrencySymbol(cardDetails.currency)}
+                      {cardDetails.price}
+                    </span>
+                  </Typography>
+                  <Typography variant="body1" gutterBottom style={{ display: "flex" }}>
+                    <span style={{ width: 120, marginRight: 40 }}>
+                      <Typography component="span" variant="subtitle1" style={{ fontWeight: "bold" }}>
+                        Description:
+                      </Typography>
+                    </span>
+                    <span style={{ flex: 1 }}>{cardDetails.description}</span>
+                  </Typography>
 
-                <Divider style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
+                  <Divider style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
 
-                <Typography variant="body1" gutterBottom style={{ display: "flex" }}>
-                  <span style={{ width: 120, marginRight: 40 }}>
-                    <Typography component="span" variant="subtitle1" style={{ fontWeight: "bold" }}>
-                      Conditions:
-                    </Typography>
-                  </span>
-                  <span style={{ flex: 1 }}>{cardDetails.conditions}</span>
-                </Typography>
+                  <Typography variant="body1" gutterBottom style={{ display: "flex" }}>
+                    <span style={{ width: 120, marginRight: 40 }}>
+                      <Typography component="span" variant="subtitle1" style={{ fontWeight: "bold" }}>
+                        Conditions:
+                      </Typography>
+                    </span>
+                    <span style={{ flex: 1 }}>{cardDetails.conditions}</span>
+                  </Typography>
 
-                <Typography variant="body1" gutterBottom style={{ display: "flex" }}>
-                  <span style={{ width: 120, marginRight: 40 }}>
-                    <Typography component="span" variant="subtitle1" style={{ fontWeight: "bold" }}>
-                      Category:
-                    </Typography>
-                  </span>
-                  <span style={{ flex: 1 }}>{cardDetails.category}</span>
-                </Typography>
+                  <Typography variant="body1" gutterBottom style={{ display: "flex" }}>
+                    <span style={{ width: 120, marginRight: 40 }}>
+                      <Typography component="span" variant="subtitle1" style={{ fontWeight: "bold" }}>
+                        Category:
+                      </Typography>
+                    </span>
+                    <span style={{ flex: 1 }}>{cardDetails.category}</span>
+                  </Typography>
 
-                <Typography variant="body1" gutterBottom style={{ display: "flex" }}>
-                  <span style={{ width: 120, marginRight: 40 }}>
-                    <Typography component="span" variant="subtitle1" style={{ fontWeight: "bold" }}>
-                      Quantity:
-                    </Typography>
-                  </span>
-                  <span style={{ flex: 1 }}>{cardDetails.quantity}</span>
-                </Typography>
+                  <Typography variant="body1" gutterBottom style={{ display: "flex" }}>
+                    <span style={{ width: 120, marginRight: 40 }}>
+                      <Typography component="span" variant="subtitle1" style={{ fontWeight: "bold" }}>
+                        Quantity:
+                      </Typography>
+                    </span>
+                    <span style={{ flex: 1 }}>{cardDetails.quantity}</span>
+                  </Typography>
 
-                <Typography variant="body1" gutterBottom style={{ display: "flex" }}>
-                  <span style={{ width: 120, marginRight: 40 }}>
-                    <Typography component="span" variant="subtitle1" style={{ fontWeight: "bold" }}>
-                      Availability:
-                    </Typography>
-                  </span>
-                  <span style={{ flex: 1 }}>{cardDetails.available}</span>
-                </Typography>
+                  <Typography variant="body1" gutterBottom style={{ display: "flex" }}>
+                    <span style={{ width: 120, marginRight: 40 }}>
+                      <Typography component="span" variant="subtitle1" style={{ fontWeight: "bold" }}>
+                        Availability:
+                      </Typography>
+                    </span>
+                    <span style={{ flex: 1 }}>{cardDetails.available}</span>
+                  </Typography>
 
-                <Typography variant="body1" gutterBottom style={{ display: "flex" }}>
-                  <span style={{ width: 120, marginRight: 40 }}>
-                    <Typography component="span" variant="subtitle1" style={{ fontWeight: "bold" }}>
-                      Set:
-                    </Typography>
-                  </span>
-                  <span style={{ flex: 1 }}>{cardDetails.set}</span>
-                </Typography>
+                  <Typography variant="body1" gutterBottom style={{ display: "flex" }}>
+                    <span style={{ width: 120, marginRight: 40 }}>
+                      <Typography component="span" variant="subtitle1" style={{ fontWeight: "bold" }}>
+                        Set:
+                      </Typography>
+                    </span>
+                    <span style={{ flex: 1 }}>{cardDetails.set}</span>
+                  </Typography>
 
-                <Typography variant="body1" gutterBottom style={{ display: "flex" }}>
-                  <span style={{ width: 120, marginRight: 40 }}>
-                    <Typography component="span" variant="subtitle1" style={{ fontWeight: "bold" }}>
-                      Shipping Cost:
-                    </Typography>
-                  </span>
-                  <span style={{ flex: 1 }}>{cardDetails.shippingCost}</span>
-                </Typography>
+                  <Typography variant="body1" gutterBottom style={{ display: "flex" }}>
+                    <span style={{ width: 120, marginRight: 40 }}>
+                      <Typography component="span" variant="subtitle1" style={{ fontWeight: "bold" }}>
+                        Shipping Cost:
+                      </Typography>
+                    </span>
+                    <span style={{ flex: 1 }}>{cardDetails.shippingCost}</span>
+                  </Typography>
 
-                {/* Action Buttons */}
-                {/* <Box style={{ marginTop: theme.spacing(2), display: "flex", gap: theme.spacing(2) }}>
-                <Button
-                  variant="contained"
-                  color="accent"
-                  onClick={handleAddToCartButtonClick}
-                  style={{ color: theme.palette.background.paper }}
-                  startIcon={<ShoppingCartIcon />}>
-                  Add to cart
-                </Button> */}
+                  {/* Action Buttons */}
+                  {/* <Box style={{ marginTop: theme.spacing(2), display: "flex", gap: theme.spacing(2) }}>
+                  <Button
+                    variant="contained"
+                    color="accent"
+                    onClick={handleAddToCartButtonClick}
+                    style={{ color: theme.palette.background.paper }}
+                    startIcon={<ShoppingCartIcon />}>
+                    Add to cart
+                  </Button> */}
 
-                {/* <Button variant="contained" color="primary" onClick={handleWishlistButtonClick}>
-                  Add to Wishlist
-                </Button> */}
-                {/* </Box> */}
-              </Box>
-            )}
-          </Box>
+                  {/* <Button variant="contained" color="primary" onClick={handleWishlistButtonClick}>
+                    Add to Wishlist
+                  </Button> */}
+                  {/* </Box> */}
+                </Box>
+              )}
+            </Grid>
+          </Grid>
         )}
       </Box>
       <Snackbar
