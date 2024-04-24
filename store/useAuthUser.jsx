@@ -131,7 +131,7 @@ const useAuthUser = create(set => ({
       set({ isLoading: false, verifyError: error.message });
     }
   },
-  updateProfile: async userData => {
+  updateProfile: async (userData, avatarPublicId) => {
     set({ isLoading: true, error: null });
     try {
       const response = await fetch("/api/auth/profile/update", {
@@ -139,10 +139,11 @@ const useAuthUser = create(set => ({
         headers: {
           "Content-type": "application/json"
         },
-        body: JSON.stringify(userData)
+        body: JSON.stringify({ ...userData, imageProfilePublicId: avatarPublicId })
       });
       if (response.ok) {
         const data = await response.json();
+        console.log("DATA", data);
         set({ data, isLoading: false, error: null });
         return data;
       } else {

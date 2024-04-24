@@ -97,7 +97,8 @@ export const authOptions = {
             email: user.email,
             avatar: user.imageProfileURL,
             isSeller: user.isSeller,
-            address: user.address
+            address: user.address,
+            avatarPublicId: user.imageProfilePublicId
           };
         }
       }
@@ -111,10 +112,10 @@ export const authOptions = {
           email: session.user.email,
           avatar: session.user.avatar,
           isSeller: session.user.isSeller,
-          address: session.user.address
+          address: session.user.address,
+          avatarPublicId: session.user.avatarPublicId
         };
       }
-      console.log("token", token.user);
       return token;
     },
     async session({ session, token }) {
@@ -126,10 +127,10 @@ export const authOptions = {
           email: token.user.email,
           avatar: token.user.avatar,
           isSeller: token.user.isSeller,
-          address: token.user.address
+          address: token.user.address,
+          avatarPublicId: token.user.avatarPublicId
         };
       }
-      console.log("session", session);
       return session;
     }
   },

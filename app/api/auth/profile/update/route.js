@@ -24,8 +24,7 @@ export const PUT = async req => {
   try {
     const userId = session.user._id;
     const body = await req.json();
-    console.log("body", body);
-    const { name, email, avatar, type } = body;
+    const { name, email, avatar, type, avatarPublicId } = body;
 
     if (type === "profile") {
       if (!name || !email) {
@@ -33,9 +32,11 @@ export const PUT = async req => {
       }
       if (avatar !== undefined) {
         body.imageProfileURL = avatar;
+        body.imageProfilePublicId = avatarPublicId
       } else {
         if (body.imageProfileURL === null || body.imageProfileURL === "") {
           delete body.imageProfileURL;
+          delete body.imageProfilePublicId;
         }
       }
       const updateUser = await User.findByIdAndUpdate(userId, body, {

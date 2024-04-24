@@ -76,18 +76,28 @@ export default function UserProfileEditPage() {
     try {
       setLoading(true);
       if (selectedFile) {
-        await handleImageUpload(selectedFile, async imageURL => {
-          setAvatarPreview(imageURL);
+        const existingPublicId = session.user?.avatarPublicId;
+        await handleImageUpload(
+          selectedFile,
+          async (imageURL, imagePublicId) => {
+            setAvatarPreview(imageURL);
 
-          await updateSession({
-            ...session,
-            user: { ...session.user, avatar: imageURL }
-          });
+            await updateSession({
+              ...session,
+              user: { ...session.user, avatar: imageURL, avatarPublicId: imagePublicId }
+            });
 
-          const userDataWithAvatar = { ...session.user, avatar: imageURL, type: "profile" };
-          await updateProfile(userDataWithAvatar);
-          setIsEditAvatar(false);
-        });
+            const userDataWithAvatar = {
+              ...session.user,
+              avatar: imageURL,
+              avatarPublicId: imagePublicId,
+              type: "profile"
+            };
+            await updateProfile(userDataWithAvatar);
+            setIsEditAvatar(false);
+          },
+          existingPublicId
+        );
       } else {
         setIsEditAvatar(false);
       }
