@@ -7,6 +7,7 @@ import { createCardData, fetchSellerCards, deleteCardData, editCardData } from "
 import { useSession } from "next-auth/react";
 import CardForm from "@/components/CardForm";
 import CardComponent from "@/components/CardComponent";
+import ConfirmationDialog from "@/components/DialogBox";
 
 export default function Sell() {
   const router = useRouter();
@@ -19,6 +20,8 @@ export default function Sell() {
   const [sellerItemsAvailable, setSellerItemsAvailable] = useState([]);
   const { data: session } = useSession();
   const sellerID = session?.user?._id;
+  const [cardToDelete, setCardToDelete] = useState(null);
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
 
   const handleTabChange = (event, newValue) => {
     setSelectedTab(newValue);
@@ -50,19 +53,19 @@ export default function Sell() {
       }
     };
     fetchData();
-  }, [sellerID, session, ]);
+  }, [sellerID, session]);
 
+  // Redirect to item page when id changes
   useEffect(() => {
     if (id) {
-      router.push(`/market/item/${id}`); //user should probably be redirected to /sell/carddetails or /sell page
+      router.push(`/market/item/${id}`);
     }
   }, [id, router]);
 
   // This useEffect only watches for changes in sellerItemsAvailable and sellerItemsSold
-useEffect(() => { 
-}, [sellerItemsAvailable, sellerItemsSold]);
+  useEffect(() => {}, [sellerItemsAvailable, sellerItemsSold]);
 
- // Add a new card
+  // Add a new card
   const addCard = async formData => {
     try {
       const data = await createCardData(formData);
@@ -88,16 +91,22 @@ useEffect(() => {
     router.push(`/sell/edit/${id}`);
   };
 
-  const handleDeleteButtonClick = async id => {
+  const handleDeleteButtonClick = id => {
+    setCardToDelete(id);
+    setOpenConfirmDialog(true);
+  };
+  //delete from alert box
+  const handleConfirmDelete = async () => {
     try {
-      await deleteCardData(id);
-      // After successful deletion, remove the card from the state
-      setSellerItemsAvailable(sellerItemsAvailable.filter(item => item._id !== id));
-      setSellerItemsSold(sellerItemsSold.filter(item => item._id !== id));
+      await deleteCardData(cardToDelete);
+      setSellerItemsAvailable(sellerItemsAvailable.filter(item => item._id !== cardToDelete));
+      setSellerItemsSold(sellerItemsSold.filter(item => item._id !== cardToDelete));
     } catch (error) {
+      console.error(error);
       setOpenError(true);
-      setErrorMessage(error.toString() || "Unknown error occurred");
+      setErrorMessage(error.message || "Unknown error occurred");
     }
+    setOpenConfirmDialog(false);
   };
 
   return (
@@ -106,10 +115,7 @@ useEffect(() => {
         <Typography variant="h5" gutterBottom>
           My Cards
         </Typography>
-        <Box mt={2}>
-          {add && 
-            <CardForm cardValue={card} onSubmitForm={addCard} />}
-        </Box>
+        <Box mt={2}>{add && <CardForm cardValue={card} onSubmitForm={addCard} />}</Box>
 
         <Grid container justifyContent="space-between" alignItems="center" mt={theme.spacing(2)}>
           <Grid item xs={12} sm={6} md={4} lg={3}>
@@ -119,7 +125,7 @@ useEffect(() => {
             </Tabs>
           </Grid>
           <Grid item xs={12} sm={6} md={4} lg={3} container justifyContent="flex-end">
-            <Button variant="contained" color="primary" onClick={handleAddButtonClick} sx={{ mr: 7 }}>
+            <Button variant="contained" color="primary" onClick={handleAddButtonClick} sx = {{mr:7}}>
               Add new card
             </Button>
           </Grid>
@@ -135,8 +141,8 @@ useEffect(() => {
                     buttonSet="seller"
                     showButtons={false}
                     showEditDelete={true}
-                    onEdit={() => handleEditButtonClick(item._id)} 
-                    onDelete={() => handleDeleteButtonClick(item._id)} 
+                    onEdit={() => handleEditButtonClick(item._id)}
+                    onDelete={() => handleDeleteButtonClick(item._id)}
                     sx={{
                       display: "flex",
                       flexDirection: "column",
@@ -153,8 +159,8 @@ useEffect(() => {
                     buttonSet="seller"
                     showButtons={false}
                     showEditDelete={true}
-                    onEdit={() => handleEditButtonClick(item.id)} // add more functionality later
-                    onDelete={() => handleDeleteButtonClick(item.id)} // add more functionality later
+                    onEdit={() => handleEditButtonClick(item._id)}
+                    onDelete={() => handleDeleteButtonClick(item._id)}
                     sx={{
                       display: "flex",
                       flexDirection: "column",
@@ -165,6 +171,12 @@ useEffect(() => {
               ))}
           </Grid>
         </Box>
+        <ConfirmationDialog
+          open={openConfirmDialog}
+          handleConfirm={handleConfirmDelete}
+          handleCancel={() => setOpenConfirmDialog(false)}
+          message="Are you sure you would like to delete this card?"
+        />
         <Snackbar
           open={openError}
           autoHideDuration={5000}
