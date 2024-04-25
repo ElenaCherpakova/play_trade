@@ -1,6 +1,6 @@
 "use client";
 import { React, useState, useEffect, useRef } from "react";
-import { useSession, getSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 
 import { useTheme } from "@mui/material/styles";
 import { Typography, Grid, Backdrop, CircularProgress, Snackbar, Alert } from "@mui/material";
