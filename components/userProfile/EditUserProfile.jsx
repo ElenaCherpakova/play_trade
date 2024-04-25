@@ -32,10 +32,7 @@ export default function UserProfileEditPage() {
   });
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const session = await getSession();
-        if (session && status === "authenticated") {
+        if (status === "authenticated") {
           setUserData({
             name: session?.user?.name,
             email: session?.user?.email,
@@ -43,14 +40,8 @@ export default function UserProfileEditPage() {
           });
           setAvatarPreview(session?.user?.avatar);
         }
-      } catch (error) {
-        console.error(error);
-        setOpenError(true);
-        setErrorMessage(error.toString() || "unknown error");
-      }
-    };
-    fetchData();
-  }, [status, session]);
+
+  }, [session, status]);
 
   useEffect(() => {
     if (!selectedFile) {

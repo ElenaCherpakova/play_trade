@@ -50,7 +50,7 @@ export default function Profile() {
             email: session?.user?.email,
             avatar: session?.user?.avatar,
             userRole: session?.user?.isSeller ? "Seller" : "Buyer",
-            location: session?.user?.address || ""
+            location: session?.user?.address
           });
         }
       } catch (error) {
