@@ -50,7 +50,7 @@ export default function Profile() {
             email: session?.user?.email,
             avatar: session?.user?.avatar,
             userRole: session?.user?.isSeller ? "Seller" : "Buyer",
-            location: session?.user?.address
+            location: session?.user?.address || ""
           });
         }
       } catch (error) {
@@ -67,7 +67,7 @@ export default function Profile() {
     setLoading(true);
     try {
       const data = await updateProfile({ location, type: "seller" });
-
+      console.log("Data", data);
       if (data && data.isSeller && data.address) {
         updateSession({
           ...session,
