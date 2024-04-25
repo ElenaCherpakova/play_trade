@@ -42,7 +42,7 @@ export default function Page({ params }) {
     };
     try {
       await editCardData(id, editCard);
-      router.push(`/market/item/${id}`);
+      router.push(`/sell`);
     } catch (error) {
       console.log(error.message);
       console.error(error);
