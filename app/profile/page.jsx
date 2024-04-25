@@ -51,10 +51,9 @@ export default function Profile() {
         userRole: session?.user?.isSeller ? "Seller" : "Buyer",
         location: session?.user?.address
       });
+      setLoading(false);
     } else if (status === "loading") {
       setLoading(true);
-    } else {
-      setLoading(false);
     }
   }, [session, status]);
 
@@ -224,11 +223,11 @@ export default function Profile() {
           </Grid>
         </Grid>
       )}
-      <Backdrop
+      {/* <Backdrop
         sx={{ color: "#fff", zIndex: theme => theme.zIndex.drawer + 1, backdropFilter: "blur(2px)" }}
         open={loading}>
         <CircularProgress color="inherit" />
-      </Backdrop>
+      </Backdrop> */}
       <Snackbar
         open={openError}
         autoHideDuration={5000}
