@@ -77,7 +77,7 @@ export const PUT = async req => {
       console.log("updateUser", updateUser);
       await Seller.create({ userId, isRequestedAt: new Date() });
       return NextResponse.json(
-        { success: true, message: "User became a seller", isSeller: updateUser.isSeller, address: updateUser.address },
+        { success: true, message: "User became a seller", isSeller: updateUser.isSeller, address: updateUser.address, avatar: updateUser.imageProfileURL },
         { status: 200 }
       );
     } else {

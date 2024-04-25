@@ -141,9 +141,10 @@ const useAuthUser = create(set => ({
         },
         body: JSON.stringify({ ...userData, imageProfilePublicId: avatarPublicId })
       });
+      console.log("RESPONSE", response);
       if (response.ok) {
         const data = await response.json();
-        console.log("DATA", data);
+        console.log("Data", data);
         set({ data, isLoading: false, error: null });
         return data;
       } else {

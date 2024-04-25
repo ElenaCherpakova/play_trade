@@ -32,22 +32,24 @@ export default function UserProfileEditPage() {
   });
 
   useEffect(() => {
-        if (status === "authenticated") {
-          setUserData({
-            name: session?.user?.name,
-            email: session?.user?.email,
-            address: session?.user?.address
-          });
-          setAvatarPreview(session?.user?.avatar);
-        }
-
+    try {
+      if (status === "authenticated") {
+        setUserData({
+          name: session?.user?.name,
+          email: session?.user?.email,
+          address: session?.user?.address
+        });
+        setAvatarPreview(session?.user?.avatar);
+      }
+    } catch (error) {
+      setOpenError(true);
+      setErrorMessage(error.toString() || "unknown error");
+    }
   }, [session, status]);
 
   useEffect(() => {
-    if (!selectedFile) {
-      setAvatarPreview("");
-      return;
-    }
+    if (!selectedFile) return;
+    
     const fileReader = new FileReader();
     fileReader.onloadend = () => {
       setAvatarPreview(fileReader.result);
@@ -108,7 +110,7 @@ export default function UserProfileEditPage() {
     setError(prevError => ({ ...prevError, [`${name}Error`]: newError }));
   };
 
-  const handleValidation = () => {
+  const handleValidation = isSeller => {
     let isValid = true;
     const formErrors = {};
 
@@ -123,11 +125,12 @@ export default function UserProfileEditPage() {
       formErrors.emailError = emailError;
       isValid = false;
     }
-
-    const { value: trimmedAddress, error: addressError } = trimAndValidate("address", userData.address);
-    if (addressError) {
-      formErrors.addressError = addressError;
-      isValid = false;
+    if (isSeller) {
+      const { value: trimmedAddress, error: addressError } = trimAndValidate("address", userData.address);
+      if (addressError) {
+        formErrors.addressError = addressError;
+        isValid = false;
+      }
     }
     setError(formErrors);
     return isValid;
