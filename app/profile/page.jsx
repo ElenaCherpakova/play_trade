@@ -30,7 +30,7 @@ export default function Profile() {
   const [location, setLocation] = useState("");
   const [showLocationForm, setShowLocationForm] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [sessionLoading, setSessionLoading] = useState(true);
+  // const [sessionLoading, setSessionLoading] = useState(true);
   const [openError, setOpenError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const router = useRouter();
@@ -43,28 +43,19 @@ export default function Profile() {
   });
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (status === "authenticated") {
-        try {
-          if (session) {
-            setUserData({
-              name: session?.user?.name,
-              email: session?.user?.email,
-              avatar: session?.user?.avatar,
-              userRole: session?.user?.isSeller ? "Seller" : "Buyer",
-              location: session?.user?.address
-            });
-          }
-        } catch (error) {
-          console.error(error);
-          setOpenError(true);
-          setErrorMessage(error.toString() || "unknown error");
-          setSessionLoading(true);
-        }
-        setSessionLoading(false);
-      }
-    };
-    fetchData();
+    if (status === "authenticated" && session) {
+      setUserData({
+        name: session?.user?.name,
+        email: session?.user?.email,
+        avatar: session?.user?.avatar,
+        userRole: session?.user?.isSeller ? "Seller" : "Buyer",
+        location: session?.user?.address
+      });
+    } else if (status === "loading") {
+      setLoading(true);
+    } else {
+      setLoading(false);
+    }
   }, [session, status]);
 
   const handleBecomeSeller = async e => {
@@ -73,26 +64,33 @@ export default function Profile() {
     try {
       const data = await updateProfile({ location, type: "seller" });
       if (data && data.isSeller && data.address) {
-        updateSession({
+        await updateSession({
           ...session,
           user: { ...session.user, isSeller: data.isSeller, address: data.address }
         });
+        setUserData(prev => ({
+          ...prev,
+          userRole: "Seller",
+          location: data.address
+        }));
+
         setShowLocationForm(false);
       } else {
         setErrorMessage(data.message || "Failed to become a seller");
       }
     } catch (error) {
+      setOpenError(true);
       setErrorMessage(error.toString() || "An error occurred while updating");
     }
     setLoading(false);
   };
   const handleClose = () => {
-    setOpen(false);
+    setOpenError(false);
   };
 
   return (
     <>
-      {sessionLoading ? (
+      {loading ? (
         <Loader />
       ) : (
         <Grid

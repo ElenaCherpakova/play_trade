@@ -114,6 +114,8 @@ export const authOptions = {
           avatarPublicId: session.user.avatarPublicId
         };
       }
+      console.log('token', token)
+
       return token;
     },
     async session({ session, token }) {
@@ -129,6 +131,7 @@ export const authOptions = {
           avatarPublicId: token.user.avatarPublicId
         };
       }
+      console.log('Session', session)
       return session;
     }
   },
