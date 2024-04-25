@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useSession, getSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import {
   Modal,
@@ -46,7 +46,6 @@ export default function Profile() {
     const fetchData = async () => {
       if (status === "authenticated") {
         try {
-          const session = await getSession();
           if (session) {
             setUserData({
               name: session?.user?.name,
