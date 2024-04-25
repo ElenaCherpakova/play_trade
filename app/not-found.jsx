@@ -3,7 +3,7 @@ import { Button, Link, Typography, Grid, Box } from "@mui/material";
 import Image from "next/image";
 import { theme } from "@/styles/theme";
 
-const Custom404 = () => {
+const NotFound = () => {
     return (
         <Grid container spacing={4} justifyContent="center" alignItems="center" textAlign="left">
             <Grid item xs={12} sm={6}>
@@ -31,4 +31,4 @@ const Custom404 = () => {
     );
 };
 
-export default Custom404;
+export default NotFound;
