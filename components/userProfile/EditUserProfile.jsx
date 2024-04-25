@@ -163,11 +163,11 @@ export default function UserProfileEditPage() {
     <>
       <Grid
         container
-        spacing={7}
+        spacing={3}
         sx={{
           mx: "auto",
           my: 5,
-          width: "calc(100% - 10em)"
+          width: "80%"
         }}>
         <Grid item xs={12} md={6} lg={3}>
           <AvatarSection
@@ -182,7 +182,7 @@ export default function UserProfileEditPage() {
 
         <Grid item xs={12} md={6} lg={9}>
           <Typography
-            variant="h2"
+            variant="h3"
             color="primary"
             gutterBottom
             sx={{

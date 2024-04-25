@@ -4,11 +4,12 @@ import { Box, Button, Paper, TextField } from "@mui/material";
 export default function FormSection({ handleChange, userData, isEditing, handleSubmit, error, theme, isSeller }) {
   return (
     <Paper
-      padding={2}
       sx={{
+        p: 3,
         display: "flex",
         flexDirection: "column",
-        alignItems: "center"
+        alignItems: "center",
+        justifyContent: "center",
       }}>
       <Box
         component="form"
@@ -27,7 +28,7 @@ export default function FormSection({ handleChange, userData, isEditing, handleS
           name="name"
           label="Nickname"
           value={userData.name}
-          sx={{ mb: 2 }} //margin bottom
+          sx={{ mb: 2 }}
           disabled={!isEditing}
           required
           error={Boolean(error.nameError)}
