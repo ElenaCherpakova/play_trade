@@ -16,7 +16,6 @@ import Seller from "@/models/Seller";
 export const PUT = async req => {
   await dbConnect();
   const session = await getServerSession(authOptions);
-  console.log("session", session);
   if (!session || !session.user) {
     return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
   }
@@ -57,7 +56,6 @@ export const PUT = async req => {
         return NextResponse.json({ success: false, message: "Location is required" }, { status: 400 });
       }
       const existingSeller = await Seller.findOne({ userId });
-      console.log("existingSeller", existingSeller);
       if (existingSeller) {
         return NextResponse.json({ success: false, message: "User is already a seller" }, { status: 400 });
       }
@@ -74,10 +72,9 @@ export const PUT = async req => {
           runValidators: true
         }
       );
-      console.log("updateUser", updateUser);
       await Seller.create({ userId, isRequestedAt: new Date() });
       return NextResponse.json(
-        { success: true, message: "User became a seller", isSeller: updateUser.isSeller, address: updateUser.address, avatar: updateUser.imageProfileURL },
+        { success: true, message: "User became a seller", isSeller: updateUser.isSeller, address: updateUser.address },
         { status: 200 }
       );
     } else {

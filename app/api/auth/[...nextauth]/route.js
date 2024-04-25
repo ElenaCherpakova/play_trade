@@ -102,8 +102,6 @@ export const authOptions = {
           };
         }
       }
-
-      console.log("token user", token);
       if (trigger === "update" && session?.user) {
         token.user = {
           ...token.user,

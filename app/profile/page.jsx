@@ -41,24 +41,21 @@ export default function Profile() {
   });
 
   useEffect(() => {
-      try {
-    
-        if (session && status === "authenticated") {
-          setUserData({
-            name: session?.user?.name,
-            email: session?.user?.email,
-            avatar: session?.user?.avatar,
-            userRole: session?.user?.isSeller ? "Seller" : "Buyer",
-            location: session?.user?.address
-          });
-        }}
-       catch (error) {
-        console.error(error);
-        setOpenError(true);
-        setErrorMessage(error.toString() || "unknown error");
+    try {
+      if (session && status === "authenticated") {
+        setUserData({
+          name: session?.user?.name,
+          email: session?.user?.email,
+          avatar: session?.user?.avatar,
+          userRole: session?.user?.isSeller ? "Seller" : "Buyer",
+          location: session?.user?.address
+        });
       }
-    
-
+    } catch (error) {
+      console.error(error);
+      setOpenError(true);
+      setErrorMessage(error.toString() || "unknown error");
+    }
   }, [status, session]);
 
   const handleBecomeSeller = async e => {
@@ -66,11 +63,10 @@ export default function Profile() {
     setLoading(true);
     try {
       const data = await updateProfile({ location, type: "seller" });
-      console.log("Data", data);
       if (data && data.isSeller && data.address) {
         updateSession({
           ...session,
-          user: { ...session.user, isSeller: data.isSeller, address: data.address}
+          user: { ...session.user, isSeller: data.isSeller, address: data.address }
         });
         setShowLocationForm(false);
       } else {
