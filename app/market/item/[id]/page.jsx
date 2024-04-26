@@ -9,8 +9,9 @@ import { useSession } from "next-auth/react";
 import { fetchSellerData } from "@/utils/fetchData";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import Loader from "@/components/loader/Loader";
-import {  useCartStore  } from "@/store/cartStore";
-import ConfirmationDialog from "@/components/DialogBox";;
+import { useCartStore } from "@/store/cartStore";
+import ConfirmationDialog from "@/components/DialogBox";
+import useImageUpload from "@/hooks/useImageUpload";
 /**
  *
  * @param {*} params
@@ -30,6 +31,7 @@ export default function Page({ params }) {
   const [sellerItemsSold, setSellerItemsSold] = useState([]);
   const id = params.id;
   const [loading, setLoading] = useState(true);
+  const { handleImageDelete } = useImageUpload();
 
   // Function to convert currency code to symbol
   const getCurrencySymbol = currencyCode => {
@@ -115,6 +117,11 @@ export default function Page({ params }) {
 
   const handleConfirmDelete = async () => {
     try {
+      const deleteImageResponse = await handleImageDelete(cardDetails.imagePublicId);
+      if (deleteImageResponse.error) {
+        console.error("Failed to delete image:", deleteImageResponse.error);
+        throw new Error("Failed to delete the associated image. Please try again.");
+      }
       await deleteCardData(cardToDelete);
       setSellerItemsAvailable(sellerItemsAvailable.filter(item => item._id !== cardToDelete));
       setSellerItemsSold(sellerItemsSold.filter(item => item._id !== cardToDelete));
@@ -128,7 +135,7 @@ export default function Page({ params }) {
 
   return (
     <>
-      <Box sx={{ ml: theme.spacing(2)}}>
+      <Box sx={{ ml: theme.spacing(2) }}>
         {/* Breadcrumbs */}
         <Breadcrumbs aria-label="breadcrumb" sx={{ mt: 2, mb: 3 }}>
           <Link color="inherit" href="/" onClick={() => router.push("/")}>
@@ -146,7 +153,7 @@ export default function Page({ params }) {
             <Grid item xs={12} sm={6}>
               {cardDetails && (
                 <Box
-                  sx={{                    
+                  sx={{
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
@@ -173,7 +180,7 @@ export default function Page({ params }) {
                       variant="contained"
                       color="accent"
                       onClick={handleAddToCartButtonClick}
-                      style={{ color: theme.palette.background.paper, marginBottom: theme.spacing(2)}}
+                      style={{ color: theme.palette.background.paper, marginBottom: theme.spacing(2) }}
                       startIcon={<ShoppingCartIcon />}>
                       Add to cart
                     </Button>
