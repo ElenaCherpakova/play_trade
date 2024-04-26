@@ -21,7 +21,7 @@ export const trimAndValidate = (name, value) => {
       break;
 
     case "address":
-      trimmedValue = value.trimStart()
+      trimmedValue = value.trimStart();
       if (!trimmedValue) {
         newError = "Location is required";
       }

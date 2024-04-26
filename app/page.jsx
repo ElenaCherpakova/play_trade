@@ -1,4 +1,4 @@
-"use state";
+"use client";
 import Home from "../components/Home"; // import Home component
 
 export default function Page() {
