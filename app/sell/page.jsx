@@ -8,6 +8,7 @@ import { useSession } from "next-auth/react";
 import CardForm from "@/components/CardForm";
 import CardComponent from "@/components/CardComponent";
 import ConfirmationDialog from "@/components/DialogBox";
+import useImageUpload from "@/hooks/useImageUpload";
 
 export default function Sell() {
   const router = useRouter();
@@ -21,7 +22,9 @@ export default function Sell() {
   const { data: session } = useSession();
   const sellerID = session?.user?._id;
   const [cardToDelete, setCardToDelete] = useState(null);
+  const [cardToDeletePublicId, setCardToDeletePublicId] = useState(null);
   const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
+  const { handleImageDelete } = useImageUpload();
 
   const handleTabChange = (event, newValue) => {
     setSelectedTab(newValue);
@@ -91,13 +94,19 @@ export default function Sell() {
     router.push(`/sell/edit/${id}`);
   };
 
-  const handleDeleteButtonClick = id => {
+  const handleDeleteButtonClick = (id, publicId) => {
     setCardToDelete(id);
+    setCardToDeletePublicId(publicId);
     setOpenConfirmDialog(true);
   };
   //delete from alert box
   const handleConfirmDelete = async () => {
     try {
+      const deleteImageResponse = await handleImageDelete(cardToDeletePublicId);
+      if (deleteImageResponse.error) {
+        console.error("Failed to delete image:", deleteImageResponse.error);
+        throw new Error("Failed to delete the associated image. Please try again.");
+      }
       await deleteCardData(cardToDelete);
       setSellerItemsAvailable(sellerItemsAvailable.filter(item => item._id !== cardToDelete));
       setSellerItemsSold(sellerItemsSold.filter(item => item._id !== cardToDelete));
@@ -125,7 +134,7 @@ export default function Sell() {
             </Tabs>
           </Grid>
           <Grid item xs={12} sm={6} md={4} lg={3} container justifyContent="flex-end">
-            <Button variant="contained" color="primary" onClick={handleAddButtonClick} sx = {{mr:7}}>
+            <Button variant="contained" color="primary" onClick={handleAddButtonClick} sx={{ mr: 7 }}>
               Add new card
             </Button>
           </Grid>
@@ -142,7 +151,7 @@ export default function Sell() {
                     showButtons={false}
                     showEditDelete={true}
                     onEdit={() => handleEditButtonClick(item._id)}
-                    onDelete={() => handleDeleteButtonClick(item._id)}
+                    onDelete={() => handleDeleteButtonClick(item._id, item.imagePublicId)}
                     sx={{
                       display: "flex",
                       flexDirection: "column",
@@ -160,7 +169,7 @@ export default function Sell() {
                     showButtons={false}
                     showEditDelete={true}
                     onEdit={() => handleEditButtonClick(item._id)}
-                    onDelete={() => handleDeleteButtonClick(item._id)}
+                    onDelete={() => handleDeleteButtonClick(item._id, item.imagePublicId)}
                     sx={{
                       display: "flex",
                       flexDirection: "column",
