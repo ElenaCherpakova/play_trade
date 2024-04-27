@@ -13,6 +13,7 @@ export async function middleware(req) {
     };
     style-src 'self' 'unsafe-inline';  
     img-src 'self' blob: data: https://res.cloudinary.com; 
+    connect-src 'self' https://api.cloudinary.com; 
     font-src 'self';
     object-src 'none';
     base-uri 'self';
@@ -41,8 +42,6 @@ export async function middleware(req) {
   response.headers.set("Content-Security-Policy", cspHeader);
 
   //returning the modified response
-  //console log is for the testing purposes
-  console.log("response.headers", response.headers);
   return response;
 }
 
