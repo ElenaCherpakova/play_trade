@@ -18,16 +18,14 @@ export default function Cart() {
     })
   );
 
- 
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const router = useRouter();
   const [checkoutUrl, setCheckoutUrl] = useState(() => () => {});
 
-
-  
-
   useEffect(() => {
-    setCheckoutUrl(() => () => router.push("/cart/checkout"));
+    setCheckoutUrl(() => () => {
+      router.push("/cart/checkout");
+    });
   }, [router]);
 
   return (

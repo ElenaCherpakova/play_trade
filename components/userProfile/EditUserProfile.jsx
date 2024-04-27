@@ -1,6 +1,6 @@
 "use client";
 import { React, useState, useEffect, useRef } from "react";
-import { useSession, getSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 
 import { useTheme } from "@mui/material/styles";
 import { Typography, Grid, Backdrop, CircularProgress, Snackbar, Alert } from "@mui/material";
@@ -32,31 +32,24 @@ export default function UserProfileEditPage() {
   });
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const session = await getSession();
-        if (session && status === "authenticated") {
-          setUserData({
-            name: session?.user?.name,
-            email: session?.user?.email,
-            address: session?.user?.address
-          });
-          setAvatarPreview(session?.user?.avatar);
-        }
-      } catch (error) {
-        console.error(error);
-        setOpenError(true);
-        setErrorMessage(error.toString() || "unknown error");
+    try {
+      if (status === "authenticated") {
+        setUserData({
+          name: session?.user?.name,
+          email: session?.user?.email,
+          address: session?.user?.address
+        });
+        setAvatarPreview(session?.user?.avatar);
       }
-    };
-    fetchData();
-  }, [status, session]);
+    } catch (error) {
+      setOpenError(true);
+      setErrorMessage(error.toString() || "unknown error");
+    }
+  }, [session, status]);
 
   useEffect(() => {
-    if (!selectedFile) {
-      setAvatarPreview("");
-      return;
-    }
+    if (!selectedFile) return;
+    
     const fileReader = new FileReader();
     fileReader.onloadend = () => {
       setAvatarPreview(fileReader.result);
@@ -76,18 +69,28 @@ export default function UserProfileEditPage() {
     try {
       setLoading(true);
       if (selectedFile) {
-        await handleImageUpload(selectedFile, async imageURL => {
-          setAvatarPreview(imageURL);
+        const existingPublicId = session.user?.avatarPublicId;
+        await handleImageUpload(
+          selectedFile,
+          async (imageURL, imagePublicId) => {
+            setAvatarPreview(imageURL);
 
-          await updateSession({
-            ...session,
-            user: { ...session.user, avatar: imageURL }
-          });
+            await updateSession({
+              ...session,
+              user: { ...session.user, avatar: imageURL, avatarPublicId: imagePublicId }
+            });
 
-          const userDataWithAvatar = { ...session.user, avatar: imageURL, type: "profile" };
-          await updateProfile(userDataWithAvatar);
-          setIsEditAvatar(false);
-        });
+            const userDataWithAvatar = {
+              ...session.user,
+              avatar: imageURL,
+              avatarPublicId: imagePublicId,
+              type: "profile"
+            };
+            await updateProfile(userDataWithAvatar);
+            setIsEditAvatar(false);
+          },
+          existingPublicId
+        );
       } else {
         setIsEditAvatar(false);
       }
@@ -107,7 +110,7 @@ export default function UserProfileEditPage() {
     setError(prevError => ({ ...prevError, [`${name}Error`]: newError }));
   };
 
-  const handleValidation = () => {
+  const handleValidation = isSeller => {
     let isValid = true;
     const formErrors = {};
 
@@ -122,11 +125,12 @@ export default function UserProfileEditPage() {
       formErrors.emailError = emailError;
       isValid = false;
     }
-
-    const { value: trimmedAddress, error: addressError } = trimAndValidate("address", userData.address);
-    if (addressError) {
-      formErrors.addressError = addressError;
-      isValid = false;
+    if (isSeller) {
+      const { value: trimmedAddress, error: addressError } = trimAndValidate("address", userData.address);
+      if (addressError) {
+        formErrors.addressError = addressError;
+        isValid = false;
+      }
     }
     setError(formErrors);
     return isValid;

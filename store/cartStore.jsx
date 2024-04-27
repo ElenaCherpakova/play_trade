@@ -9,8 +9,8 @@ export const useCartStore = create()(
       totalPrice: 0,
 
       calculateTotals: cartItems => {
-        const itemsCount = cartItems.reduce((total, item) => total + item.quantity, 0);
-        const totalPrice = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+        const itemsCount = cartItems.reduce((total, item) => total + (item.checked ? item.quantity : 0), 0);
+        const totalPrice = cartItems.reduce((total, item) => total + (item.checked ? item.price * item.quantity : 0), 0);
         return { itemsCount, totalPrice };
       },
 

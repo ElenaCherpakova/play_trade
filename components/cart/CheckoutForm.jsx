@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import  { useRouter } from "next/navigation"
+import { useRouter } from "next/navigation";
 
 import { useStripe, useElements, CardElement, LinkAuthenticationElement } from "@stripe/react-stripe-js";
 import { Button, Paper, Backdrop, Box, CircularProgress, Typography } from "@mui/material";
@@ -8,9 +8,13 @@ import { useCartStore } from "@/store/cartStore";
 import { useTheme } from "@mui/material/styles";
 
 const CheckoutForm = () => {
+  const { totalPrice, clearCart } = useCartStore(state => ({
+    clearCart: state.clearCart,
+    totalPrice: state.totalPrice
+  }));
+
   const router = useRouter();
   const theme = useTheme();
-  const totalPrice = useCartStore(state => state.totalPrice);
   const stripe = useStripe();
   const elements = useElements();
   const [loading, setLoading] = useState(false);
@@ -52,8 +56,8 @@ const CheckoutForm = () => {
       }
       const status = res?.paymentIntent?.status;
       if (status === "succeeded") {
-        setError("Payment Successful");
         router.push("/stripe/purchase-success");
+        clearCart();
       }
     } catch (error) {
       setError(error.message);

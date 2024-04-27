@@ -68,7 +68,7 @@ export default function FormSection({ handleChange, userData, isEditing, handleS
             onClick={handleSubmit}
             disabled={
               isEditing &&
-              (Boolean(error.nameError) || Boolean(error.emailError) || Boolean(error.addressError) || !userData.name.trim() || !userData.email.trim() || !userData.address.trim())
+              (Boolean(error.nameError) || Boolean(error.emailError) || Boolean(error.addressError) || !userData.name?.trim() || !userData.email?.trim() || (isSeller && !userData.address?.trim()))
             }
             sx={{
               "mt": 2,
