@@ -9,7 +9,7 @@ export async function middleware(req) {
   const cspHeader = `
     default-src 'self';
     script-src 'self' 'nonce-${nonce}' 'strict-dynamic' https: http: 'unsafe-inline' ${
-      process.env.NODE_ENV === "production" ? "" : `'unsafe-eval'`
+      process.env.APP_ENV === "production" ? "" : `'unsafe-eval'`
     };
     style-src 'self' 'unsafe-inline';  
     img-src 'self' blob: data: https://res.cloudinary.com; 
