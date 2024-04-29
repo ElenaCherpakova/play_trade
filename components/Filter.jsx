@@ -62,10 +62,12 @@ const Filter = ({ filtersParams, sellerPage = false, sellerId = null }) => {
     });
     //rendering correct conditions after redirection from other page with category in the params
     setConditionsOptions(filtersParams.category ? conditionsByCardCategory[filtersParams.category] || [] : []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
   useEffect(() => {
     updateQueryStringAndNavigate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     filtersParams.availability,
     filtersParams.category,
