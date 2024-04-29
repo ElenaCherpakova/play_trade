@@ -67,6 +67,12 @@ const Filter = ({ filtersParams, sellerPage = false, sellerId = null }) => {
   useEffect(() => {
     updateQueryStringAndNavigate();
   }, [
+    filtersParams.availability,
+    filtersParams.category,
+    filtersParams.conditions, 
+    filtersParams.priceFrom, 
+    filtersParams.priceTo, 
+    filtersParams.search,
     debouncedPriceFrom,
     debouncedPriceTo,
     filters.availability,
