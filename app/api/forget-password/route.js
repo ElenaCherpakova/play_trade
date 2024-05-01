@@ -30,7 +30,10 @@ export const POST = async req => {
   existingUser.passwordResetToken = passwordResetToken;
   existingUser.passwordResetExpiry = passwordResetExpires;
   
-  const resetUrl = `http://localhost:3000/reset-password/${resetToken}`;
+  const isDevelopment = process.env.NODE_ENV === "development";
+  const BASE_URL = isDevelopment ? "http://localhost:3000" : process.env.NEXTAUTH_URL;
+
+  const resetUrl = `${BASE_URL}/reset-password/${resetToken}`;
   const EMAIL = process.env.MAIL_USERNAME;
 
   const transporter = await createTransporter();
@@ -40,6 +43,7 @@ export const POST = async req => {
     subject: "Password Reset Link",
     html: passwordResetEmail(resetUrl) 
   };
+  
 
   try {
     await transporter.sendMail(mailOptions);
