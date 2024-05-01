@@ -95,6 +95,7 @@ export default function Seller({ params }) {
       };
       fetchData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     sellerId,
     filters.search,

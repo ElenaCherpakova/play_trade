@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import cloudinary from "@/app/config/cloudinaryConfig";
 
-export const config = {
+export const routeConfig = {
   api: {
     bodyParser: {
       sizeLimit: "8mb"

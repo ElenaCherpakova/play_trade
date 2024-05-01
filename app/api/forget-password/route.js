@@ -24,13 +24,16 @@ export const POST = async req => {
   }
   const resetToken = crypto.randomBytes(20).toString("hex");
   const passwordResetToken = crypto.createHash("sha256").update(resetToken).digest("hex");
-  
+
   const passwordResetExpires = Date.now() + 3600000;
 
   existingUser.passwordResetToken = passwordResetToken;
   existingUser.passwordResetExpiry = passwordResetExpires;
-  
-  const resetUrl = `http://localhost:3000/reset-password/${resetToken}`;
+
+  const isDevelopment = process.env.NODE_ENV === "development";
+  const BASE_URL = isDevelopment ? "http://localhost:3000" : process.env.NEXTAUTH_URL;
+
+  const resetUrl = `${BASE_URL}/reset-password/${resetToken}`;
   const EMAIL = process.env.MAIL_USERNAME;
 
   const transporter = await createTransporter();
@@ -38,7 +41,7 @@ export const POST = async req => {
     from: `Play Trade ${EMAIL}`,
     to: email,
     subject: "Password Reset Link",
-    html: passwordResetEmail(resetUrl) 
+    html: passwordResetEmail(resetUrl)
   };
 
   try {
@@ -49,5 +52,6 @@ export const POST = async req => {
     existingUser.passwordResetToken = "";
     existingUser.passwordResetExpiry = null;
     await existingUser.save();
-    return NextResponse.json({ error: error.message }, { status: 500 });  }
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
 };
