@@ -106,7 +106,7 @@ const Navbar = () => {
             }}>
             <Box className="logo" sx={{ cursor: "pointer" }}>
               <Link href="/" legacyBehavior>
-                <Image src="/logo.png" alt="Play Trade" width={50} height={50} priority={true} />
+                <Image src="/Logo.png" alt="Play Trade" width={50} height={50} priority={true} />
               </Link>
             </Box>
             <nav className="nav">
