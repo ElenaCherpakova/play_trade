@@ -211,7 +211,7 @@ export default function Seller({ params }) {
                     sx={{
                       m: 0.5,
                       position: "fixed",
-                      top: 70,
+                      top: 100,
                       left: 20
                     }}>
                     <FilterListIcon sx={{ fontSize: 40 }} onClick={() => setFilterOpen(true)} />
