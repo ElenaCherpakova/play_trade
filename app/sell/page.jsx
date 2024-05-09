@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Box, Grid, Button, Typography, Container, Tab, Tabs, Snackbar, Alert } from "@mui/material";
+import { Alert, Box, Breadcrumbs, Button, Grid, Typography, Link, Container, Tab, Tabs, Snackbar } from "@mui/material";
 import { theme } from "@/styles/theme";
 import { createCardData, fetchSellerCards, deleteCardData, editCardData } from "@/utils/fetchData";
 import { useSession } from "next-auth/react";
@@ -119,83 +119,96 @@ export default function Sell() {
   };
 
   return (
-    <Container maxWidth="lg">
-      <Box mt={theme.spacing(3)}>
-        <Typography variant="h5" gutterBottom>
-          My Cards
-        </Typography>
-        <Box mt={2}>{add && <CardForm cardValue={card} onSubmitForm={addCard} />}</Box>
+    <Box sx={{ ml: theme.spacing(2) }}>
+      {/* Breadcrumbs */}
+      <Breadcrumbs aria-label="breadcrumb" sx={{ mt: 2, mb: 3 }}>
+        <Link color="inherit" href="/" onClick={() => router.push("/")}>
+          Home
+        </Link>
+        <Link color="inherit" href="/profile" onClick={() => router.push("/")}>
+          Profile
+        </Link>
+        <Typography color="text.primary">My Cards</Typography>
+      </Breadcrumbs>
 
-        <Grid container justifyContent="space-between" alignItems="center" mt={theme.spacing(2)}>
-          <Grid item xs={12} sm={6} md={4} lg={3}>
-            <Tabs value={selectedTab} onChange={handleTabChange} indicatorColor="primary">
-              <Tab label="Items Available" />
-              <Tab label="Items Sold" />
-            </Tabs>
-          </Grid>
-          <Grid item xs={12} sm={6} md={4} lg={3} container justifyContent="flex-end">
-            <Button variant="contained" color="primary" onClick={handleAddButtonClick} sx={{ mr: 7 }}>
-              Add new card
-            </Button>
-          </Grid>
-        </Grid>
+      <Container maxWidth="lg">
+        <Box mt={theme.spacing(3)}>
+          <Typography variant="h5" gutterBottom>
+            My Cards
+          </Typography>
+          <Box mt={2}>{add && <CardForm cardValue={card} onSubmitForm={addCard} />}</Box>
 
-        <Box mt={theme.spacing(2)}>
-          <Grid container spacing={2}>
-            {selectedTab === 0 &&
-              sellerItemsAvailable.map((item, index) => (
-                <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-                  <CardComponent
-                    card={item}
-                    buttonSet="seller"
-                    showButtons={false}
-                    showEditDelete={true}
-                    onEdit={() => handleEditButtonClick(item._id)}
-                    onDelete={() => handleDeleteButtonClick(item._id, item.imagePublicId)}
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      height: "100%"
-                    }}
-                  />
-                </Grid>
-              ))}
-            {selectedTab === 1 &&
-              sellerItemsSold.map((item, index) => (
-                <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-                  <CardComponent
-                    card={item}
-                    buttonSet="seller"
-                    showButtons={false}
-                    showEditDelete={true}
-                    onEdit={() => handleEditButtonClick(item._id)}
-                    onDelete={() => handleDeleteButtonClick(item._id, item.imagePublicId)}
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      height: "100%"
-                    }}
-                  />
-                </Grid>
-              ))}
+          <Grid container justifyContent="space-between" alignItems="center" mt={theme.spacing(2)}>
+            <Grid item xs={12} sm={6} md={4} lg={3}>
+              <Tabs value={selectedTab} onChange={handleTabChange} indicatorColor="primary">
+                <Tab label="Items Available" />
+                <Tab label="Items Sold" />
+              </Tabs>
+            </Grid>
+            <Grid item xs={12} sm={6} md={4} lg={3} container justifyContent="flex-end">
+              <Button variant="contained" color="primary" onClick={handleAddButtonClick} sx={{ mr: 7 }}>
+                Add new card
+              </Button>
+            </Grid>
           </Grid>
+
+          <Box mt={theme.spacing(2)}>
+            <Grid container spacing={2}>
+              {selectedTab === 0 &&
+                sellerItemsAvailable.map((item, index) => (
+                  <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+                    <CardComponent
+                      card={item}
+                      buttonSet="seller"
+                      showButtons={false}
+                      showEditDelete={true}
+                      onEdit={() => handleEditButtonClick(item._id)}
+                      onDelete={() => handleDeleteButtonClick(item._id, item.imagePublicId)}
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        height: "100%"
+                      }}
+                    />
+                  </Grid>
+                ))}
+              {selectedTab === 1 &&
+                sellerItemsSold.map((item, index) => (
+                  <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+                    <CardComponent
+                      card={item}
+                      buttonSet="seller"
+                      showButtons={false}
+                      showEditDelete={true}
+                      onEdit={() => handleEditButtonClick(item._id)}
+                      onDelete={() => handleDeleteButtonClick(item._id, item.imagePublicId)}
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        height: "100%"
+                      }}
+                    />
+                  </Grid>
+                ))}
+            </Grid>
+          </Box>
+          <ConfirmationDialog
+            open={openConfirmDialog}
+            handleConfirm={handleConfirmDelete}
+            handleCancel={() => setOpenConfirmDialog(false)}
+            message="Are you sure you would like to delete this card?"
+          />
+          <Snackbar
+            open={openError}
+            autoHideDuration={5000}
+            onClose={handleClose}
+            anchorOrigin={{ vertical: "top", horizontal: "center" }}>
+            <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
+              {errorMessage}
+            </Alert>
+          </Snackbar>
         </Box>
-        <ConfirmationDialog
-          open={openConfirmDialog}
-          handleConfirm={handleConfirmDelete}
-          handleCancel={() => setOpenConfirmDialog(false)}
-          message="Are you sure you would like to delete this card?"
-        />
-        <Snackbar
-          open={openError}
-          autoHideDuration={5000}
-          onClose={handleClose}
-          anchorOrigin={{ vertical: "top", horizontal: "center" }}>
-          <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
-            {errorMessage}
-          </Alert>
-        </Snackbar>
-      </Box>
-    </Container>
+      </Container>
+    </Box>
   );
 }

@@ -1,3 +1,4 @@
+"use client"
 // export default function Page({ params }) {
 //   return (
 //     <div>
@@ -14,7 +15,9 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { Container, Typography, Box, Divider, Avatar } from "@mui/material";
+import { theme } from "@/styles/theme";
+import { useRouter } from "next/navigation";
+import { Breadcrumbs, Box, Container, Divider, Link, Typography } from "@mui/material";
 import CardComponent from "@/components/CardComponent";
 
 const order = {
@@ -61,89 +64,107 @@ const tax = Number(((subtotalPrice + order.shippingCost) * taxRate).toFixed(2));
 const totalPrice = subtotalPrice + order.shippingCost + tax;
 
 export default function Order({ item }) {
+  const router = useRouter();
+
   return (
-    <Container maxWidth="md" sx={{ mt: 5, mb: 10 }}>
-      <Box sx={{ mb: 3 }}>
-        <Typography variant="h4" sx={{ mb: 3 }}>
-          Order details #{order.orderNumber}
-        </Typography>
-        <Typography variant="h4">{order.datePlaced}</Typography>
-      </Box>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell sx={{ fontWeight: "bold" }}>Item #</TableCell>
-              <TableCell sx={{ fontWeight: "bold" }}>Item picture</TableCell>
-              <TableCell sx={{ fontWeight: "bold" }}>Item name</TableCell>
-              <TableCell sx={{ fontWeight: "bold" }}>Quantity</TableCell>
-              <TableCell sx={{ fontWeight: "bold" }}>Order total</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {order.items.map(item => (
-              <TableRow key={item.id} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
-                <TableCell component="th" scope="row">
-                  {item.itemNumber}
-                </TableCell>
-                <TableCell>
-                  <CardComponent card={item} showInformation={false} showButtons={false} />
-                </TableCell>
-                <TableCell>{item.name}</TableCell>
-                <TableCell>{item.quantity}</TableCell>
-                <TableCell>{item.price}</TableCell>
+    <Box sx={{ ml: theme.spacing(2) }}>
+      {/* Breadcrumbs */}
+      <Breadcrumbs aria-label="breadcrumb" sx={{ mt: 2, mb: 3 }}>
+        <Link color="inherit" href="/" onClick={() => router.push("/")}>
+          Home
+        </Link>
+        <Link color="inherit" href="/profile" onClick={() => router.push("/")}>
+          Profile
+        </Link>
+        <Link color="inherit" href="/orders" onClick={() => router.push("/")}>
+          Order History
+        </Link>
+        <Typography color="text.primary">Order Details</Typography>
+      </Breadcrumbs>
+
+      <Container maxWidth="md" sx={{ mt: 5, mb: 10 }}>
+        <Box sx={{ mb: 3 }}>
+          <Typography variant="h4" sx={{ mb: 3 }}>
+            Order details #{order.orderNumber}
+          </Typography>
+          <Typography variant="h4">{order.datePlaced}</Typography>
+        </Box>
+        <TableContainer component={Paper}>
+          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell sx={{ fontWeight: "bold" }}>Item #</TableCell>
+                <TableCell sx={{ fontWeight: "bold" }}>Item picture</TableCell>
+                <TableCell sx={{ fontWeight: "bold" }}>Item name</TableCell>
+                <TableCell sx={{ fontWeight: "bold" }}>Quantity</TableCell>
+                <TableCell sx={{ fontWeight: "bold" }}>Order total</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-      <Box sx={{ mt: 3, display: "flex", gap: 10, justifyContent: "flex-end" }}>
-        <Box>
-          <Typography sx={{ fontWeight: "bold" }}> Shipping informations</Typography>
-        </Box>
-        <Box sx={{ display: "flex", flexDirection: "column", width: "30%" }}>
+            </TableHead>
+            <TableBody>
+              {order.items.map(item => (
+                <TableRow key={item.id} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
+                  <TableCell component="th" scope="row">
+                    {item.itemNumber}
+                  </TableCell>
+                  <TableCell>
+                    <CardComponent card={item} showInformation={false} showButtons={false} />
+                  </TableCell>
+                  <TableCell>{item.name}</TableCell>
+                  <TableCell>{item.quantity}</TableCell>
+                  <TableCell>{item.price}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <Box sx={{ mt: 3, display: "flex", gap: 10, justifyContent: "flex-end" }}>
           <Box>
-            <Typography sx={{ fontWeight: "bold" }}>Order summary</Typography>
+            <Typography sx={{ fontWeight: "bold" }}> Shipping informations</Typography>
           </Box>
-          <Box flexDirection="row" display="flex" justifyContent="space-between">
+          <Box sx={{ display: "flex", flexDirection: "column", width: "30%" }}>
             <Box>
-              <Typography>Subtotal</Typography>
+              <Typography sx={{ fontWeight: "bold" }}>Order summary</Typography>
             </Box>
-            <Box>
-              {subtotalPrice}
-              {order.currency}
+            <Box flexDirection="row" display="flex" justifyContent="space-between">
+              <Box>
+                <Typography>Subtotal</Typography>
+              </Box>
+              <Box>
+                {subtotalPrice}
+                {order.currency}
+              </Box>
             </Box>
-          </Box>
-          <Box flexDirection="row" display="flex" justifyContent="space-between">
-            <Box>
-              <Typography>Shipping</Typography>
+            <Box flexDirection="row" display="flex" justifyContent="space-between">
+              <Box>
+                <Typography>Shipping</Typography>
+              </Box>
+              <Box>
+                {order.shippingCost}
+                {order.currency}
+              </Box>
             </Box>
-            <Box>
-              {order.shippingCost}
-              {order.currency}
+            <Box flexDirection="row" display="flex" justifyContent="space-between">
+              <Box>
+                <Typography>Tax</Typography>
+              </Box>
+              <Box>
+                {tax}
+                {order.currency}
+              </Box>
             </Box>
-          </Box>
-          <Box flexDirection="row" display="flex" justifyContent="space-between">
-            <Box>
-              <Typography>Tax</Typography>
-            </Box>
-            <Box>
-              {tax}
-              {order.currency}
-            </Box>
-          </Box>
-          <Divider />
-          <Box flexDirection="row" display="flex" justifyContent="space-between">
-            <Box>
-              <Typography>Total</Typography>
-            </Box>
-            <Box>
-              {totalPrice}
-              {order.currency}
+            <Divider />
+            <Box flexDirection="row" display="flex" justifyContent="space-between">
+              <Box>
+                <Typography>Total</Typography>
+              </Box>
+              <Box>
+                {totalPrice}
+                {order.currency}
+              </Box>
             </Box>
           </Box>
         </Box>
-      </Box>
-    </Container>
+      </Container>
+    </Box>
   );
 }
