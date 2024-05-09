@@ -75,7 +75,7 @@ export default function Market() {
           <Link color="inherit" href="/" onClick={() => router.push("/")}>
             Home
           </Link>
-          <Typography color="text.primary">Card Details</Typography>
+          <Typography color="text.primary">Market</Typography>
         </Breadcrumbs>
         <Box display="flex" flexDirection="column" sx={{ m: 5 }}>
           <Box display="flex" sx={{ flexDirection: { xs: "column", sm: "row" } }}>
