@@ -1,10 +1,11 @@
 "use client";
 import { React, useState, useEffect, useRef } from "react";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
-import { useTheme } from "@mui/material/styles";
-import { Typography, Grid, Backdrop, CircularProgress, Snackbar, Alert } from "@mui/material";
+import { Alert, Box, Breadcrumbs, Typography, Grid, Backdrop, CircularProgress, Link, Snackbar } from "@mui/material";
 
+import { theme } from "@/styles/theme";
 import useAuthUser from "@/store/useAuthUser";
 import useImageUpload from "@/hooks/useImageUpload";
 import { trimAndValidate } from "@/utils/helpers";
@@ -12,7 +13,6 @@ import AvatarSection from "./AvatarSection";
 import FormSection from "./FormSection";
 
 export default function UserProfileEditPage() {
-  const theme = useTheme();
   const updateProfile = useAuthUser(state => state.updateProfile);
   const { handleImageUpload, error: errorAvatarUpload } = useImageUpload();
   const [selectedFile, setSelectedFile] = useState(null);
@@ -24,6 +24,7 @@ export default function UserProfileEditPage() {
   const [openError, setOpenError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const fileInputRef = useRef(null);
+  const router = useRouter();
   const { data: session, update: updateSession, status } = useSession();
   const [userData, setUserData] = useState({
     name: "",
@@ -49,7 +50,7 @@ export default function UserProfileEditPage() {
 
   useEffect(() => {
     if (!selectedFile) return;
-    
+
     const fileReader = new FileReader();
     fileReader.onloadend = () => {
       setAvatarPreview(fileReader.result);
@@ -164,7 +165,18 @@ export default function UserProfileEditPage() {
     setOpenError(false);
   };
   return (
-    <>
+    <Box sx={{ ml: theme.spacing(2) }}>
+      {/* Breadcrumbs */}
+      <Breadcrumbs aria-label="breadcrumb" sx={{ mt: 2, mb: 3 }}>
+        <Link color="inherit" href="/" onClick={() => router.push("/")}>
+          Home
+        </Link>
+        <Link color="inherit" href="/profile" onClick={() => router.push("/")}>
+          Profile
+        </Link>
+        <Typography color="text.primary">Edit Profile</Typography>
+      </Breadcrumbs>
+
       <Grid
         container
         spacing={3}
@@ -226,6 +238,6 @@ export default function UserProfileEditPage() {
           {errorMessage}
         </Alert>
       </Snackbar>
-    </>
+    </Box>
   );
 }

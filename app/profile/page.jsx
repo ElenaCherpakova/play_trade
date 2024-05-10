@@ -2,15 +2,14 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { Modal, TextField, Button, Box, Paper, Typography, Avatar, Grid, Snackbar, Alert } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
+import { Box, Breadcrumbs, Button, Modal, TextField, Link, Paper, Typography, Avatar, Grid, Snackbar, Alert } from "@mui/material";
+import { theme } from "@/styles/theme";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import EmailIcon from "@mui/icons-material/Email";
 import useAuthUser from "@/store/useAuthUser";
 import Loader from "@/components/loader/Loader";
 
 export default function Profile() {
-  const theme = useTheme();
   const { data: session, update: updateSession, status } = useSession();
   const updateProfile = useAuthUser(state => state.updateProfile);
 
@@ -75,7 +74,15 @@ export default function Profile() {
   };
 
   return (
-    <>
+    <Box sx={{ ml: theme.spacing(2) }}>
+      {/* Breadcrumbs */}
+      <Breadcrumbs aria-label="breadcrumb" sx={{ mt: 2, mb: 3 }}>
+        <Link color="inherit" href="/" onClick={() => router.push("/")}>
+          Home
+        </Link>
+        <Typography color="text.primary">Profile</Typography>
+      </Breadcrumbs>
+
       {loading ? (
         <Loader />
       ) : (
@@ -219,6 +226,6 @@ export default function Profile() {
           {errorMessage}
         </Alert>
       </Snackbar>
-    </>
+    </Box>
   );
 }

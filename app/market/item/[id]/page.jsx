@@ -141,6 +141,9 @@ export default function Page({ params }) {
           <Link color="inherit" href="/" onClick={() => router.push("/")}>
             Home
           </Link>
+          <Link color="inherit" href="/market" onClick={() => router.push("/")}>
+            Market
+          </Link>
           <Typography color="text.primary">Card Details</Typography>
         </Breadcrumbs>
 
