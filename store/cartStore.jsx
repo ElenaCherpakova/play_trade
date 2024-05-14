@@ -1,4 +1,3 @@
-import { KeyboardReturnSharp } from "@mui/icons-material";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
@@ -24,7 +23,7 @@ export const useCartStore = create()(
         if (!userId) {
           return;
         }
-        if (!product || product.available !== "available" || product.quantity <= 0) {
+        if (!product || product.available !== "available" || product.quantity === 0) {
           return;
         }
         const response = await fetch("/api/cart", {
