@@ -20,38 +20,50 @@ export const useCartStore = create()(
 
       addToCart: async product => {
         const userId = get().userId;
-        if (!userId) {
-          return;
-        }
+        if (!userId) return;
+
         if (!product || product.available !== "available" || product.quantity === 0) {
           return;
         }
-        const response = await fetch("/api/cart", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            userId,
-            cardId: product._id
-          })
-        });
-        if (response.ok) {
+
+        const existingProductIndex = get().cartItems.findIndex(item => item._id === product._id);
+        const existingProduct = get().cartItems[existingProductIndex];
+        let newQuantity = 1;
+        if (existingProduct) {
+          newQuantity += existingProduct.quantity;
+        }
+        if (newQuantity > product.quantity) return;
+        try {
+          const response = await fetch("/api/cart", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              userId,
+              cardId: product._id
+            })
+          });
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || "Failed to add card into cart");
+          }
+          const data = await response.json();
+          console.log("DAT", data)
           set(state => {
-            const existingProductIndex = state.cartItems.findIndex(item => item._id === product._id);
             const newCartItems = [...state.cartItems];
             if (existingProductIndex !== -1) {
-              const existingProduct = newCartItems[existingProductIndex];
-              existingProduct.quantity = Math.min(existingProduct.quantity + 1, product.quantity);
+              newCartItems[existingProductIndex].quantity += 1;
             } else {
               newCartItems.push({ ...product, quantity: 1, checked: true });
             }
             const totals = state.calculateTotals(newCartItems);
             return { ...state, cartItems: newCartItems, ...totals };
           });
+        } catch (err) {
+          console.log("Failed to add card into cart", err.message);
         }
       },
-
       removeItemFromCart: productId =>
         set(state => {
           const newCartItems = state.cartItems.filter(item => item._id !== productId);

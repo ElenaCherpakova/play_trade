@@ -74,7 +74,7 @@ export default function CartItem({ item, index, handleCheck, removeItemFromCart,
             <Box>
               <Checkbox checked={item.checked} onChange={() => handleCheck(index)} />
             </Box>
-            <Image src={`${item.imageURL}`} alt={item.name} width={100} height={120} />
+            <Image src={item.imageURL} alt={item.name} width={100} height={120} />
           </Grid>
           <Grid item xs={12} sx={{ mt: 1, pl: 5, display: "flex", textAlign: "center", textAlign: "center" }}>
             <Typography>Price:{item.price}</Typography>

@@ -55,7 +55,7 @@ export async function POST(req, res) {
     }
 
     await cart.save();
-    return NextResponse.json({ success: true, data: cart }, { status: 201 });
+    return NextResponse.json({ success: true, cart }, { status: 201 });
   } catch (error) {
     return NextResponse.json({ success: false }, { status: 400 });
   }
