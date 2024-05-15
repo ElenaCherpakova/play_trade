@@ -1,19 +1,23 @@
 import { useState, useEffect } from "react";
+
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
+
 import {
   Box,
-  Slider,
-  Typography,
-  Stack,
+  Chip,
   FormControl,
   FormControlLabel,
-  Chip,
   Link,
+  Radio,
   RadioGroup,
-  Radio
+  Slider,
+  Stack,
+  Typography
 } from "@mui/material";
+
 import SelectComponent from "./SelectComponent";
+
 import useDebounce from "@/hooks/useDebounce";
 
 /**
@@ -61,7 +65,9 @@ const Filter = ({ filtersParams, sellerPage = false, sellerId = null }) => {
       priceTo: filtersParams.priceTo || ""
     });
     //rendering correct conditions after redirection from other page with category in the params
-    setConditionsOptions(filtersParams.category ? conditionsByCardCategory[filtersParams.category] || [] : []);
+    setConditionsOptions(
+      filtersParams.category ? conditionsByCardCategory[filtersParams.category] || [] : []
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams]);
 
@@ -71,9 +77,9 @@ const Filter = ({ filtersParams, sellerPage = false, sellerId = null }) => {
   }, [
     filtersParams.availability,
     filtersParams.category,
-    filtersParams.conditions, 
-    filtersParams.priceFrom, 
-    filtersParams.priceTo, 
+    filtersParams.conditions,
+    filtersParams.priceFrom,
+    filtersParams.priceTo,
     filtersParams.search,
     debouncedPriceFrom,
     debouncedPriceTo,
@@ -109,7 +115,11 @@ const Filter = ({ filtersParams, sellerPage = false, sellerId = null }) => {
     //and resetting the conditions filter to ensure consistency. Else, just updating the filter with the new value.
     if (filterId === "category") {
       setConditionsOptions(value ? conditionsByCardCategory[value] || [] : []);
-      setFilters(prevFilters => ({ ...prevFilters, category: value, conditions: "" }));
+      setFilters(prevFilters => ({
+        ...prevFilters,
+        category: value,
+        conditions: ""
+      }));
     } else {
       setFilters(prevFilters => ({ ...prevFilters, [filterId]: value }));
     }
@@ -192,7 +202,13 @@ const Filter = ({ filtersParams, sellerPage = false, sellerId = null }) => {
               {Object.entries(filters).map(([key, value]) => {
                 if (value && key !== "priceFrom" && key !== "priceTo") {
                   //excluding price range filters
-                  return <Chip label={value.toLocaleLowerCase()} onDelete={() => handleRemoveFilter(key)} key={key} />;
+                  return (
+                    <Chip
+                      label={value.toLocaleLowerCase()}
+                      onDelete={() => handleRemoveFilter(key)}
+                      key={key}
+                    />
+                  );
                 }
                 return null;
               })}

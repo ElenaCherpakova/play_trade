@@ -1,16 +1,28 @@
 "use client";
 import { React, useState, useEffect, useRef } from "react";
-import { useSession } from "next-auth/react";
+
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
-import { Alert, Box, Breadcrumbs, Typography, Grid, Backdrop, CircularProgress, Link, Snackbar } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Breadcrumbs,
+  Typography,
+  Grid,
+  Backdrop,
+  CircularProgress,
+  Link,
+  Snackbar
+} from "@mui/material";
 
-import { theme } from "@/styles/theme";
-import useAuthUser from "@/store/useAuthUser";
-import useImageUpload from "@/hooks/useImageUpload";
-import { trimAndValidate } from "@/utils/helpers";
 import AvatarSection from "./AvatarSection";
 import FormSection from "./FormSection";
+
+import useImageUpload from "@/hooks/useImageUpload";
+import useAuthUser from "@/store/useAuthUser";
+import { theme } from "@/styles/theme";
+import { trimAndValidate } from "@/utils/helpers";
 
 export default function UserProfileEditPage() {
   const updateProfile = useAuthUser(state => state.updateProfile);
@@ -78,7 +90,11 @@ export default function UserProfileEditPage() {
 
             await updateSession({
               ...session,
-              user: { ...session.user, avatar: imageURL, avatarPublicId: imagePublicId }
+              user: {
+                ...session.user,
+                avatar: imageURL,
+                avatarPublicId: imagePublicId
+              }
             });
 
             const userDataWithAvatar = {
@@ -127,7 +143,10 @@ export default function UserProfileEditPage() {
       isValid = false;
     }
     if (isSeller) {
-      const { value: trimmedAddress, error: addressError } = trimAndValidate("address", userData.address);
+      const { value: trimmedAddress, error: addressError } = trimAndValidate(
+        "address",
+        userData.address
+      );
       if (addressError) {
         formErrors.addressError = addressError;
         isValid = false;
@@ -225,7 +244,11 @@ export default function UserProfileEditPage() {
         </Typography>
       )}
       <Backdrop
-        sx={{ color: "#fff", zIndex: theme => theme.zIndex.drawer + 1, backdropFilter: "blur(2px)" }}
+        sx={{
+          color: "#fff",
+          zIndex: theme => theme.zIndex.drawer + 1,
+          backdropFilter: "blur(2px)"
+        }}
         open={loading}>
         <CircularProgress color="inherit" />
       </Backdrop>

@@ -100,7 +100,13 @@ const useImageUpload = () => {
     }
   };
 
-  return { handleImageUpload, handleImageDelete, imageURL, imagePublicId, error };
+  return {
+    handleImageUpload,
+    handleImageDelete,
+    imageURL,
+    imagePublicId,
+    error
+  };
 };
 
 export default useImageUpload;

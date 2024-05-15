@@ -1,13 +1,30 @@
 "use client";
+
 import { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
+
 import { useRouter } from "next/navigation";
-import { Box, Breadcrumbs, Button, Modal, TextField, Link, Paper, Typography, Avatar, Grid, Snackbar, Alert } from "@mui/material";
-import { theme } from "@/styles/theme";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
+import { useSession } from "next-auth/react";
+
 import EmailIcon from "@mui/icons-material/Email";
-import useAuthUser from "@/store/useAuthUser";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import {
+  Alert,
+  Avatar,
+  Box,
+  Breadcrumbs,
+  Button,
+  Grid,
+  Link,
+  Modal,
+  Paper,
+  Snackbar,
+  TextField,
+  Typography
+} from "@mui/material";
+
 import Loader from "@/components/loader/Loader";
+import useAuthUser from "@/store/useAuthUser";
+import { theme } from "@/styles/theme";
 
 export default function Profile() {
   const { data: session, update: updateSession, status } = useSession();
@@ -51,7 +68,11 @@ export default function Profile() {
       if (data && data.isSeller && data.address) {
         await updateSession({
           ...session,
-          user: { ...session.user, isSeller: data.isSeller, address: data.address }
+          user: {
+            ...session.user,
+            isSeller: data.isSeller,
+            address: data.address
+          }
         });
         setUserData(prev => ({
           ...prev,
@@ -108,7 +129,9 @@ export default function Profile() {
               <Typography variant="h6" sx={{ fontWeight: "bold", mt: 3 }}>
                 {userData.name}
               </Typography>
-              <Typography variant="subtitle1">{session?.user?.isSeller ? "Seller" : "Buyer"}</Typography>
+              <Typography variant="subtitle1">
+                {session?.user?.isSeller ? "Seller" : "Buyer"}
+              </Typography>
               <Button
                 onClick={() => router.push("/profile/update")}
                 variant="contained"
@@ -134,14 +157,26 @@ export default function Profile() {
               }}>
               Personal Profile
             </Typography>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 2, mt: 5 }}>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 2,
+                mt: 5
+              }}>
               <EmailIcon sx={{ fontSize: 35 }} color="primary" />
               <Typography variant="subtitle1" color="primary" gutterBottom m="0">
                 {userData.email}
               </Typography>
             </Box>
             {userData.location && (
-              <Box sx={{ display: "flex", alignItems: "center", gap: 2, mt: 3 }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 2,
+                  mt: 3
+                }}>
                 <LocationOnIcon sx={{ fontSize: 35 }} color="primary" />
                 <Typography variant="subtitle1" color="primary" m="0">
                   {userData.location}
@@ -157,9 +192,7 @@ export default function Profile() {
                   "mt": 5,
                   "width": "20rem",
                   "letterSpacing": "0.2em",
-                  "&:hover": {
-                    backgroundColor: theme.palette.accent.main
-                  }
+                  "&:hover": { backgroundColor: theme.palette.accent.main }
                 }}>
                 Start selling now
               </Button>
@@ -205,9 +238,7 @@ export default function Profile() {
                   mt="2"
                   sx={{
                     "letterSpacing": "0.1em",
-                    "&:hover": {
-                      backgroundColor: theme.palette.accent.main
-                    }
+                    "&:hover": { backgroundColor: theme.palette.accent.main }
                   }}>
                   Become a Seller
                 </Button>

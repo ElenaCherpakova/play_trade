@@ -1,6 +1,7 @@
 import dbConnect from "@lib/mongo/dbConnect";
-import User from "@/models/User";
 import { NextResponse, NextRequest } from "next/server";
+
+import User from "@/models/User";
 import createAssociatedModels from "@/utils/createAssociatedModels";
 
 /**

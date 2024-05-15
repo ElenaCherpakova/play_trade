@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
+
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import dbConnect from "@/lib/mongo/dbConnect";
-import User from "@/models/User";
 import Seller from "@/models/Seller";
+import User from "@/models/User";
 
 /**
  *
@@ -27,11 +28,14 @@ export const PUT = async req => {
 
     if (type === "profile") {
       if (!name || !email) {
-        return NextResponse.json({ success: false, message: "Name and email are required" }, { status: 400 });
+        return NextResponse.json(
+          { success: false, message: "Name and email are required" },
+          { status: 400 }
+        );
       }
       if (avatar !== undefined) {
         body.imageProfileURL = avatar;
-        body.imageProfilePublicId = avatarPublicId
+        body.imageProfilePublicId = avatarPublicId;
       } else {
         if (body.imageProfileURL === null || body.imageProfileURL === "") {
           delete body.imageProfileURL;
@@ -47,17 +51,27 @@ export const PUT = async req => {
       }
 
       return NextResponse.json(
-        { success: true, message: "Your profile is updated", data: updateUser },
+        {
+          success: true,
+          message: "Your profile is updated",
+          data: updateUser
+        },
         { status: 200 }
       );
     } else if (type === "seller") {
       const { location } = body;
       if (!location) {
-        return NextResponse.json({ success: false, message: "Location is required" }, { status: 400 });
+        return NextResponse.json(
+          { success: false, message: "Location is required" },
+          { status: 400 }
+        );
       }
       const existingSeller = await Seller.findOne({ userId });
       if (existingSeller) {
-        return NextResponse.json({ success: false, message: "User is already a seller" }, { status: 400 });
+        return NextResponse.json(
+          { success: false, message: "User is already a seller" },
+          { status: 400 }
+        );
       }
       const updateUser = await User.findByIdAndUpdate(
         userId,
@@ -74,7 +88,12 @@ export const PUT = async req => {
       );
       await Seller.create({ userId, isRequestedAt: new Date() });
       return NextResponse.json(
-        { success: true, message: "User became a seller", isSeller: updateUser.isSeller, address: updateUser.address },
+        {
+          success: true,
+          message: "User became a seller",
+          isSeller: updateUser.isSeller,
+          address: updateUser.address
+        },
         { status: 200 }
       );
     } else {
@@ -82,7 +101,11 @@ export const PUT = async req => {
     }
   } catch (error) {
     return NextResponse.json(
-      { success: false, message: error.message, data: error.data },
+      {
+        success: false,
+        message: error.message,
+        data: error.data
+      },
       { status: error.statusCode || 500 }
     );
   }

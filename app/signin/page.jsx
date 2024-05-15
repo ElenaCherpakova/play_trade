@@ -1,25 +1,28 @@
 "use client";
 
+import { useState, useEffect } from "react";
+
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useState, useEffect } from "react";
-import useAuthUser from "../../store/useAuthUser";
-import {
-  Container,
-  Box,
-  TextField,
-  Button,
-  Typography,
-  CircularProgress,
-  InputAdornment,
-  IconButton,
-  Divider,
-  Link,
-  Paper
-} from "@mui/material";
+
+import GoogleIcon from "@mui/icons-material/Google";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import GoogleIcon from "@mui/icons-material/Google";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Container,
+  Divider,
+  IconButton,
+  InputAdornment,
+  Link,
+  Paper,
+  TextField,
+  Typography
+} from "@mui/material";
+
+import useAuthUser from "../../store/useAuthUser";
 
 const SignInPage = () => {
   const [formData, setFormData] = useState({
@@ -116,7 +119,10 @@ const SignInPage = () => {
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
-                  <IconButton aria-label="toggle password visibility" onClick={toggleShowPassword} edge="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={toggleShowPassword}
+                    edge="end">
                     {showPassword ? <VisibilityOff /> : <Visibility />}
                   </IconButton>
                 </InputAdornment>
@@ -147,7 +153,12 @@ const SignInPage = () => {
               Register
             </Link>
           </Typography>
-          <Box sx={{ display: "flex", alignItems: "center", my: 2 }}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              my: 2
+            }}>
             <Divider sx={{ flexGrow: 1 }} />
             <Typography sx={{ mx: 2, color: "text.secondary" }}>OR</Typography>
             <Divider sx={{ flexGrow: 1 }} />

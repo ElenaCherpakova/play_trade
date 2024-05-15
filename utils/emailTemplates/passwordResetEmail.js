@@ -1,4 +1,4 @@
-export const passwordResetEmail = (resetUrl) => `
+export const passwordResetEmail = resetUrl => `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -29,4 +29,3 @@ export const passwordResetEmail = (resetUrl) => `
 </body>
 </html>
 `;
-

@@ -1,24 +1,27 @@
 import { useState, useRef, useEffect } from "react";
-import useImageUpload from "../hooks/useImageUpload";
-import { theme } from "../styles/theme";
+
 import {
+  Backdrop,
   Box,
   Button,
-  InputLabel,
-  FormControl,
-  TextField,
-  MenuItem,
-  Select,
-  Typography,
-  Paper,
-  Grid,
-  Container,
-  Backdrop,
   CircularProgress,
+  Container,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Paper,
+  Select,
+  TextField,
+  Typography,
   useMediaQuery
-} from "@mui/material";
-import ImageIcon from "@mui/icons-material/Image";
+} from "@mui.material";
 import Image from "next/image";
+
+import ImageIcon from "@mui/icons-material/Image";
+
+import useImageUpload from "../hooks/useImageUpload";
+import { theme } from "../styles/theme";
 
 /**
  *
@@ -78,8 +81,17 @@ export default function CardForm({ cardValue, onSubmitForm }) {
   const handleSubmit = async e => {
     e.preventDefault();
 
-    const { cardName, set, price, currency, shippingCost, description, conditions, quantity, available } =
-      e.target.elements;
+    const {
+      cardName,
+      set,
+      price,
+      currency,
+      shippingCost,
+      description,
+      conditions,
+      quantity,
+      available
+    } = e.target.elements;
 
     const defaultImage = `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_NAME}/image/upload/v1711381226/vr2hc3udhtc8z9u1hrp4.png`;
 
@@ -96,9 +108,9 @@ export default function CardForm({ cardValue, onSubmitForm }) {
         available: available.value,
         category: cardCategory,
         imageURL: imageURL || cardValue?.imageURL || defaultImage,
-        imagePublicId: imagePublicId  
+        imagePublicId: imagePublicId
       };
-      console.log(formData)
+      console.log(formData);
       onSubmitForm(formData);
     };
 
@@ -223,7 +235,13 @@ export default function CardForm({ cardValue, onSubmitForm }) {
                   <MenuItem value="Sport Card">Sport Card</MenuItem>
                 </Select>
               </FormControl>
-              <TextField required fullWidth name="cardName" label="name" defaultValue={cardValue?.name} />
+              <TextField
+                required
+                fullWidth
+                name="cardName"
+                label="name"
+                defaultValue={cardValue?.name}
+              />
               <TextField fullWidth name="set" label="set" defaultValue={cardValue?.set} />
               <Box display="flex" gap={2} sx={{ flexDirection: { xs: "column", md: "row" } }}>
                 <TextField
@@ -297,9 +315,7 @@ export default function CardForm({ cardValue, onSubmitForm }) {
                   name="quantity"
                   type="number"
                   label="quantity"
-                  inputProps={{
-                    min: "0"
-                  }}
+                  inputProps={{ min: "0" }}
                   defaultValue={cardValue?.quantity}
                 />
                 <FormControl required fullWidth size="small">
@@ -320,11 +336,7 @@ export default function CardForm({ cardValue, onSubmitForm }) {
                 variant="contained"
                 color="secondary"
                 type="submit"
-                sx={{
-                  "&:hover": {
-                    backgroundColor: theme.palette.accent.main
-                  }
-                }}>
+                sx={{ "&:hover": { backgroundColor: theme.palette.accent.main } }}>
                 {editCard ? "Edit" : "Add"} card
               </Button>
             </Box>
@@ -332,7 +344,11 @@ export default function CardForm({ cardValue, onSubmitForm }) {
         </Grid>
       </Box>
       <Backdrop
-        sx={{ color: "#fff", zIndex: theme => theme.zIndex.drawer + 1, backdropFilter: "blur(2px)" }}
+        sx={{
+          color: "#fff",
+          zIndex: theme => theme.zIndex.drawer + 1,
+          backdropFilter: "blur(2px)"
+        }}
         open={loading}>
         <CircularProgress color="inherit" />
       </Backdrop>

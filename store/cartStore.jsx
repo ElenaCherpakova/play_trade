@@ -9,8 +9,14 @@ export const useCartStore = create()(
       totalPrice: 0,
 
       calculateTotals: cartItems => {
-        const itemsCount = cartItems.reduce((total, item) => total + (item.checked ? item.quantity : 0), 0);
-        const totalPrice = cartItems.reduce((total, item) => total + (item.checked ? item.price * item.quantity : 0), 0);
+        const itemsCount = cartItems.reduce(
+          (total, item) => total + (item.checked ? item.quantity : 0),
+          0
+        );
+        const totalPrice = cartItems.reduce(
+          (total, item) => total + (item.checked ? item.price * item.quantity : 0),
+          0
+        );
         return { itemsCount, totalPrice };
       },
 
@@ -25,27 +31,48 @@ export const useCartStore = create()(
             const existingProduct = newCartItems[existingProductIndex];
             existingProduct.quantity = Math.min(existingProduct.quantity + 1, product.quantity);
           } else {
-            newCartItems.push({ ...product, quantity: 1, checked: true });
+            newCartItems.push({
+              ...product,
+              quantity: 1,
+              checked: true
+            });
           }
           const totals = state.calculateTotals(newCartItems);
-          return { ...state, cartItems: newCartItems, ...totals };
+          return {
+            ...state,
+            cartItems: newCartItems,
+            ...totals
+          };
         }),
 
       removeItemFromCart: productId =>
         set(state => {
           const newCartItems = state.cartItems.filter(item => item._id !== productId);
           const totals = state.calculateTotals(newCartItems);
-          return { ...state, cartItems: newCartItems, ...totals };
+          return {
+            ...state,
+            cartItems: newCartItems,
+            ...totals
+          };
         }),
 
-      clearCart: () => set({ cartItems: [], itemsCount: 0, totalPrice: 0 }),
+      clearCart: () =>
+        set({
+          cartItems: [],
+          itemsCount: 0,
+          totalPrice: 0
+        }),
 
       handleCheck: index =>
         set(state => {
           const newCartItems = [...state.cartItems];
           newCartItems[index].checked = !newCartItems[index].checked;
           const totals = state.calculateTotals(newCartItems);
-          return { ...state, cartItems: newCartItems, ...totals };
+          return {
+            ...state,
+            cartItems: newCartItems,
+            ...totals
+          };
         }),
 
       handleQuantityChange: (index, newQuantity) =>
@@ -59,7 +86,11 @@ export const useCartStore = create()(
             newCartItems.splice(index, 1);
           }
           const totals = state.calculateTotals(newCartItems);
-          return { ...state, cartItems: newCartItems, ...totals };
+          return {
+            ...state,
+            cartItems: newCartItems,
+            ...totals
+          };
         })
     }),
     {

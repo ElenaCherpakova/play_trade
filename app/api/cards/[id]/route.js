@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import dbConnect from "@/lib/mongo/dbConnect";
 import { getToken } from "next-auth/jwt";
+
+import dbConnect from "@/lib/mongo/dbConnect";
 import Card from "@/models/Card";
 
 /**
@@ -17,11 +18,12 @@ export async function GET(req, res) {
     //receive id from url
     const id = req.url.split("cards/")[1];
     // Find card in the database
-    const card = await Card.findOne({
-      _id: id
-    });
+    const card = await Card.findOne({ _id: id });
     if (!card) {
-      return NextResponse.json({ success: false, message: `No card with id: ${id}` }, { status: 400 });
+      return NextResponse.json(
+        { success: false, message: `No card with id: ${id}` },
+        { status: 400 }
+      );
     }
     return NextResponse.json({ success: true, data: card }, { status: 200 });
   } catch (error) {
@@ -47,7 +49,10 @@ export async function PATCH(req, res) {
 
     if (!name || !price || !currency || !shippingCost || !quantity) {
       return NextResponse.json(
-        { success: false, message: "Name, price, currency, shipping cost and quantity fields cannot be empty" },
+        {
+          success: false,
+          message: "Name, price, currency, shipping cost and quantity fields cannot be empty"
+        },
         { status: 400 }
       );
     }
@@ -57,7 +62,10 @@ export async function PATCH(req, res) {
       runValidators: true
     });
     if (!card) {
-      return NextResponse.json({ success: false, message: `No card with id ${id}` }, { status: 400 });
+      return NextResponse.json(
+        { success: false, message: `No card with id ${id}` },
+        { status: 400 }
+      );
     }
     return NextResponse.json({ success: true, data: card }, { status: 200 });
   } catch (error) {
@@ -82,7 +90,10 @@ export async function DELETE(req, res) {
       createdBy: userId
     });
     if (!card) {
-      return NextResponse.json({ success: false, message: `No card with id ${id}` }, { status: 400 });
+      return NextResponse.json(
+        { success: false, message: `No card with id ${id}` },
+        { status: 400 }
+      );
     }
     return NextResponse.json({ success: true, data: {} }, { status: 200 });
   } catch (error) {

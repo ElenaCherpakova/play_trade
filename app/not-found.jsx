@@ -1,6 +1,8 @@
 "use client";
-import { Button, Link, Typography, Grid, Box } from "@mui/material";
 import Image from "next/image";
+
+import { Box, Button, Grid, Link, Typography } from "@mui/material";
+
 import { theme } from "@/styles/theme";
 
 const NotFound = () => {
@@ -12,13 +14,16 @@ const NotFound = () => {
         </Box>
         <Box width={520} marginBottom={theme.spacing(2)} marginLeft={theme.spacing(4)}>
           <Typography variant="body1">
-            It looks like you&apos;ve taken a wrong turn. The page you are looking for does not exist. Don&apos;t worry,
-            let&apos;s get you back on track!.
+            It looks like you&apos;ve taken a wrong turn. The page you are looking for does not
+            exist. Don&apos;t worry, let&apos;s get you back on track!.
           </Typography>
         </Box>
         <Box width={300} marginLeft={theme.spacing(4)}>
           <Link href="/" passHref>
-            <Button variant="contained" color="accent" style={{ color: theme.palette.background.paper }}>
+            <Button
+              variant="contained"
+              color="accent"
+              style={{ color: theme.palette.background.paper }}>
               Back To Home
             </Button>
           </Link>

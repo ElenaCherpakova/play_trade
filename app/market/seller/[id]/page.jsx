@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
+
 import { useSearchParams, useRouter } from "next/navigation";
-import { fetchSellerCards } from "@/utils/fetchData";
-import { fetchSellerData } from "@/utils/fetchData";
-import Filter from "@/components/Filter";
-import CardComponent from "@/components/CardComponent";
+
+import CloseIcon from "@mui/icons-material/Close";
+import FilterListIcon from "@mui/icons-material/FilterList";
 import {
   Alert,
   Avatar,
@@ -25,10 +25,12 @@ import {
   Tabs,
   Typography
 } from "@mui/material";
-import { theme } from "@/styles/theme";
-import FilterListIcon from "@mui/icons-material/FilterList";
-import CloseIcon from "@mui/icons-material/Close";
+
+import CardComponent from "@/components/CardComponent";
+import Filter from "@/components/Filter";
 import Loader from "@/components/loader/Loader";
+import { theme } from "@/styles/theme";
+import { fetchSellerCards, fetchSellerData } from "@/utils/fetchData";
 
 /**
  *
@@ -175,7 +177,11 @@ export default function Seller({ params }) {
                 alignItems: "center"
               }}>
               <Box>
-                <Avatar alt="seller image" src={user?.imageProfileURL} sx={{ width: 100, height: 100 }} />
+                <Avatar
+                  alt="seller image"
+                  src={user?.imageProfileURL}
+                  sx={{ width: 100, height: 100 }}
+                />
               </Box>
               <Box gap={2} display="flex" flexDirection="column">
                 <Box flexGrow={1}>
@@ -277,7 +283,12 @@ export default function Seller({ params }) {
                   {cards.length > 0 ? (
                     <Grid container spacing={2}>
                       {cards.map(card => (
-                        <Grid item key={card._id} xs={12} md={4} sx={{ display: "flex", justifyContent: "center" }}>
+                        <Grid
+                          item
+                          key={card._id}
+                          xs={12}
+                          md={4}
+                          sx={{ display: "flex", justifyContent: "center" }}>
                           <CardComponent key={card._id} card={card} showButtons={showButtons} />
                         </Grid>
                       ))}

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 // export default function Page({ params }) {
 //   return (
 //     <div>
@@ -8,17 +8,28 @@
 // }
 
 import * as React from "react";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
-import { theme } from "@/styles/theme";
+
 import { useRouter } from "next/navigation";
-import { Breadcrumbs, Box, Container, Divider, Link, Typography } from "@mui/material";
+
+import {
+  Box,
+  Breadcrumbs,
+  Button,
+  Container,
+  Divider,
+  Link,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Typography
+} from "@mui/material";
+
 import CardComponent from "@/components/CardComponent";
+import { theme } from "@/styles/theme";
 
 const order = {
   id: 1,
@@ -117,11 +128,22 @@ export default function Order({ item }) {
             </TableBody>
           </Table>
         </TableContainer>
-        <Box sx={{ mt: 3, display: "flex", gap: 10, justifyContent: "flex-end" }}>
+        <Box
+          sx={{
+            mt: 3,
+            display: "flex",
+            gap: 10,
+            justifyContent: "flex-end"
+          }}>
           <Box>
             <Typography sx={{ fontWeight: "bold" }}> Shipping informations</Typography>
           </Box>
-          <Box sx={{ display: "flex", flexDirection: "column", width: "30%" }}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              width: "30%"
+            }}>
             <Box>
               <Typography sx={{ fontWeight: "bold" }}>Order summary</Typography>
             </Box>

@@ -1,7 +1,8 @@
 "use client";
 
-import { createTheme } from "@mui/material/styles";
 import { IBM_Plex_Sans } from "next/font/google";
+
+import { createTheme } from "@mui/material/styles";
 
 const ibm = IBM_Plex_Sans({
   weight: ["400"],
@@ -37,32 +38,18 @@ export const theme = createTheme({
   },
 
   palette: {
-    primary: {
-      main: "#14213D"
-    },
-    secondary: {
-      main: "#D9D9D9"
-    },
+    primary: { main: "#14213D" },
+    secondary: { main: "#D9D9D9" },
     background: {
       paper: "#FFFFFF",
       default: "#FAFAFA"
     },
-    accent: {
-      main: "#DD7F11"
-    },
-    error: {
-      main: "#FF3131"
-    }
+    accent: { main: "#DD7F11" },
+    error: { main: "#FF3131" }
   },
-  shape: {
-    borderRadius: 12
-  },
+  shape: { borderRadius: 12 },
   components: {
-    MuiPaper: {
-      defaultProps: {
-        elevation: 4
-      }
-    },
+    MuiPaper: { defaultProps: { elevation: 4 } },
     MuiButton: {
       defaultProps: {
         variant: "contained",
@@ -70,9 +57,7 @@ export const theme = createTheme({
         sx: {
           "fontWeight": "bold",
           "transition": "all 0.3s",
-          "&:hover": {
-            opacity: 0.8
-          }
+          "&:hover": { opacity: 0.8 }
         }
       },
       styleOverrides: {
@@ -89,15 +74,7 @@ export const theme = createTheme({
       }
     },
 
-    MuiIconButton: {
-      defaultProps: {
-        size: "small"
-      }
-    }
+    MuiIconButton: { defaultProps: { size: "small" } }
   },
-  mixins: {
-    toolbar: {
-      minHeight: 64
-    }
-  }
+  mixins: { toolbar: { minHeight: 64 } }
 });

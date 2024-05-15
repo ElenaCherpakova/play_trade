@@ -1,13 +1,17 @@
-import { Inter } from "next/font/google";
 import "./globals.css";
-import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
-import { ThemeProvider } from "@mui/material/styles";
-import { theme } from "@/styles/theme";
-import Footer from "@/components/Footer";
+
+import { Inter } from "next/font/google";
 import { getServerSession } from "next-auth/next";
-import SessionProvider from "@/utils/SessionProvider";
-import Navbar from "../components/Navbar";
+
 import { CssBaseline, Box } from "@mui/material";
+import { ThemeProvider } from "@mui/material/styles";
+import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
+
+import Navbar from "../components/Navbar";
+
+import Footer from "@/components/Footer";
+import { theme } from "@/styles/theme";
+import SessionProvider from "@/utils/SessionProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -32,7 +36,11 @@ export default async function RootLayout({ children }) {
                   display="flex"
                   flexDirection="column"
                   flexGrow={1}
-                  sx={{ display: "flex", flexDirection: "column", flexGrow: "1" }}>
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    flexGrow: "1"
+                  }}>
                   {children}
                 </Box>
               </main>

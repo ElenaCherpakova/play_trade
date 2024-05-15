@@ -1,11 +1,18 @@
 "use client";
 import React, { useState } from "react";
+
+import {
+  useStripe,
+  useElements,
+  CardElement,
+  LinkAuthenticationElement
+} from "@stripe/react-stripe-js";
 import { useRouter } from "next/navigation";
 
-import { useStripe, useElements, CardElement, LinkAuthenticationElement } from "@stripe/react-stripe-js";
-import { Button, Paper, Backdrop, Box, CircularProgress, Typography } from "@mui/material";
-import { useCartStore } from "@/store/cartStore";
+import { Backdrop, Box, Button, CircularProgress, Paper, Typography } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
+
+import { useCartStore } from "@/store/cartStore";
 
 const CheckoutForm = () => {
   const { totalPrice, clearCart } = useCartStore(state => ({
@@ -79,11 +86,20 @@ const CheckoutForm = () => {
         width: "100%",
         maxWidth: 480
       }}>
-      <Paper sx={{ p: 2, mt: 3, width: "100%" }}>
+      <Paper
+        sx={{
+          p: 2,
+          mt: 3,
+          width: "100%"
+        }}>
         <CardElement />
         {loading ? (
           <Backdrop
-            sx={{ color: "#fff", zIndex: theme => theme.zIndex.drawer + 1, backdropFilter: "blur(2px)" }}
+            sx={{
+              color: "#fff",
+              zIndex: theme => theme.zIndex.drawer + 1,
+              backdropFilter: "blur(2px)"
+            }}
             open={loading}>
             <CircularProgress color="inherit" />
           </Backdrop>

@@ -1,17 +1,31 @@
 "use client";
-import React, { useState, useEffect, use } from "react";
-import CardComponent from "@/components/CardComponent";
+
+import React, { useState, useEffect } from "react";
+
 import { useRouter } from "next/navigation";
-import { Box, Button, Typography, Breadcrumbs, Divider, Link, Snackbar, Alert, Grid } from "@mui/material";
-import { theme } from "@/styles/theme";
-import { fetchCardData, deleteCardData } from "@/utils/fetchData";
 import { useSession } from "next-auth/react";
-import { fetchSellerData } from "@/utils/fetchData";
+
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import Loader from "@/components/loader/Loader";
-import { useCartStore } from "@/store/cartStore";
+import {
+  Alert,
+  Box,
+  Breadcrumbs,
+  Button,
+  Divider,
+  Grid,
+  Link,
+  Snackbar,
+  Typography
+} from "@mui/material";
+
+import CardComponent from "@/components/CardComponent";
 import ConfirmationDialog from "@/components/DialogBox";
+import Loader from "@/components/loader/Loader";
 import useImageUpload from "@/hooks/useImageUpload";
+import { useCartStore } from "@/store/cartStore";
+import { theme } from "@/styles/theme";
+import { fetchCardData, deleteCardData, fetchSellerData } from "@/utils/fetchData";
+
 /**
  *
  * @param {*} params
@@ -24,7 +38,7 @@ export default function Page({ params }) {
   const [cardDetails, setCardDetails] = useState(null);
   const [sellerName, setSellerName] = useState("Visit seller's page");
   const router = useRouter();
-  const [openDialog, setOpenDialog] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
   const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
   const [cardToDelete, setCardToDelete] = useState(null);
   const [sellerItemsAvailable, setSellerItemsAvailable] = useState([]);
@@ -91,6 +105,9 @@ export default function Page({ params }) {
 
   const handleAddToCartButtonClick = () => {
     addToCart(cardDetails);
+    if (openError) {
+      console.log(openError);
+    }
   };
 
   const handleClose = (event, reason) => {
@@ -106,8 +123,9 @@ export default function Page({ params }) {
   const handleEdit = () => {
     router.push(`/sell/edit/${id}`);
   };
-  const handleOpenDialog = () => {
-    setOpenDialog(true);
+
+  const handleOpenModal = () => {
+    setOpenModal(true);
   };
 
   const handleDeleteButtonClick = id => {
@@ -183,7 +201,10 @@ export default function Page({ params }) {
                       variant="contained"
                       color="accent"
                       onClick={handleAddToCartButtonClick}
-                      style={{ color: theme.palette.background.paper, marginBottom: theme.spacing(2) }}
+                      style={{
+                        color: theme.palette.background.paper,
+                        marginBottom: theme.spacing(2)
+                      }}
                       startIcon={<ShoppingCartIcon />}>
                       Add to cart
                     </Button>
@@ -202,9 +223,7 @@ export default function Page({ params }) {
                         underline="none"
                         sx={{
                           "color": "accent.main",
-                          "&:hover": {
-                            textDecoration: "underline"
-                          }
+                          "&:hover": { textDecoration: "underline" }
                         }}
                         onClick={e => {
                           e.preventDefault();
@@ -221,7 +240,10 @@ export default function Page({ params }) {
 
                   <Typography variant="body1" gutterBottom style={{ display: "flex" }}>
                     <span style={{ width: 120, marginRight: 40 }}>
-                      <Typography component="span" variant="subtitle1" style={{ fontWeight: "bold" }}>
+                      <Typography
+                        component="span"
+                        variant="subtitle1"
+                        style={{ fontWeight: "bold" }}>
                         Price:
                       </Typography>
                     </span>
@@ -232,18 +254,26 @@ export default function Page({ params }) {
                   </Typography>
                   <Typography variant="body1" gutterBottom style={{ display: "flex" }}>
                     <span style={{ width: 120, marginRight: 40 }}>
-                      <Typography component="span" variant="subtitle1" style={{ fontWeight: "bold" }}>
+                      <Typography
+                        component="span"
+                        variant="subtitle1"
+                        style={{ fontWeight: "bold" }}>
                         Description:
                       </Typography>
                     </span>
                     <span style={{ flex: 1 }}>{cardDetails.description}</span>
                   </Typography>
 
-                  <Divider style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }} />
+                  <Divider
+                    style={{ marginTop: theme.spacing(2), marginBottom: theme.spacing(2) }}
+                  />
 
                   <Typography variant="body1" gutterBottom style={{ display: "flex" }}>
                     <span style={{ width: 120, marginRight: 40 }}>
-                      <Typography component="span" variant="subtitle1" style={{ fontWeight: "bold" }}>
+                      <Typography
+                        component="span"
+                        variant="subtitle1"
+                        style={{ fontWeight: "bold" }}>
                         Conditions:
                       </Typography>
                     </span>
@@ -252,7 +282,10 @@ export default function Page({ params }) {
 
                   <Typography variant="body1" gutterBottom style={{ display: "flex" }}>
                     <span style={{ width: 120, marginRight: 40 }}>
-                      <Typography component="span" variant="subtitle1" style={{ fontWeight: "bold" }}>
+                      <Typography
+                        component="span"
+                        variant="subtitle1"
+                        style={{ fontWeight: "bold" }}>
                         Category:
                       </Typography>
                     </span>
@@ -261,7 +294,10 @@ export default function Page({ params }) {
 
                   <Typography variant="body1" gutterBottom style={{ display: "flex" }}>
                     <span style={{ width: 120, marginRight: 40 }}>
-                      <Typography component="span" variant="subtitle1" style={{ fontWeight: "bold" }}>
+                      <Typography
+                        component="span"
+                        variant="subtitle1"
+                        style={{ fontWeight: "bold" }}>
                         Quantity:
                       </Typography>
                     </span>
@@ -270,7 +306,10 @@ export default function Page({ params }) {
 
                   <Typography variant="body1" gutterBottom style={{ display: "flex" }}>
                     <span style={{ width: 120, marginRight: 40 }}>
-                      <Typography component="span" variant="subtitle1" style={{ fontWeight: "bold" }}>
+                      <Typography
+                        component="span"
+                        variant="subtitle1"
+                        style={{ fontWeight: "bold" }}>
                         Availability:
                       </Typography>
                     </span>
@@ -279,7 +318,10 @@ export default function Page({ params }) {
 
                   <Typography variant="body1" gutterBottom style={{ display: "flex" }}>
                     <span style={{ width: 120, marginRight: 40 }}>
-                      <Typography component="span" variant="subtitle1" style={{ fontWeight: "bold" }}>
+                      <Typography
+                        component="span"
+                        variant="subtitle1"
+                        style={{ fontWeight: "bold" }}>
                         Set:
                       </Typography>
                     </span>
@@ -288,7 +330,10 @@ export default function Page({ params }) {
 
                   <Typography variant="body1" gutterBottom style={{ display: "flex" }}>
                     <span style={{ width: 120, marginRight: 40 }}>
-                      <Typography component="span" variant="subtitle1" style={{ fontWeight: "bold" }}>
+                      <Typography
+                        component="span"
+                        variant="subtitle1"
+                        style={{ fontWeight: "bold" }}>
                         Shipping Cost:
                       </Typography>
                     </span>

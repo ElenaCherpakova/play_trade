@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
+
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import dbConnect from "@/lib/mongo/dbConnect";
 import User from "@/models/User";
@@ -24,7 +25,17 @@ export const GET = async () => {
     if (!user) {
       return NextResponse.json({ success: false, message: "No such user found." }, { status: 404 });
     }
-    return NextResponse.json({ success: true, data: { name, email, _id } }, { status: 200 });
+    return NextResponse.json(
+      {
+        success: true,
+        data: {
+          name,
+          email,
+          _id
+        }
+      },
+      { status: 200 }
+    );
   } catch (error) {
     return NextResponse.json({ success: false, message: "Internal Server Error" }, { status: 500 });
   }

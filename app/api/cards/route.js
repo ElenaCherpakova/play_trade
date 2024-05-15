@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import dbConnect from "@/lib/mongo/dbConnect";
 import { getToken } from "next-auth/jwt";
 import { getServerSession } from "next-auth/next";
+
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import dbConnect from "@/lib/mongo/dbConnect";
 import Card from "@/models/Card";
 
 /**
@@ -65,9 +66,23 @@ export async function GET(req, res) {
     const cards = await Card.find(searchQuery).skip(skip).limit(limit);
     const total = await Card.countDocuments(searchQuery);
     if (!cards) {
-      return NextResponse.json({ success: false, message: error.message || "No cards found" }, { status: 400 });
+      return NextResponse.json(
+        { success: false, message: error.message || "No cards found" },
+        { status: 400 }
+      );
     }
-    return NextResponse.json({ success: true, data: { cards, total, page, limit } }, { status: 200 });
+    return NextResponse.json(
+      {
+        success: true,
+        data: {
+          cards,
+          total,
+          page,
+          limit
+        }
+      },
+      { status: 200 }
+    );
   } catch (error) {
     return NextResponse.json({ success: false, message: error }, { status: 400 });
   }
@@ -90,11 +105,12 @@ export async function POST(req) {
     const card = await Card.create(body);
 
     if (!card) {
-      return NextResponse.json({ success: false, message: error.message || "Error saving a card" }, { status: 400 });
+      return NextResponse.json(
+        { success: false, message: error.message || "Error saving a card" },
+        { status: 400 }
+      );
     }
-    return new NextResponse(JSON.stringify({ success: true, data: card }), {
-      status: 201
-    });
+    return new NextResponse(JSON.stringify({ success: true, data: card }), { status: 201 });
   } catch (error) {
     if (error.name === "ValidationError") {
       const errorMessages = Object.values(error.errors).map(err => {
@@ -147,7 +163,10 @@ export async function DELETE(req) {
     const cards = await Card.deleteMany({ createdBy: userId });
     if (!cards) {
       console.log(error);
-      return NextResponse.json({ success: false, message: error.message || "No cards found" }, { status: 400 });
+      return NextResponse.json(
+        { success: false, message: error.message || "No cards found" },
+        { status: 400 }
+      );
     }
     return NextResponse.json({ success: true, data: {} }, { status: 200 });
   } catch (error) {

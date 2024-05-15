@@ -13,7 +13,10 @@ export async function POST(req) {
       currency: "USD"
     });
     console.log("payIntent", paymentIntent);
-    return NextResponse.json({ success: true, intent: paymentIntent?.client_secret }, { status: 200 });
+    return NextResponse.json(
+      { success: true, intent: paymentIntent?.client_secret },
+      { status: 200 }
+    );
   } catch (error) {
     return NextResponse.json({ success: false, message: error }, { status: 400 });
   }

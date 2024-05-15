@@ -1,31 +1,34 @@
-// components/Navbar.js
 "use client";
 import React, { useEffect, useState } from "react";
-import { alpha } from "@mui/material/styles";
+
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useTheme } from "@mui/material/styles";
 import { useSession } from "next-auth/react";
-import { useCartStore } from "@/store/cartStore";
-import useAuthUser from "../store/useAuthUser";
+
+import { Search, ShoppingCart } from "@mui/icons-material";
 import {
+  AppBar,
+  Avatar,
   Badge,
   Box,
   Button,
-  Typography,
-  InputBase,
-  AppBar,
-  Toolbar,
-  InputAdornment,
+  Divider,
   IconButton,
+  InputAdornment,
+  InputBase,
   Menu,
   MenuItem,
-  Divider,
+  Toolbar,
   Tooltip,
-  Avatar
+  Typography
 } from "@mui/material";
-import { Search, ShoppingCart } from "@mui/icons-material";
+import { useTheme } from "@mui/material/styles";
+import { alpha } from "@mui/material/styles";
+
+import useAuthUser from "../store/useAuthUser";
+
+import { useCartStore } from "@/store/cartStore";
 
 const Navbar = () => {
   const theme = useTheme();
@@ -127,9 +130,7 @@ const Navbar = () => {
                 anchorEl={anchorEl}
                 open={open}
                 onClose={handleClose}
-                MenuListProps={{
-                  "aria-labelledby": "cards-button"
-                }}>
+                MenuListProps={{ "aria-labelledby": "cards-button" }}>
                 <MenuItem
                   onClick={() => {
                     router.push("/market"), handleClose();
@@ -141,7 +142,8 @@ const Navbar = () => {
                   <MenuItem
                     key={category}
                     onClick={() => {
-                      router.push(`/market?category=${encodeURIComponent(category)}`), handleClose();
+                      router.push(`/market?category=${encodeURIComponent(category)}`),
+                        handleClose();
                     }}>
                     {category}
                   </MenuItem>
@@ -166,9 +168,7 @@ const Navbar = () => {
                   "px": theme.spacing(1),
                   "borderRadius": 1,
                   "backgroundColor": alpha(theme.palette.background.paper, 0.15),
-                  "&:hover": {
-                    backgroundColor: alpha(theme.palette.background.paper, 0.25)
-                  },
+                  "&:hover": { backgroundColor: alpha(theme.palette.background.paper, 0.25) },
                   "color": "inherit"
                 }}
               />
@@ -234,7 +234,11 @@ const Navbar = () => {
                 </Menu>
               </Box>
             ) : (
-              <Button id="cards-button" color="inherit" onClick={() => router.push("/signin")} variant="outlined">
+              <Button
+                id="cards-button"
+                color="inherit"
+                onClick={() => router.push("/signin")}
+                variant="outlined">
                 Login
               </Button>
             )}

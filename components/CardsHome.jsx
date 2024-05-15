@@ -1,7 +1,9 @@
 "use client";
 import React from "react";
+
 import Link from "next/link";
-import { Grid, Card, CardContent, CardMedia, Typography } from "@mui/material";
+
+import { Card, CardContent, CardMedia, Grid, Typography } from "@mui/material";
 
 export default function CardsHome() {
   const categories = ["Magic", "Pokemon", "Digimon", "Yu-Gi-Oh!", "Sport Card"];
@@ -10,9 +12,22 @@ export default function CardsHome() {
       {categories.map((category, index) => (
         <Grid item xs={12} sm={6} md={4} lg={2} key={index} display="flex" justifyContent="center">
           <Link href={`/market?category=${encodeURIComponent(category)}`} passHref>
-            <Card sx={{ display: "flex", flexDirection: "column", height: "150px", width: "fit-content" }}>
+            <Card
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                height: "150px",
+                width: "fit-content"
+              }}>
               <CardContent sx={{ p: 0 }}>
-                <Typography sx={{ fontSize: "1rem", textAlign: "center", fontWeight: "bold" }}>{category}</Typography>
+                <Typography
+                  sx={{
+                    fontSize: "1rem",
+                    textAlign: "center",
+                    fontWeight: "bold"
+                  }}>
+                  {category}
+                </Typography>
               </CardContent>
               <CardMedia
                 component="img"

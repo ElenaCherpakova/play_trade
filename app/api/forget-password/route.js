@@ -1,9 +1,11 @@
-import crypto from "crypto";
 import dbConnect from "@lib/mongo/dbConnect";
-import User from "@/models/User";
+import crypto from "crypto";
 import { NextResponse, NextRequest } from "next/server";
-import createTransporter from "../../../utils/mailerConfig";
+
 import { passwordResetEmail } from "../../../utils/emailTemplates/passwordResetEmail";
+import createTransporter from "../../../utils/mailerConfig";
+
+import User from "@/models/User";
 
 /**
  * @param {NextResponse} res

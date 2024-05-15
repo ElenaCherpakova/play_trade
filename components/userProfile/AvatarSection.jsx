@@ -1,6 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { Avatar, Paper, Button } from "@mui/material";
+
+import { Avatar, Button, Paper } from "@mui/material";
 
 export default function AvatarSection({
   avatarPreview,
@@ -68,9 +69,7 @@ export default function AvatarSection({
         sx={{
           "letterSpacing": "0.1em",
           "mt": 2,
-          "&:hover": {
-            backgroundColor: theme.palette.accent.main
-          }
+          "&:hover": { backgroundColor: theme.palette.accent.main }
         }}>
         Add Card to Sell
       </Button>

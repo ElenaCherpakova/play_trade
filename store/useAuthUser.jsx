@@ -1,5 +1,5 @@
-import { create } from "zustand";
 import { signOut, signIn } from "next-auth/react";
+import { create } from "zustand";
 
 const useAuthUser = create(set => ({
   email: "",
@@ -32,9 +32,7 @@ const useAuthUser = create(set => ({
 
   logout: async () => {
     try {
-      await signOut({
-        callbackUrl: `${window.location.origin}/signin`
-      });
+      await signOut({ callbackUrl: `${window.location.origin}/signin` });
     } catch (error) {
       set({ error: error.message, isLoading: false });
     }
@@ -45,9 +43,7 @@ const useAuthUser = create(set => ({
     try {
       const response = await fetch("/api/register", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newUserData)
       });
       const data = await response.json();
@@ -63,9 +59,7 @@ const useAuthUser = create(set => ({
   },
   googleLogin: async () => {
     try {
-      await signIn("google", {
-        callbackUrl: `${window.location.origin}/market`
-      });
+      await signIn("google", { callbackUrl: `${window.location.origin}/market` });
     } catch (error) {
       set({ error: error.message, isLoading: false });
     }
@@ -75,9 +69,7 @@ const useAuthUser = create(set => ({
     try {
       const response = await fetch("/api/forget-password", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(userData)
       });
       const data = await response.json();
@@ -92,7 +84,11 @@ const useAuthUser = create(set => ({
     }
   },
   resetPassword: async (password, email) => {
-    set({ isLoading: true, error: null, passwordResetSuccess: false });
+    set({
+      isLoading: true,
+      error: null,
+      passwordResetSuccess: false
+    });
     try {
       const response = await fetch("/api/reset-password", {
         method: "POST",
@@ -108,7 +104,11 @@ const useAuthUser = create(set => ({
         set({ isLoading: false, error: errorData.error || "Resetting the password failed" });
       }
     } catch (error) {
-      set({ isLoading: false, error: error.message, passwordResetSuccess: false });
+      set({
+        isLoading: false,
+        error: error.message,
+        passwordResetSuccess: false
+      });
     }
   },
   verifyToken: async token => {
@@ -122,7 +122,11 @@ const useAuthUser = create(set => ({
 
       if (response.ok) {
         const { email } = await response.json();
-        set({ isLoading: false, email, verifyError: "" });
+        set({
+          isLoading: false,
+          email,
+          verifyError: ""
+        });
       } else {
         const errorData = await response.json();
         set({ isLoading: false, verifyError: errorData.error || "Token verification failed" });
@@ -136,16 +140,18 @@ const useAuthUser = create(set => ({
     try {
       const response = await fetch("/api/auth/profile/update", {
         method: "PUT",
-        headers: {
-          "Content-type": "application/json"
-        },
+        headers: { "Content-type": "application/json" },
         body: JSON.stringify({ ...userData, imageProfilePublicId: avatarPublicId })
       });
       console.log("RESPONSE", response);
       if (response.ok) {
         const data = await response.json();
         console.log("Data", data);
-        set({ data, isLoading: false, error: null });
+        set({
+          data,
+          isLoading: false,
+          error: null
+        });
         return data;
       } else {
         let errorData;
