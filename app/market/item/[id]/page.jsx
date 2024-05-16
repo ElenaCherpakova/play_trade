@@ -9,7 +9,7 @@ import { useSession } from "next-auth/react";
 import { fetchSellerData } from "@/utils/fetchData";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import Loader from "@/components/loader/Loader";
-import useCartStore from "@/store/cartStore";
+import { useCartStore } from "@/store/cartStore";
 
 import ConfirmationDialog from "@/components/DialogBox";
 import useImageUpload from "@/hooks/useImageUpload";
