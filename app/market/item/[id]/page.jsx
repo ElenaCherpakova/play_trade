@@ -94,7 +94,6 @@ export default function Page({ params }) {
       fetchData();
     }
   }, [cardDetails]);
-
   // const handleWishlistButtonClick = () => {
   //   router.push(`/sell/wishlist/${id}`);
   // }; // will add this route later

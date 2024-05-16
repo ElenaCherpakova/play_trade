@@ -46,7 +46,6 @@ export async function fetchCardData(id) {
   const response = await fetch(`/api/cards/${id}`);
   if (!response.ok) {
     const errorData = await response.json();
-    console.log("errorData", errorData);
     const detailedErrorMessage = errorData.errors ? errorData.errors.join(", ") : errorData.message;
     throw new Error(detailedErrorMessage || "Unknown error occurred.");
   }
@@ -61,7 +60,6 @@ export async function editCardData(id, editCardData) {
     body: JSON.stringify(editCardData)
   });
   if (!response.ok) {
-    console.log(data.errors);
     const detailedErrorMessage = data.errors ? data.errors.join(", ") : data.message;
     throw new Error(detailedErrorMessage || "Unknown error occurred.");
   }
@@ -77,7 +75,6 @@ export async function createCardData(formData) {
   });
   if (!response.ok) {
     const errorData = await response.json();
-    console.log("errorData", errorData);
     const detailedErrorMessage = errorData.errors ? errorData.errors.join(", ") : errorData.message;
     throw new Error(detailedErrorMessage || "Unknown error occurred.");
   }
@@ -92,7 +89,6 @@ export async function deleteCardData(id) {
   });
   if (!response.ok) {
     const data = await response.json();
-    console.log(data.errors);
     const detailedErrorMessage = data.errors ? data.errors.join(", ") : data.message;
     throw new Error(detailedErrorMessage || "Unknown error occurred.");
   }
@@ -132,7 +128,6 @@ export async function fetchSellerCards(sellerId, filters = {}, page = 0, limit =
   const response = await fetch(url);
   if (!response.ok) {
     const errorData = await response.json();
-    console.log("errorData", errorData);
     const detailedErrorMessage = errorData.errors ? errorData.errors.join(", ") : errorData.message;
     throw new Error(detailedErrorMessage || "Unknown error occurred.");
   }
@@ -144,7 +139,6 @@ export async function fetchSellerData(id) {
   const response = await fetch(`/api/seller/${id}`);
   if (!response.ok) {
     const errorData = await response.json();
-    console.log("errorData", errorData);
     const detailedErrorMessage = errorData.errors ? errorData.errors.join(", ") : errorData.message;
     throw new Error(detailedErrorMessage || "Unknown error occurred.");
   }

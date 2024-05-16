@@ -25,6 +25,7 @@ import {
 import CardComponent from "@/components/CardComponent";
 import Filter from "@/components/Filter";
 import Loader from "@/components/loader/Loader";
+import { useCartStore } from "@/store/cartStore";
 import { theme } from "@/styles/theme";
 import { fetchAllCardsData } from "@/utils/fetchData";
 
@@ -38,6 +39,7 @@ export default function Market() {
   const [loading, setLoading] = useState(true);
   const searchParams = useSearchParams();
   const { data: session } = useSession();
+  const loadCart = useCartStore(state => state.loadCart);
   const router = useRouter();
   const filters = {
     conditions: searchParams.get("conditions") || "",
@@ -57,6 +59,7 @@ export default function Market() {
         setCards(data.cards);
         setTotalCards(data.total);
         setLoading(false);
+        loadCart();
       } catch (error) {
         console.error;
         setOpenError(true);
@@ -73,7 +76,8 @@ export default function Market() {
     filters.priceFrom,
     filters.priceTo,
     currentPage,
-    filters.availability
+    filters.availability,
+    loadCart
   ]);
 
   const handleClose = (event, reason) => {

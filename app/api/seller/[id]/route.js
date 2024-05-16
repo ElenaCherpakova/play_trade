@@ -21,7 +21,7 @@ export async function GET(req, res) {
   try {
     const idWithParams = req.url.split("seller/")[1];
     const id = idWithParams.split("?")[0];
-    console.log("id", id);
+
     if (!id) {
       return NextResponse.json(
         { success: false, message: "Seller ID not provided" },
@@ -29,7 +29,6 @@ export async function GET(req, res) {
       );
     }
     const user = await User.findById(id);
-    console.log("user", user);
     if (!user) {
       return NextResponse.json({ success: false, message: "User not found" }, { status: 404 });
     }
