@@ -1,5 +1,8 @@
 import { useState, useRef, useEffect } from "react";
 
+import Image from "next/image";
+
+import ImageIcon from "@mui/icons-material/Image";
 import {
   Backdrop,
   Box,
@@ -16,9 +19,6 @@ import {
   Typography,
   useMediaQuery
 } from "@mui/material";
-import Image from "next/image";
-
-import ImageIcon from "@mui/icons-material/Image";
 
 import useImageUpload from "../hooks/useImageUpload";
 import { theme } from "../styles/theme";
