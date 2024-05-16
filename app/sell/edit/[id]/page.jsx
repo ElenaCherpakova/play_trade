@@ -44,7 +44,7 @@ export default function Page({ params }) {
       await editCardData(id, editCard);
       router.push(`/sell`);
     } catch (error) {
-      console.log(error.message);
+    
       console.error(error);
       setOpenError(true);
       setErrorMessage(error.message || "unknown error");

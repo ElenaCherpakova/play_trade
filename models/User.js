@@ -92,7 +92,6 @@ UserSchema.methods.editUser = async function (updatedUserInfo) {
     }
     Object.assign(this, updatedUserInfo);
     await this.save();
-    console.log("User was successfully updated");
   } catch (error) {
     throw error;
   }

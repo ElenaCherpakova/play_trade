@@ -7,12 +7,11 @@ import { Box, Breadcrumbs, Grid, Typography, Link, Paper, Divider, Button, useMe
 import CartItem from "./CartItem";
 
 export default function Cart() {
-  const { cartItems, removeItemFromCart, handleCheck, handleQuantityChange, itemsCount, totalPrice } = useCartStore(
+  const { cartItems, removeItemFromCart, handleCheck, itemsCount, totalPrice } = useCartStore(
     state => ({
       cartItems: state.cartItems,
       removeItemFromCart: state.removeItemFromCart,
       handleCheck: state.handleCheck,
-      handleQuantityChange: state.handleQuantityChange,
       itemsCount: state.itemsCount,
       totalPrice: state.totalPrice
     })
@@ -58,7 +57,6 @@ export default function Cart() {
                 index={index}
                 handleCheck={handleCheck}
                 removeItemFromCart={removeItemFromCart}
-                handleQuantityChange={handleQuantityChange}
                 cartItems={cartItems}
               />
             ))}
@@ -75,9 +73,10 @@ export default function Cart() {
               Items ({itemsCount})
             </Typography>
             <Typography variant="body1" sx={{ mt: 3, mb: 2 }}>
-              Total Price: {totalPrice.toFixed(2)}
+              Total Price: {totalPrice}
             </Typography>
             <Button
+              disabled={cartItems.length === 0}
               variant="contained"
               color="accent"
               onClick={checkoutUrl}
