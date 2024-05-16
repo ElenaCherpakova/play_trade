@@ -36,6 +36,8 @@ const Navbar = () => {
   const itemsCount = useCartStore(state => state.itemsCount);
   const router = useRouter();
   const { logout } = useAuthUser();
+  const logOutAndClearCart = useCartStore(state => state.logOutAndClearCart);
+
   const { data: session } = useSession();
 
   const profileItems = [
@@ -227,7 +229,7 @@ const Navbar = () => {
                   <Divider />
                   <MenuItem
                     onClick={() => {
-                      logout(), handleCloseUserMenu();
+                      logout(), handleCloseUserMenu(), logOutAndClearCart();
                     }}>
                     <Typography textAlign="center">Logout</Typography>
                   </MenuItem>

@@ -36,16 +36,16 @@ export async function POST(req, res) {
   if (!session || !session.user) {
     return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
   }
-  const { userId, cardId, quantity } = await req.json();
+  const userId = session.user._id;
+  const { cardId, quantity } = await req.json();
   if (!userId || !cardId || quantity === undefined) {
-    return NextResponse.json({ error: "userId and cardId are required" }, { status: 400 });
+    return NextResponse.json({ error: "userId, cardId and quantity are required" }, { status: 400 });
   }
-  // const { _id: cardId, available, quantity } = product;
   const card = await Card.findById(cardId);
   console.log("CARD", card);
-  // if (!cardId || card.available !== "available" || quantity <= 0) {
-  //   return NextResponse.json({ success: false, message: "Card is not available or out of stock" }, { status: 400 });
-  // }
+  if (!cardId || card.available !== "available" || quantity <= 0) {
+    return NextResponse.json({ success: false, message: "Card is not available or out of stock" }, { status: 400 });
+  }
 
   try {
     const cart = (await Cart.findOne({ userId })) || new Cart({ userId, items: [] });
@@ -111,13 +111,16 @@ export async function PATCH(req, res) {
 
     if (quantity === 0) {
       cart.items.splice(itemIndex, 1);
+      await cart.save();
+      return NextResponse.json(
+        { success: true, items: cart.items, message: "Item removed from cart" },
+        { status: 200 }
+      );
     } else {
       cart.items[itemIndex].quantity = quantity;
+      await cart.save();
+      return NextResponse.json({ success: true, items: cart.items, message: "Cart updated" }, { status: 200 });
     }
-    await cart.save();
-    console.log("DATA FROM BACK", cart);
-
-    return NextResponse.json({ success: true, items: cart.items }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ success: false, message: error.message }, { status: 500 });
   }
@@ -128,5 +131,25 @@ export async function DELETE(req, res) {
   const session = await getServerSession(authOptions);
   if (!session || !session.user) {
     return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+  }
+  const userId = session.user._id;
+  const { cardId } = await req.json();
+  if (!userId || !cardId) {
+    return NextResponse.json({ error: "userId and cardId are required" }, { status: 400 });
+  }
+  try {
+    const cart = await Cart.findOne({ userId });
+    if (!cart) {
+      return NextResponse.json({ success: false, message: "Cart not found" }, { status: 404 });
+    }
+    const itemIndex = cart.items.findIndex(item => item.cardId.equals(cardId));
+    if (itemIndex === -1) {
+      return NextResponse.json({ success: false, message: "Card not found in cart" }, { status: 404 });
+    }
+    cart.items.splice(itemIndex, 1);
+    await cart.save();
+    return NextResponse.json({ success: true, items: cart.items, message: "Item removed from cart" }, { status: 200 });
+  } catch (error) {
+    return NextResponse.json({ success: false, message: error.message }, { status: 500 });
   }
 }

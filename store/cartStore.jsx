@@ -93,11 +93,12 @@ export const useCartStore = create(
           }
           const data = await response.json();
           console.log("DATA FROM LOADING", data);
+          // set({ cartItems: data.items });
           const items = data.items.map(item => ({
             ...item.cardId,
             price: item.cardId.price,
             quantity: item.quantity,
-            checked: true
+            checked: true 
           }));
           set(state => {
             const totals = state.calculateTotals(items);
@@ -129,7 +130,6 @@ export const useCartStore = create(
             },
             body: JSON.stringify({ cardId: productId, quantity })
           });
-          console.log("RES", response);
           if (!response.ok) {
             const errorData = await response.json();
             throw new Error(errorData.message || "Failed to update cart");
@@ -138,25 +138,25 @@ export const useCartStore = create(
           const data = await response.json();
           console.log("Cart updated successfully:", data);
 
-          // set(state => {
-          //   const newCartItems = [...state.cartItems];
+          set(state => {
+            const newCartItems = [...state.cartItems];
 
-          //   const itemIndex = newCartItems.findIndex(item => item.cardId._id === productId);
-          //   if (itemIndex !== -1) {
-          //     if (quantity === 0) {
-          //       newCartItems.splice(itemIndex, 1);
-          //     } else {
-          //       newCartItems[itemIndex].quantity = quantity;
-          //     }
-          //   }
+            const itemIndex = newCartItems.findIndex(item => item._id === productId);
+            if (itemIndex !== -1) {
+              if (quantity === 0) {
+                newCartItems.splice(itemIndex, 1);
+              } else {
+                newCartItems[itemIndex].quantity = quantity;
+              }
+            }
 
-          //   const totals = state.calculateTotals(newCartItems);
-          //   return { ...state, cartItems: newCartItems, ...totals };
-          // });
+            const totals = state.calculateTotals(newCartItems);
+            return { ...state, cartItems: newCartItems, ...totals };
+          });
 
           await get().loadCart();
         } catch (error) {
-          console.log(error);
+          console.log("Failed to update cart:", error.message);
         }
       },
       handleCheck: cardId =>
@@ -167,16 +167,47 @@ export const useCartStore = create(
           const totals = state.calculateTotals(newCartItems);
           return { ...state, cartItems: newCartItems, ...totals };
         }),
-      removeItemFromCart: productId => {
-        set(state => {
-          const newCartItems = state.cartItems.filter(item => item._id !== productId);
-          const totals = state.calculateTotals(newCartItems);
-          return { ...state, cartItems: newCartItems, ...totals };
-        });
+      removeItemFromCart: async productId => {
+        const userId = get().userId;
+
+        if (!userId) return;
+        try {
+          const response = await fetch("/api/cart", {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ cardId: productId })
+          });
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || "Failed to update cart");
+          }
+
+          const data = await response.json();
+          console.log("Cart updated successfully:", data);
+
+          set(state => {
+            const newCartItems = state.cartItems.filter(item => item._id !== productId);
+            const totals = state.calculateTotals(newCartItems);
+            return { ...state, cartItems: newCartItems, ...totals };
+          });
+
+          await get().loadCart();
+        } catch (error) {
+          console.log("Failed to update cart:", error.message);
+        }
       },
       clearCart: () => set({ cartItems: [], itemsCount: 0, totalPrice: 0 }),
 
-      setUserId: id => set({ userId: id })
+      setUserId: id => set({ userId: id }),
+
+      clearCart: () => set({ cartItems: [], itemsCount: 0, totalPrice: 0 }),
+
+      logOutAndClearCart: () => {
+        set({ userId: null });
+        get().clearCart();
+      }
     }),
     {
       name: "cart-items"
