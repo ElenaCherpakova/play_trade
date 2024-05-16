@@ -98,7 +98,7 @@ export const useCartStore = create(
             ...item.cardId,
             price: item.cardId.price,
             quantity: item.quantity,
-            checked: true 
+            checked: true
           }));
           set(state => {
             const totals = state.calculateTotals(items);

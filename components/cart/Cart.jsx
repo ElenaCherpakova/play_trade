@@ -7,16 +7,16 @@ import { Box, Breadcrumbs, Grid, Typography, Link, Paper, Divider, Button, useMe
 import CartItem from "./CartItem";
 
 export default function Cart() {
-  const { cartItems, removeItemFromCart, handleCheck, updateQuantityChange, itemsCount, totalPrice } =
-    useCartStore(state => ({
+  const { cartItems, removeItemFromCart, handleCheck, updateQuantityChange, itemsCount, totalPrice } = useCartStore(
+    state => ({
       cartItems: state.cartItems,
       removeItemFromCart: state.removeItemFromCart,
       handleCheck: state.handleCheck,
       handleQuantityChange: state.handleQuantityChange,
       itemsCount: state.itemsCount,
-      totalPrice: state.totalPrice,
-    }));
-
+      totalPrice: state.totalPrice
+    })
+  );
 
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const router = useRouter();
@@ -77,6 +77,7 @@ export default function Cart() {
               Total Price: {totalPrice}
             </Typography>
             <Button
+              disabled={cartItems.length === 0}
               variant="contained"
               color="accent"
               onClick={checkoutUrl}
@@ -90,4 +91,3 @@ export default function Cart() {
     </Box>
   );
 }
-
