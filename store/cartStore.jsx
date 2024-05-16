@@ -9,7 +9,10 @@ export const useCartStore = create(
       userId: null,
 
       calculateTotals: cartItems => {
-        const itemsCount = cartItems.reduce((total, item) => total + (item.checked ? item.quantity : 0), 0);
+        const itemsCount = cartItems.reduce(
+          (total, item) => total + (item.checked ? item.quantity : 0),
+          0
+        );
         const totalPrice = cartItems.reduce(
           (total, item) => total + (item.checked ? item.price * item.quantity : 0),
           0
@@ -46,7 +49,9 @@ export const useCartStore = create(
         }
 
         const productToSend =
-          existingProductIndex !== -1 ? newCartItems[existingProductIndex] : newCartItems[newCartItems.length - 1];
+          existingProductIndex !== -1
+            ? newCartItems[existingProductIndex]
+            : newCartItems[newCartItems.length - 1];
         if (!productToSend) return;
 
         try {
@@ -165,7 +170,11 @@ export const useCartStore = create(
             item._id === cardId ? { ...item, checked: !item.checked } : item
           );
           const totals = state.calculateTotals(newCartItems);
-          return { ...state, cartItems: newCartItems, ...totals };
+          return {
+            ...state,
+            cartItems: newCartItems,
+            ...totals
+          };
         }),
       removeItemFromCart: async productId => {
         const userId = get().userId;
@@ -202,7 +211,12 @@ export const useCartStore = create(
 
       setUserId: id => set({ userId: id }),
 
-      clearCart: () => set({ cartItems: [], itemsCount: 0, totalPrice: 0 }),
+      clearCart: () =>
+        set({
+          cartItems: [],
+          itemsCount: 0,
+          totalPrice: 0
+        }),
 
       logOutAndClearCart: () => {
         set({ userId: null });

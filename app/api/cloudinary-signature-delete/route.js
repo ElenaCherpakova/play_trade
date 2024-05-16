@@ -1,13 +1,8 @@
 import { NextResponse } from "next/server";
+
 import cloudinary from "@/app/config/cloudinaryConfig";
 
-export const routeConfig = {
-  api: {
-    bodyParser: {
-      sizeLimit: "8mb"
-    }
-  }
-};
+export const routeConfig = { api: { bodyParser: { sizeLimit: "8mb" } } };
 
 export async function POST(req) {
   if (req.method !== "POST") {
@@ -18,16 +13,20 @@ export async function POST(req) {
     const { public_id, timestamp } = await req.json();
 
     if (!public_id || !timestamp) {
-      return new NextResponse(JSON.stringify({ success: false, message: "Missing required parameters" }), {
-        status: 400,
-        headers: {
-          "Content-Type": "application/json"
+      return new NextResponse(
+        JSON.stringify({ success: false, message: "Missing required parameters" }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json" }
         }
-      });
+      );
     }
 
     const paramsToSign = { public_id, timestamp };
-    const signature = cloudinary.v2.utils.api_sign_request(paramsToSign, process.env.CLOUDINARY_API_SECRET);
+    const signature = cloudinary.v2.utils.api_sign_request(
+      paramsToSign,
+      process.env.CLOUDINARY_API_SECRET
+    );
 
     return new NextResponse(
       JSON.stringify({
@@ -37,18 +36,14 @@ export async function POST(req) {
       }),
       {
         status: 200,
-        headers: {
-          "Content-Type": "application/json"
-        }
+        headers: { "Content-Type": "application/json" }
       }
     );
   } catch (error) {
     console.error("Error generating signature:", error);
     return new NextResponse(JSON.stringify({ success: false, message: "Internal Server Error" }), {
       status: 500,
-      headers: {
-        "Content-Type": "application/json"
-      }
+      headers: { "Content-Type": "application/json" }
     });
   }
 }

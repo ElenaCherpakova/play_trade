@@ -1,10 +1,24 @@
 import React, { useState, useEffect } from "react";
 
-import { useCartStore } from "@/store/cartStore";
 import { useRouter } from "next/navigation";
+
 import { theme } from "/styles/theme.js";
-import { Box, Breadcrumbs, Grid, Typography, Link, Paper, Divider, Button, useMediaQuery } from "@mui/material";
+
+import {
+  Box,
+  Breadcrumbs,
+  Button,
+  Divider,
+  Grid,
+  Link,
+  Paper,
+  Typography,
+  useMediaQuery
+} from "@mui/material";
+
 import CartItem from "./CartItem";
+
+import { useCartStore } from "@/store/cartStore";
 
 export default function Cart() {
   const { cartItems, removeItemFromCart, handleCheck, itemsCount, totalPrice } = useCartStore(
@@ -42,7 +56,14 @@ export default function Cart() {
 
       <Grid container spacing={2} direction={isSmallScreen ? "column-reverse" : "row"}>
         <Grid item xs={12} sm={8}>
-          <Paper sx={{ mt: 3, mr: 3, ml: 3, padding: theme.spacing(2), marginBottom: theme.spacing(2) }}>
+          <Paper
+            sx={{
+              mt: 3,
+              mr: 3,
+              ml: 3,
+              padding: theme.spacing(2),
+              marginBottom: theme.spacing(2)
+            }}>
             <Grid container justifyContent="space-between" alignItems="flex-start">
               <Typography variant="body3" textAlign="left" fontWeight="bold">
                 Shopping cart
@@ -64,7 +85,14 @@ export default function Cart() {
         </Grid>
         {/* Subtotal section */}
         <Grid item xs={12} sm={4}>
-          <Paper sx={{ mt: 3, mr: 3, ml: 3, padding: theme.spacing(2), marginBottom: theme.spacing(2) }}>
+          <Paper
+            sx={{
+              mt: 3,
+              mr: 3,
+              ml: 3,
+              padding: theme.spacing(2),
+              marginBottom: theme.spacing(2)
+            }}>
             <Typography variant="body3" textAlign="left" fontWeight="bold">
               Subtotal
             </Typography>

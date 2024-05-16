@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import dbConnect from "@/lib/mongo/dbConnect";
 import { getToken } from "next-auth/jwt";
+
+import dbConnect from "@/lib/mongo/dbConnect";
 import Card from "@/models/Card";
 
 /**
@@ -65,7 +66,10 @@ export async function GET(req, res) {
     const idWithParams = req.url.split("seller/")[1];
     const id = idWithParams.split("?")[0];
     if (!id) {
-      return NextResponse.json({ success: false, message: "Seller ID not provided" }, { status: 400 });
+      return NextResponse.json(
+        { success: false, message: "Seller ID not provided" },
+        { status: 400 }
+      );
     }
 
     const token = await getToken({ req });
@@ -85,7 +89,18 @@ export async function GET(req, res) {
       return NextResponse.json({ success: false, message: "No cards found" }, { status: 404 });
     }
 
-    return NextResponse.json({ success: true, data: { cards, total, page, limit } }, { status: 200 });
+    return NextResponse.json(
+      {
+        success: true,
+        data: {
+          cards,
+          total,
+          page,
+          limit
+        }
+      },
+      { status: 200 }
+    );
   } catch (error) {
     return NextResponse.json({ success: false, message: error }, { status: 400 });
   }

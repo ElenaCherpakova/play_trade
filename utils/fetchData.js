@@ -56,9 +56,7 @@ export async function fetchCardData(id) {
 export async function editCardData(id, editCardData) {
   const response = await fetch(`/api/cards/${id}`, {
     method: "PATCH",
-    headers: {
-      "Content-Type": "application/json"
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(editCardData)
   });
   if (!response.ok) {
@@ -72,9 +70,7 @@ export async function editCardData(id, editCardData) {
 export async function createCardData(formData) {
   const response = await fetch("/api/cards", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(formData)
   });
   if (!response.ok) {
@@ -89,9 +85,7 @@ export async function createCardData(formData) {
 export async function deleteCardData(id) {
   const response = await fetch(`/api/cards/${id}`, {
     method: "DELETE",
-    headers: {
-      "Content-Type": "application/json"
-    }
+    headers: { "Content-Type": "application/json" }
   });
   if (!response.ok) {
     const data = await response.json();

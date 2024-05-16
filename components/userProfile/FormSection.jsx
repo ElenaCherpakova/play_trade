@@ -1,7 +1,15 @@
 "use client";
 import { Box, Button, Paper, TextField } from "@mui/material";
 
-export default function FormSection({ handleChange, userData, isEditing, handleSubmit, error, theme, isSeller }) {
+export default function FormSection({
+  handleChange,
+  userData,
+  isEditing,
+  handleSubmit,
+  error,
+  theme,
+  isSeller
+}) {
   return (
     <Paper
       sx={{
@@ -9,7 +17,7 @@ export default function FormSection({ handleChange, userData, isEditing, handleS
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        justifyContent: "center",
+        justifyContent: "center"
       }}>
       <Box
         component="form"
@@ -68,15 +76,18 @@ export default function FormSection({ handleChange, userData, isEditing, handleS
             onClick={handleSubmit}
             disabled={
               isEditing &&
-              (Boolean(error.nameError) || Boolean(error.emailError) || Boolean(error.addressError) || !userData.name?.trim() || !userData.email?.trim() || (isSeller && !userData.address?.trim()))
+              (Boolean(error.nameError) ||
+                Boolean(error.emailError) ||
+                Boolean(error.addressError) ||
+                !userData.name?.trim() ||
+                !userData.email?.trim() ||
+                (isSeller && !userData.address?.trim()))
             }
             sx={{
               "mt": 2,
               "width": "40%",
               "letterSpacing": "0.1em",
-              "&:hover": {
-                backgroundColor: theme.palette.accent.main
-              }
+              "&:hover": { backgroundColor: theme.palette.accent.main }
             }}>
             {isEditing ? "Save" : "Edit"}
           </Button>
@@ -87,9 +98,7 @@ export default function FormSection({ handleChange, userData, isEditing, handleS
               "mt": 2, // Add a top margin
               "width": "40%", // Make the button full width
               "letterSpacing": "0.1em",
-              "&:hover": {
-                backgroundColor: theme.palette.accent.main
-              }
+              "&:hover": { backgroundColor: theme.palette.accent.main }
             }}>
             Delete
           </Button>

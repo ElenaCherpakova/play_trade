@@ -1,28 +1,42 @@
-"use client"
+"use client";
+
+import { useState } from "react";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import useAuthUser from "../../store/useAuthUser";
-import { Container, Box, TextField, Button, Typography, CircularProgress, Link, InputAdornment, IconButton, Paper } from "@mui/material";
+
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Container,
+  IconButton,
+  InputAdornment,
+  Link,
+  Paper,
+  TextField,
+  Typography
+} from "@mui/material";
+
+import useAuthUser from "../../store/useAuthUser";
 
 const SignUpPage = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    password: "",
+    password: ""
   });
   const [showPassword, setShowPassword] = useState(false);
 
   const router = useRouter();
   const { register, isLoading, error } = useAuthUser();
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
+    setFormData(prevData => ({
       ...prevData,
-      [name]: value,
+      [name]: value
     }));
   };
 
@@ -30,42 +44,44 @@ const SignUpPage = () => {
     setShowPassword(!showPassword);
   };
 
-  const handleMouseDownPassword = (event) => {
+  const handleMouseDownPassword = event => {
     event.preventDefault();
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
     register(formData);
   };
 
   const handleLoginRedirect = () => {
-    router.push("/signin"); 
+    router.push("/signin");
   };
 
   return (
     <Container component="main" maxWidth="xs">
       <Paper
-        sx={(theme)=>({
+        sx={theme => ({
           marginTop: 8,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          padding: theme.spacing(6),
-        })}
-      >
-        <Typography 
-          component="h1" 
+          padding: theme.spacing(6)
+        })}>
+        <Typography
+          component="h1"
           variant="h5"
           color="primary"
           sx={{
             mt: 2,
-            mb: 2,
-          }}
-          >
+            mb: 2
+          }}>
           Sign up to PlayTrade
         </Typography>
-        {error && <Typography color="error" variant="caption">Error: {error}</Typography>}
+        {error && (
+          <Typography color="error" variant="caption">
+            Error: {error}
+          </Typography>
+        )}
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
           <TextField
             margin="normal"
@@ -108,12 +124,11 @@ const SignUpPage = () => {
                     aria-label="toggle password visibility"
                     onClick={handleClickShowPassword}
                     onMouseDown={handleMouseDownPassword}
-                    edge="end"
-                  >
+                    edge="end">
                     {showPassword ? <VisibilityOff /> : <Visibility />}
                   </IconButton>
                 </InputAdornment>
-              ),
+              )
             }}
           />
           <Button
@@ -124,15 +139,14 @@ const SignUpPage = () => {
             disabled={isLoading}
             sx={{
               mt: 2,
-              mb: 2,
-            }}
-          >
+              mb: 2
+            }}>
             {isLoading ? <CircularProgress size={24} /> : "Sign Up"}
           </Button>
           <Typography variant="body2" textAlign="center">
             Already have an account?{" "}
             <Link href="#" onClick={handleLoginRedirect} variant="body2">
-              Login 
+              Login
             </Link>
           </Typography>
         </Box>

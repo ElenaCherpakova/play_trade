@@ -1,21 +1,24 @@
 "use client";
 import * as React from "react";
-import Card from "@mui/material/Card";
+
+import { useRouter } from "next/navigation";
+
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 import {
-  CardActionArea,
   Box,
-  Typography,
+  CardActionArea,
   CardActions,
   CardContent,
-  CardMedia,
   CardHeader,
+  CardMedia,
   IconButton,
   Menu,
-  MenuItem
+  MenuItem,
+  Typography
 } from "@mui/material";
-import { useRouter } from "next/navigation";
+import Card from "@mui/material/Card";
+
 import AddToCartButton from "./AddToCartButton";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 /**
  * @param {object} props
@@ -78,11 +81,21 @@ export default function CardComponent({
         </>
       )}
       <CardActionArea
-        sx={{ padding: 0, margin: 0, padding: 0, margin: 0, paddingBottom: "3.125em" }}
+        sx={{
+          padding: 0,
+          margin: 0,
+          padding: 0,
+          margin: 0,
+          paddingBottom: "3.125em"
+        }}
         component="button"
         onClick={id => router.push(`/market/item/${card._id}`)}>
         <CardMedia
-          sx={{ objectFit: "cover", padding: 0, borderRadius: 1 }}
+          sx={{
+            objectFit: "cover",
+            padding: 0,
+            borderRadius: 1
+          }}
           component="img"
           image={card.imageURL}
           alt={card.name}
@@ -105,7 +118,14 @@ export default function CardComponent({
         )}
       </CardActionArea>
       {showButtons && (
-        <CardActions sx={{ p: 0.5, position: "absolute", bottom: 0, left: 0, right: 0 }}>
+        <CardActions
+          sx={{
+            p: 0.5,
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0
+          }}>
           <AddToCartButton card={card} />
         </CardActions>
       )}

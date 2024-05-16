@@ -6,9 +6,7 @@ const CardSchema = new Schema({
     required: [true, "Please provide the card name"],
     maxLength: 50
   },
-  set: {
-    type: String
-  },
+  set: { type: String },
   price: {
     type: Number,
     required: true
@@ -34,9 +32,13 @@ const CardSchema = new Schema({
         if (this.category === "Sport Card") {
           return ["near mint", "excellent", "very good", "poor"].includes(value.toLowerCase());
         } else {
-          return ["near mint", "lightly played", "moderately played", "heavily played", "damaged"].includes(
-            value.toLowerCase()
-          );
+          return [
+            "near mint",
+            "lightly played",
+            "moderately played",
+            "heavily played",
+            "damaged"
+          ].includes(value.toLowerCase());
         }
       },
       message: props => `${props.value} is not a valid condition for this category of card.`
@@ -48,11 +50,12 @@ const CardSchema = new Schema({
   },
   imageURL: {
     type: String,
-    match: [/(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|jpeg|gif|png|webp|svg|JPG|JPEG|GIF|PNG|WEBP|SVG)/, "Invalid image URL format"]
+    match: [
+      /(http(s?):)([/|.|\w|\s|-])*\.(?:jpg|jpeg|gif|png|webp|svg|JPG|JPEG|GIF|PNG|WEBP|SVG)/,
+      "Invalid image URL format"
+    ]
   },
-  imagePublicId:{
-    type: String,
-  },
+  imagePublicId: { type: String },
   quantity: {
     type: Number,
     required: true,

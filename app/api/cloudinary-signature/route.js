@@ -1,13 +1,8 @@
 import { NextResponse } from "next/server";
+
 import cloudinary from "@/app/config/cloudinaryConfig";
 
-export const routeConfig = {
-  api: {
-    bodyParser: {
-      sizeLimit: "8mb"
-    }
-  }
-};
+export const routeConfig = { api: { bodyParser: { sizeLimit: "8mb" } } };
 
 async function parseJson(req) {
   const { readable, writable } = new TransformStream();
@@ -34,7 +29,10 @@ export async function POST(req, res) {
       ...(upload_preset && { upload_preset })
     };
 
-    const signature = cloudinary.v2.utils.api_sign_request(paramsToSign, process.env.CLOUDINARY_API_SECRET);
+    const signature = cloudinary.v2.utils.api_sign_request(
+      paramsToSign,
+      process.env.CLOUDINARY_API_SECRET
+    );
 
     return new NextResponse(
       JSON.stringify({
@@ -47,9 +45,7 @@ export async function POST(req, res) {
   } catch (error) {
     return new NextResponse(JSON.stringify({ success: false, message: "Internal Server Error" }), {
       status: 500,
-      headers: {
-        "Content-Type": "application/json"
-      }
+      headers: { "Content-Type": "application/json" }
     });
   }
 }

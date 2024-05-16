@@ -1,6 +1,7 @@
 import { models, model } from "mongoose";
-import SellerSchema from "@/models/Seller";
+
 import BuyerSchema from "@/models/Buyer";
+import SellerSchema from "@/models/Seller";
 import User from "@/models/User";
 
 async function createAssociatedModels(newUser) {

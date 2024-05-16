@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import dbConnect from "@/lib/mongo/dbConnect";
-import Cart from "@/models/Cart";
-import Card from "@/models/Card";
 import { getServerSession } from "next-auth";
+
 import { authOptions } from "../auth/[...nextauth]/route";
+
+import dbConnect from "@/lib/mongo/dbConnect";
+import Card from "@/models/Card";
+import Cart from "@/models/Cart";
 
 /**
  *
@@ -39,12 +41,18 @@ export async function POST(req, res) {
   const userId = session.user._id;
   const { cardId, quantity } = await req.json();
   if (!userId || !cardId || quantity === undefined) {
-    return NextResponse.json({ error: "userId, cardId and quantity are required" }, { status: 400 });
+    return NextResponse.json(
+      { error: "userId, cardId and quantity are required" },
+      { status: 400 }
+    );
   }
   const card = await Card.findById(cardId);
   console.log("CARD", card);
   if (!cardId || card.available !== "available" || quantity <= 0) {
-    return NextResponse.json({ success: false, message: "Card is not available or out of stock" }, { status: 400 });
+    return NextResponse.json(
+      { success: false, message: "Card is not available or out of stock" },
+      { status: 400 }
+    );
   }
 
   try {
@@ -83,7 +91,10 @@ export async function PATCH(req, res) {
   console.log("cardId back", cardId);
 
   if (!userId || !cardId || quantity === undefined) {
-    return NextResponse.json({ error: "userId, cardId, and quantity are required" }, { status: 400 });
+    return NextResponse.json(
+      { error: "userId, cardId, and quantity are required" },
+      { status: 400 }
+    );
   }
 
   try {
@@ -94,7 +105,10 @@ export async function PATCH(req, res) {
     }
 
     if (quantity > card.quantity) {
-      return NextResponse.json({ success: false, message: "Cannot add more than available quantity" }, { status: 400 });
+      return NextResponse.json(
+        { success: false, message: "Cannot add more than available quantity" },
+        { status: 400 }
+      );
     }
 
     const cart = await Cart.findOne({ userId });
@@ -106,7 +120,10 @@ export async function PATCH(req, res) {
     const itemIndex = cart.items.findIndex(item => item.cardId.equals(cardId));
     console.log("itemIndex", itemIndex);
     if (itemIndex === -1) {
-      return NextResponse.json({ success: false, message: "Card not found in cart" }, { status: 404 });
+      return NextResponse.json(
+        { success: false, message: "Card not found in cart" },
+        { status: 404 }
+      );
     }
 
     if (quantity === 0) {
@@ -119,7 +136,10 @@ export async function PATCH(req, res) {
     } else {
       cart.items[itemIndex].quantity = quantity;
       await cart.save();
-      return NextResponse.json({ success: true, items: cart.items, message: "Cart updated" }, { status: 200 });
+      return NextResponse.json(
+        { success: true, items: cart.items, message: "Cart updated" },
+        { status: 200 }
+      );
     }
   } catch (error) {
     return NextResponse.json({ success: false, message: error.message }, { status: 500 });
@@ -144,11 +164,17 @@ export async function DELETE(req, res) {
     }
     const itemIndex = cart.items.findIndex(item => item.cardId.equals(cardId));
     if (itemIndex === -1) {
-      return NextResponse.json({ success: false, message: "Card not found in cart" }, { status: 404 });
+      return NextResponse.json(
+        { success: false, message: "Card not found in cart" },
+        { status: 404 }
+      );
     }
     cart.items.splice(itemIndex, 1);
     await cart.save();
-    return NextResponse.json({ success: true, items: cart.items, message: "Item removed from cart" }, { status: 200 });
+    return NextResponse.json(
+      { success: true, items: cart.items, message: "Item removed from cart" },
+      { status: 200 }
+    );
   } catch (error) {
     return NextResponse.json({ success: false, message: error.message }, { status: 500 });
   }

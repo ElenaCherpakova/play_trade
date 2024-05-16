@@ -1,21 +1,26 @@
 import React, { useState, useEffect } from "react";
+
+import Image from "next/image";
 import { useRouter } from "next/navigation";
+
 import WhatshotIcon from "@mui/icons-material/Whatshot";
+
 import { theme } from "/styles/theme.js";
+
 import {
-  Grid,
-  Typography,
-  Divider,
-  Checkbox,
-  Button,
-  TextField,
   Alert,
+  Box,
+  Button,
+  Checkbox,
   Dialog,
   DialogActions,
   DialogContent,
-  Box
+  Divider,
+  Grid,
+  TextField,
+  Typography
 } from "@mui/material";
-import Image from "next/image";
+
 import { useCartStore } from "@/store/cartStore";
 
 // Custom hook for countdown timer interval
@@ -63,7 +68,7 @@ export default function CartItem({ item, index, handleCheck, removeItemFromCart,
 
   const handleQuantityChange = async e => {
     const newQty = parseInt(e.target.value, 10);
-    console.log({newQty})
+    console.log({ newQty });
     if (newQty <= 0) {
       removeItemFromCart(item._id);
     } else {
@@ -78,16 +83,41 @@ export default function CartItem({ item, index, handleCheck, removeItemFromCart,
 
   return (
     <React.Fragment key={item._id}>
-      <Grid container sx={{ mt: 2, mb: 1, justifyContent: "flex-start" }} spacing={2}>
+      <Grid
+        container
+        sx={{
+          mt: 2,
+          mb: 1,
+          justifyContent: "flex-start"
+        }}
+        spacing={2}>
         {/* Checkbox, img, and Price */}
-        <Grid item xs={12} sm={4} sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-          <Grid item xs={12} sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+        <Grid
+          item
+          xs={12}
+          sm={4}
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center"
+          }}>
+          <Grid
+            item
+            xs={12}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 2
+            }}>
             <Box>
               <Checkbox checked={item.checked} onChange={() => handleCheck(item._id)} />
             </Box>
             <Image src={item.imageURL} alt={item.name} width={100} height={120} />
           </Grid>
-          <Grid item xs={12} sx={{ mt: 1, pl: 5, display: "flex", textAlign: "center", textAlign: "center" }}>
+          <Grid
+            item
+            xs={12}
+            sx={{ mt: 1, pl: 5, display: "flex", textAlign: "center", textAlign: "center" }}>
             <Typography>Price: {item.price}</Typography>
           </Grid>
         </Grid>
@@ -106,7 +136,14 @@ export default function CartItem({ item, index, handleCheck, removeItemFromCart,
           </Typography>
           <Typography variant="body2">{item.description}</Typography>
           {/* Quantity and Remove Button */}
-          <Grid item xs={12} sx={{ display: "flex", alignItems: "center", mt: 1 }}>
+          <Grid
+            item
+            xs={12}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              mt: 1
+            }}>
             <TextField
               type="number"
               InputProps={{ inputProps: { max: item.quantity, min: 0 } }}
@@ -119,7 +156,8 @@ export default function CartItem({ item, index, handleCheck, removeItemFromCart,
           </Grid>
         </Grid>
       </Grid>
-      {index < cartItems.length - 1 && <Divider />} {/* Don't render a divider after the last item */}
+      {index < cartItems.length - 1 && <Divider />}{" "}
+      {/* Don't render a divider after the last item */}
       {/*Alert Box*/}
       <Dialog
         open={open}

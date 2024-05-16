@@ -1,10 +1,11 @@
+import bcrypt from "bcryptjs";
 import NextAuth from "next-auth";
 import { Account, User as AuthUser } from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
-import User from "@/models/User";
-import bcrypt from "bcryptjs";
+import GoogleProvider from "next-auth/providers/google";
+
 import dbConnect from "@/lib/mongo/dbConnect";
+import User from "@/models/User";
 import createAssociatedModels from "@/utils/createAssociatedModels";
 
 /**
@@ -132,13 +133,9 @@ export const authOptions = {
       return session;
     }
   },
-  session: {
-    strategy: "jwt"
-  },
+  session: { strategy: "jwt" },
   secret: process.env.NEXTAUTH_SECRET,
-  pages: {
-    signIn: "/signin"
-  }
+  pages: { signIn: "/signin" }
 };
 
 const handler = NextAuth(authOptions);

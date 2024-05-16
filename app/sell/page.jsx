@@ -1,14 +1,30 @@
 "use client";
+
 import React, { useState, useEffect } from "react";
+
 import { useRouter } from "next/navigation";
-import { Alert, Box, Breadcrumbs, Button, Grid, Typography, Link, Container, Tab, Tabs, Snackbar } from "@mui/material";
-import { theme } from "@/styles/theme";
-import { createCardData, fetchSellerCards, deleteCardData, editCardData } from "@/utils/fetchData";
 import { useSession } from "next-auth/react";
-import CardForm from "@/components/CardForm";
+
+import {
+  Alert,
+  Box,
+  Breadcrumbs,
+  Button,
+  Container,
+  Grid,
+  Link,
+  Snackbar,
+  Tab,
+  Tabs,
+  Typography
+} from "@mui/material";
+
 import CardComponent from "@/components/CardComponent";
+import CardForm from "@/components/CardForm";
 import ConfirmationDialog from "@/components/DialogBox";
 import useImageUpload from "@/hooks/useImageUpload";
+import { theme } from "@/styles/theme";
+import { createCardData, fetchSellerCards, deleteCardData, editCardData } from "@/utils/fetchData";
 
 export default function Sell() {
   const router = useRouter();
@@ -146,7 +162,11 @@ export default function Sell() {
               </Tabs>
             </Grid>
             <Grid item xs={12} sm={6} md={4} lg={3} container justifyContent="flex-end">
-              <Button variant="contained" color="primary" onClick={handleAddButtonClick} sx={{ mr: 7 }}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleAddButtonClick}
+                sx={{ mr: 7 }}>
                 Add new card
               </Button>
             </Grid>

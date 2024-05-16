@@ -1,10 +1,11 @@
-
-'use client';
-import { useTheme } from "@mui/material/styles";
-import { useSession, signOut } from "next-auth/react";
+"use client";
 import { useRouter } from "next/navigation";
-import { Typography, Button, Box } from "@mui/material";
-import useAuthUser from '../store/useAuthUser';
+import { useSession, signOut } from "next-auth/react";
+
+import { Box, Button, Typography } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+
+import useAuthUser from "../store/useAuthUser";
 
 const AuthControl = () => {
   const theme = useTheme();
@@ -13,7 +14,7 @@ const AuthControl = () => {
   const router = useRouter();
 
   const handleLogin = async () => {
-    router.push('/signin');
+    router.push("/signin");
   };
 
   const handleLogout = async () => {
@@ -28,21 +29,11 @@ const AuthControl = () => {
         </Typography>
       ) : null}
       {session?.user?.email ? (
-        <Button
-          variant="contained"
-          color="accent"
-          onClick={handleLogout}
-          size="small"
-        >
+        <Button variant="contained" color="accent" onClick={handleLogout} size="small">
           Logout
         </Button>
       ) : (
-        <Button
-          variant="contained"
-          color="accent"
-          size="small"
-          onClick={handleLogin}
-        >
+        <Button variant="contained" color="accent" size="small" onClick={handleLogin}>
           Login
         </Button>
       )}

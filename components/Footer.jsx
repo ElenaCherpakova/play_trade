@@ -1,5 +1,6 @@
-import { Typography, Box } from "@mui/material";
 import Link from "next/link";
+
+import { Box, Typography } from "@mui/material";
 
 const getCurrentYear = () => {
   const date = new Date().getFullYear();
@@ -9,8 +10,17 @@ const getCurrentYear = () => {
 const Footer = () => {
   return (
     <>
-      <Box sx={{ display: "flex", alignItems: "center", p: 2.5, gap: 2, bgcolor: "primary.main" }}>
-        <Typography variant="body2" color="background.paper">{` © ${getCurrentYear()}  PLAYTRADE`}</Typography>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          p: 2.5,
+          gap: 2,
+          bgcolor: "primary.main"
+        }}>
+        <Typography
+          variant="body2"
+          color="background.paper">{` © ${getCurrentYear()}  PLAYTRADE`}</Typography>
         {/* Spacer */}
         <Box sx={{ flexGrow: 1 }} />
         <Link href="/team" style={{ textDecoration: "none", color: "#FFFFFF" }}>

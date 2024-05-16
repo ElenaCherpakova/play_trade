@@ -1,6 +1,6 @@
-import { Schema, model, models } from "mongoose";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { Schema, model, models } from "mongoose";
 
 const UserSchema = new Schema({
   name: {
@@ -31,9 +31,7 @@ const UserSchema = new Schema({
       "Invalid image URL format"
     ]
   },
-  imageProfilePublicId:{
-    type: String,
-  },
+  imageProfilePublicId: { type: String },
   authProvider: {
     type: Boolean,
     default: false,

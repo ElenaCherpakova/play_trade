@@ -1,9 +1,12 @@
 /*eslint-disable @next/next/no-img-element*/
 "use client";
 import React from "react";
+
 import CardsHome from "/components/CardsHome";
+
 import { useRouter } from "next/navigation";
-import { Box, Button, useTheme, Grid } from "@mui/material";
+
+import { Box, Button, Grid, useTheme } from "@mui/material";
 
 export default function Home() {
   const router = useRouter();
@@ -40,7 +43,12 @@ export default function Home() {
           <img
             src="/landing_page.jpeg"
             alt="Landing page with a background image of characters from different card games"
-            style={{ objectFit: "cover", width: "100%", height: "100%", opacity: 0.75 }}
+            style={{
+              objectFit: "cover",
+              width: "100%",
+              height: "100%",
+              opacity: 0.75
+            }}
           />
         </Box>
         <Box
@@ -67,9 +75,7 @@ export default function Home() {
               "fontWeight": "bold",
               "paddingLeft": theme.spacing(2),
               "borderRadius": theme.shape.borderRadius, // Use the theme border radius
-              "&:hover": {
-                backgroundColor: theme.palette.background.paper
-              }
+              "&:hover": { backgroundColor: theme.palette.background.paper }
             }}>
             START
           </Button>
@@ -80,7 +86,11 @@ export default function Home() {
         flexDirection="column"
         justifyContent="center"
         alignItems="center"
-        sx={{ pt: 0, mt: 1, mb: 1 }}>
+        sx={{
+          pt: 0,
+          mt: 1,
+          mb: 1
+        }}>
         <CardsHome />
       </Box>
     </Grid>

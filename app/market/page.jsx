@@ -1,18 +1,33 @@
 "use client";
+
 import { useEffect, useState } from "react";
+
 import { useSearchParams, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { Grid, Box, Snackbar, Alert, Typography, IconButton, Drawer, Button, Breadcrumbs, Link } from "@mui/material";
-import Pagination from "@mui/material/Pagination";
-import FilterListIcon from "@mui/icons-material/FilterList";
+
 import CloseIcon from "@mui/icons-material/Close";
-import Stack from "@mui/material/Stack";
-import { theme } from "@/styles/theme";
-import { fetchAllCardsData } from "@/utils/fetchData";
-import CardComponent from "../../components/CardComponent";
-import Filter from "../../components/Filter";
+import FilterListIcon from "@mui/icons-material/FilterList";
+import {
+  Alert,
+  Box,
+  Breadcrumbs,
+  Button,
+  Drawer,
+  Grid,
+  IconButton,
+  Link,
+  Pagination,
+  Snackbar,
+  Stack,
+  Typography
+} from "@mui/material";
+
+import CardComponent from "@/components/CardComponent";
+import Filter from "@/components/Filter";
 import Loader from "@/components/loader/Loader";
 import { useCartStore } from "@/store/cartStore";
+import { theme } from "@/styles/theme";
+import { fetchAllCardsData } from "@/utils/fetchData";
 
 export default function Market() {
   const [cards, setCards] = useState([]);
@@ -169,7 +184,10 @@ export default function Market() {
                           md={4}
                           lg={3}
                           sx={{ display: "flex", justifyContent: "center" }}>
-                          <CardComponent card={card} showButtons={session?.user?._id !== card?.createdBy} />
+                          <CardComponent
+                            card={card}
+                            showButtons={session?.user?._id !== card?.createdBy}
+                          />
                         </Grid>
                       ))}
                     </Grid>

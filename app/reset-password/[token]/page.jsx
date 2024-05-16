@@ -1,17 +1,28 @@
 "use client";
 
+import { useState, useEffect } from "react";
+
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useState, useEffect } from "react";
-import useAuthUser from "../../../store/useAuthUser";
-import { Container, Box, TextField, Button, Typography, CircularProgress, Paper, InputAdornment, IconButton, Link } from "@mui/material";
+
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import {
+  Box,
+  Button,
+  Container,
+  IconButton,
+  InputAdornment,
+  Link,
+  Paper,
+  TextField,
+  Typography
+} from "@mui/material";
+
+import useAuthUser from "../../../store/useAuthUser";
 
 const ResetPasswordPage = ({ params }) => {
-  const [formData, setFormData] = useState({
-    password: ""
-  });
+  const [formData, setFormData] = useState({ password: "" });
 
   const [showPassword, setShowPassword] = useState(false);
   const { verifyToken, resetPassword, email, verifyError, passwordResetSuccess } = useAuthUser();
@@ -28,8 +39,8 @@ const ResetPasswordPage = ({ params }) => {
 
   useEffect(() => {
     if (sessionStatus === "authenticated") {
-      router.replace("/market"); 
-    } 
+      router.replace("/market");
+    }
   }, [sessionStatus, router]);
 
   useEffect(() => {
@@ -38,11 +49,11 @@ const ResetPasswordPage = ({ params }) => {
     }
   }, [passwordResetSuccess, router]);
 
-  const handleChange = (e) => {
+  const handleChange = e => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
+    setFormData(prevData => ({
       ...prevData,
-      [name]: value,
+      [name]: value
     }));
   };
 
@@ -50,87 +61,82 @@ const ResetPasswordPage = ({ params }) => {
     setShowPassword(!showPassword);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = e => {
     e.preventDefault();
-    resetPassword(formData.password, email); 
+    resetPassword(formData.password, email);
   };
   return (
     sessionStatus !== "authenticated" && (
-    <Container component="main" maxWidth="xs">
-      <Paper
-        sx={(theme)=>({
-          marginTop: 8,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          padding: theme.spacing(6),
-        })}
-      >
-        <Typography  
-          variant="h5"
-          color="primary"
-          sx={{
-            mt: 2,
-            mb: 2,
-          }}
-          >
-          Reset Password
-        </Typography>
-        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type={showPassword ? "text" : "password"}
-            id="password"
-            autoComplete="current-password"
-            value={formData.password}
-            onChange={handleChange}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={toggleShowPassword}
-                    edge="end"
-                  >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </IconButton>
-                </InputAdornment>
-              ),
-            }}
-          />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
+      <Container component="main" maxWidth="xs">
+        <Paper
+          sx={theme => ({
+            marginTop: 8,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            padding: theme.spacing(6)
+          })}>
+          <Typography
+            variant="h5"
             color="primary"
-            disabled={verifyError?.length > 0} 
             sx={{
               mt: 2,
-              mb: 2,
-            }}
-          >
+              mb: 2
+            }}>
             Reset Password
-          </Button>
-          {verifyError && (
+          </Typography>
+          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type={showPassword ? "text" : "password"}
+              id="password"
+              autoComplete="current-password"
+              value={formData.password}
+              onChange={handleChange}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={toggleShowPassword}
+                      edge="end">
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                )
+              }}
+            />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              disabled={verifyError?.length > 0}
+              sx={{
+                mt: 2,
+                mb: 2
+              }}>
+              Reset Password
+            </Button>
+            {verifyError && (
               <>
-                <Typography variant="caption"  color="error">
+                <Typography variant="caption" color="error">
                   {verifyError}
                 </Typography>
                 <Typography textAlign="center" variant="body2" sx={{ mt: 2 }}>
-                  <Link href="/forget-password">
-                      Generate a reset password link
-                  </Link>
+                  <Link href="/forget-password">Generate a reset password link</Link>
                 </Typography>
               </>
             )}
-        </Box>
-      </Paper>
-    </Container>
-  ));
+          </Box>
+        </Paper>
+      </Container>
+    )
+  );
 };
 
 export default ResetPasswordPage;

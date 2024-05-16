@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import dbConnect from "@/lib/mongo/dbConnect";
 import { getToken } from "next-auth/jwt";
-import User from "@/models/User";
+
+import dbConnect from "@/lib/mongo/dbConnect";
 import Seller from "@/models/Seller";
+import User from "@/models/User";
 
 /**
  * @param {NextRequest} req
@@ -22,7 +23,10 @@ export async function GET(req, res) {
     const id = idWithParams.split("?")[0];
 
     if (!id) {
-      return NextResponse.json({ success: false, message: "Seller ID not provided" }, { status: 400 });
+      return NextResponse.json(
+        { success: false, message: "Seller ID not provided" },
+        { status: 400 }
+      );
     }
     const user = await User.findById(id);
     if (!user) {

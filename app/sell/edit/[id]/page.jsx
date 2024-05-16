@@ -1,9 +1,12 @@
 "use client";
 import { useState, useEffect } from "react";
+
 import { useRouter } from "next/navigation";
-import { fetchCardData, editCardData } from "@/utils/fetchData";
+
 import { Alert, Box, Snackbar } from "@mui/material";
+
 import CardForm from "@/components/CardForm";
+import { fetchCardData, editCardData } from "@/utils/fetchData";
 
 /**
  *
@@ -44,7 +47,6 @@ export default function Page({ params }) {
       await editCardData(id, editCard);
       router.push(`/sell`);
     } catch (error) {
-    
       console.error(error);
       setOpenError(true);
       setErrorMessage(error.message || "unknown error");
