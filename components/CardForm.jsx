@@ -15,7 +15,7 @@ import {
   TextField,
   Typography,
   useMediaQuery
-} from "@mui.material";
+} from "@mui/material";
 import Image from "next/image";
 
 import ImageIcon from "@mui/icons-material/Image";
