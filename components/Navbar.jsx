@@ -33,7 +33,7 @@ const Navbar = () => {
   const [anchorElUser, setAnchorElUser] = useState(null);
   const [searchInput, setSearchInput] = useState("");
   //Cart badge count
-  const count = useCartStore(state => state.itemsCount);
+  const itemsCount = useCartStore(state => state.itemsCount);
   const router = useRouter();
   const { logout } = useAuthUser();
   const { data: session } = useSession();
@@ -174,7 +174,7 @@ const Navbar = () => {
               />
             </Box>
             <Box flexGrow={1} />
-            <Badge color="warning" badgeContent={count} overlap="circular">
+            <Badge color="warning" badgeContent={itemsCount} overlap="circular">
               <IconButton
                 color="inherit"
                 aria-label="cart"

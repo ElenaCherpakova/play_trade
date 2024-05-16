@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import Button from "@mui/material/Button";
-import { useCartStore } from "@/store/cartStore";
 import { useSession } from "next-auth/react";
+import { useCartStore } from "@/store/cartStore";
 
 const AddToCartButton = ({ card }) => {
   const { data: session } = useSession();

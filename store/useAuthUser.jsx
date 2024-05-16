@@ -141,10 +141,8 @@ const useAuthUser = create(set => ({
         },
         body: JSON.stringify({ ...userData, imageProfilePublicId: avatarPublicId })
       });
-      console.log("RESPONSE", response);
       if (response.ok) {
         const data = await response.json();
-        console.log("Data", data);
         set({ data, isLoading: false, error: null });
         return data;
       } else {
@@ -156,7 +154,6 @@ const useAuthUser = create(set => ({
           errorData = { message: "Failed to update profile" };
         }
         const errorMsg = errorData.message || "Failed to update profile";
-        console.log("errorData", errorMsg);
         set({ isLoading: false, error: errorMsg });
       }
     } catch (error) {

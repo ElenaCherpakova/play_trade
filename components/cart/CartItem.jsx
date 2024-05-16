@@ -16,37 +16,40 @@ import {
   Box
 } from "@mui/material";
 import Image from "next/image";
+import { useCartStore } from "@/store/cartStore";
 
 // Custom hook for countdown timer interval
-function useCountdown(initialTime, onEnd) {
-  const [timeLeft, setTimeLeft] = useState(initialTime);
+// function useCountdown(initialTime, onEnd) {
+//   const [timeLeft, setTimeLeft] = useState(initialTime);
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft(timeLeft => {
-        if (timeLeft === 0) {
-          onEnd();
-          return 0;
-        } else {
-          return timeLeft - 1;
-        }
-      });
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [onEnd]);
-  return timeLeft;
-}
+//   useEffect(() => {
+//     const timer = setInterval(() => {
+//       setTimeLeft(timeLeft => {
+//         if (timeLeft === 0) {
+//           onEnd();
+//           return 0;
+//         } else {
+//           return timeLeft - 1;
+//         }
+//       });
+//     }, 1000);
+//     return () => clearInterval(timer);
+//   }, [onEnd]);
+//   return timeLeft;
+// }
 
 // Function for counting down time
-export default function CartItem({ item, index, handleCheck, removeItemFromCart, handleQuantityChange, cartItems }) {
+export default function CartItem({ item, index, handleCheck, removeItemFromCart, cartItems }) {
+ console.log("IEMT", item._id)
+  const updateQuantityChange = useCartStore(state => state.updateQuantityChange);
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const timeLeft = useCountdown(1 * 60, () => setOpen(true));
+  // const timeLeft = useCountdown(1 * 60, () => setOpen(true));
   {
     /* For the presentation should be changed for useCountdown(15 * 60, */
   }
-  const minutes = Math.floor(timeLeft / 60);
-  const seconds = timeLeft % 60;
+  // const minutes = Math.floor(timeLeft / 60);
+  // const seconds = timeLeft % 60;
 
   // handleClose is to close the dialog
   const handleClose = () => {
@@ -59,6 +62,15 @@ export default function CartItem({ item, index, handleCheck, removeItemFromCart,
     handleClose();
   };
 
+  const handleQuantityChange = async e => {
+    const newQty = parseInt(e.target.value, 10);
+    console.log({newQty})
+    if (newQty <= 0) {
+      removeItemFromCart(item._id);
+    } else {
+      await updateQuantityChange(item._id, newQty);
+    }
+  };
   //handleRemove - to remove the item from the cart
   const handleRemove = () => {
     removeItemFromCart(item._id);
@@ -72,12 +84,12 @@ export default function CartItem({ item, index, handleCheck, removeItemFromCart,
         <Grid item xs={12} sm={4} sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
           <Grid item xs={12} sx={{ display: "flex", alignItems: "center", gap: 2 }}>
             <Box>
-              <Checkbox checked={item.checked} onChange={() => handleCheck(index)} />
+              <Checkbox checked={item.checked} onChange={() => handleCheck(item._id)} />
             </Box>
             <Image src={item.imageURL} alt={item.name} width={100} height={120} />
           </Grid>
           <Grid item xs={12} sx={{ mt: 1, pl: 5, display: "flex", textAlign: "center", textAlign: "center" }}>
-            <Typography>Price:{item.price}</Typography>
+            <Typography>Price: {item.price}</Typography>
           </Grid>
         </Grid>
 
@@ -87,8 +99,8 @@ export default function CartItem({ item, index, handleCheck, removeItemFromCart,
           <Typography
             variant="body1"
             sx={{ display: "flex", alignItems: "center", mt: 1, color: theme.palette.error.main }}>
-            <WhatshotIcon color="error" />
-            {`Your special deal reserved for ${minutes}:${seconds < 10 ? "0" : ""}${seconds}`}
+            {/* <WhatshotIcon color="error" /> */}
+            {/* {`Your special deal reserved for ${minutes}:${seconds < 10 ? "0" : ""}${seconds}`} */}
           </Typography>
           <Typography variant="body1" fontWeight="bold">
             {item.name}
@@ -98,9 +110,9 @@ export default function CartItem({ item, index, handleCheck, removeItemFromCart,
           <Grid item xs={12} sx={{ display: "flex", alignItems: "center", mt: 1 }}>
             <TextField
               type="number"
-              InputProps={{ inputProps: { min: 0 } }}
+              InputProps={{ inputProps: { max: item.quantity, min: 0 } }}
               value={item.quantity}
-              onChange={e => handleQuantityChange(index, e.target.value)}
+              onChange={handleQuantityChange}
               size="small"
               sx={{ width: "5rem", mr: 2 }}
             />

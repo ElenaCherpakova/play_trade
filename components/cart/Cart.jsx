@@ -7,16 +7,20 @@ import { Box, Breadcrumbs, Grid, Typography, Link, Paper, Divider, Button, useMe
 import CartItem from "./CartItem";
 
 export default function Cart() {
-  const { cartItems, removeItemFromCart, handleCheck, handleQuantityChange, itemsCount, totalPrice } = useCartStore(
-    state => ({
+  const { cartItems, loadCart, removeItemFromCart, handleCheck, updateQuantityChange, itemsCount, totalPrice } =
+    useCartStore(state => ({
       cartItems: state.cartItems,
       removeItemFromCart: state.removeItemFromCart,
       handleCheck: state.handleCheck,
       handleQuantityChange: state.handleQuantityChange,
       itemsCount: state.itemsCount,
-      totalPrice: state.totalPrice
-    })
-  );
+      totalPrice: state.totalPrice,
+      loadCart: state.loadCart,
+    }));
+
+  useEffect(() => {
+    loadCart();
+  }, [loadCart]);
 
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const router = useRouter();
@@ -58,7 +62,6 @@ export default function Cart() {
                 index={index}
                 handleCheck={handleCheck}
                 removeItemFromCart={removeItemFromCart}
-                handleQuantityChange={handleQuantityChange}
                 cartItems={cartItems}
               />
             ))}
@@ -75,7 +78,7 @@ export default function Cart() {
               Items ({itemsCount})
             </Typography>
             <Typography variant="body1" sx={{ mt: 3, mb: 2 }}>
-              Total Price: {totalPrice.toFixed(2)}
+              Total Price: {totalPrice}
             </Typography>
             <Button
               variant="contained"
@@ -91,3 +94,4 @@ export default function Cart() {
     </Box>
   );
 }
+

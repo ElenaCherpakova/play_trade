@@ -36,11 +36,10 @@ const CheckoutForm = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(totalPrice)
       });
-      console.log("rss", response);
+
       if (!response.ok) throw new Error("Network response was not ok");
 
       const data = await response.json();
-      console.log("DATA", data);
 
       const res = await stripe?.confirmCardPayment(data?.intent, {
         payment_method: { card: cardElement }
