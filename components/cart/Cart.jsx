@@ -7,12 +7,11 @@ import { Box, Breadcrumbs, Grid, Typography, Link, Paper, Divider, Button, useMe
 import CartItem from "./CartItem";
 
 export default function Cart() {
-  const { cartItems, removeItemFromCart, handleCheck, updateQuantityChange, itemsCount, totalPrice } = useCartStore(
+  const { cartItems, removeItemFromCart, handleCheck, itemsCount, totalPrice } = useCartStore(
     state => ({
       cartItems: state.cartItems,
       removeItemFromCart: state.removeItemFromCart,
       handleCheck: state.handleCheck,
-      handleQuantityChange: state.handleQuantityChange,
       itemsCount: state.itemsCount,
       totalPrice: state.totalPrice
     })

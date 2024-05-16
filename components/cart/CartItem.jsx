@@ -40,7 +40,6 @@ import { useCartStore } from "@/store/cartStore";
 
 // Function for counting down time
 export default function CartItem({ item, index, handleCheck, removeItemFromCart, cartItems }) {
- console.log("IEMT", item._id)
   const updateQuantityChange = useCartStore(state => state.updateQuantityChange);
   const router = useRouter();
   const [open, setOpen] = useState(false);
