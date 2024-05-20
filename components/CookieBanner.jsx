@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 import Link from "next/link";
 
-import { Button, useTheme } from "@mui/material";
+import { Box, Button, useTheme } from "@mui/material";
 import SnackbarContent from "@mui/material/SnackbarContent";
 import Stack from "@mui/material/Stack";
 
@@ -59,10 +59,14 @@ export default function CookieBanner() {
               </>
             }
             action={
-              <>
+              <Box
+                sx={{
+                  display: "flex",
+                  gap: theme.spacing(1)
+                }}>
                 <Button onClick={() => setCookieConsent(true)}>Accept cookies</Button>{" "}
                 <Button onClick={() => setCookieConsent(false)}>Decline cookies</Button>
-              </>
+              </Box>
             }></SnackbarContent>
         </>
       )}
