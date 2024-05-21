@@ -9,7 +9,9 @@ import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
 
 import Navbar from "../components/Navbar";
 
+import CookieBanner from "@/components/CookieBanner";
 import Footer from "@/components/Footer";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
 import { theme } from "@/styles/theme";
 import SessionProvider from "@/utils/SessionProvider";
 
@@ -25,7 +27,8 @@ export default async function RootLayout({ children }) {
 
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <GoogleAnalytics GA_MEASUREMENT_ID={process.env.GOOGLE_GA_MEASUREMENT_ID} />
+      <body className={inter.className} suppressHydrationWarning>
         <SessionProvider session={session}>
           <AppRouterCacheProvider>
             <CssBaseline />
@@ -42,6 +45,7 @@ export default async function RootLayout({ children }) {
                     flexGrow: "1"
                   }}>
                   {children}
+                  <CookieBanner />
                 </Box>
               </main>
               <Footer />

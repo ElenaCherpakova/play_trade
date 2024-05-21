@@ -176,7 +176,7 @@ const Navbar = () => {
               />
             </Box>
             <Box flexGrow={1} />
-            <Badge color="warning" badgeContent={itemsCount} overlap="circular">
+            <Badge color="warning" badgeContent={itemsCount || "0"} overlap="circular">
               <IconButton
                 color="inherit"
                 aria-label="cart"
