@@ -28,7 +28,7 @@ export default async function RootLayout({ children }) {
   return (
     <html lang="en">
       <GoogleAnalytics GA_MEASUREMENT_ID={process.env.GOOGLE_GA_MEASUREMENT_ID} />
-      <body className={inter.className}>
+      <body className={inter.className} suppressHydrationWarning>
         <SessionProvider session={session}>
           <AppRouterCacheProvider>
             <CssBaseline />
