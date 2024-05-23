@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 
-import { Search, ShoppingCart } from "@mui/icons-material";
+import { Search, ShoppingCart, FavoriteBorder } from "@mui/icons-material";
 import {
   AppBar,
   Avatar,
@@ -176,16 +176,32 @@ const Navbar = () => {
               />
             </Box>
             <Box flexGrow={1} />
-            <Badge color="warning" badgeContent={itemsCount || "0"} overlap="circular">
-              <IconButton
-                color="inherit"
-                aria-label="cart"
-                onClick={() => {
-                  router.push("/cart");
-                }}>
-                <ShoppingCart />
-              </IconButton>
-            </Badge>
+            <Box
+              sx={{
+                display: "flex",
+                gap: 1
+              }}>
+              <Badge>
+                <IconButton
+                  color="inherit"
+                  aria-label="wishlist"
+                  onClick={() => {
+                    router.push("/wishlist");
+                  }}>
+                  <FavoriteBorder />
+                </IconButton>
+              </Badge>
+              <Badge color="warning" badgeContent={itemsCount || "0"} overlap="circular">
+                <IconButton
+                  color="inherit"
+                  aria-label="cart"
+                  onClick={() => {
+                    router.push("/cart");
+                  }}>
+                  <ShoppingCart />
+                </IconButton>
+              </Badge>
+            </Box>
             {session ? (
               <Box sx={{ flexGrow: 0 }}>
                 <Tooltip title="Open settings">
